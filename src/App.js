@@ -17,25 +17,25 @@ class App extends Component {
   constructor(props) {
     super(props)
 
-    console.log(process.env.REACT_APP_TRELLO_TOKEN)
-
     this.state = {
       currentBoardId: "",
       boards: [],
+      link: window.location.href,
       currentLabels: new Set(),
-      avatarURLs: new Set()
+      boardMembers: new Set(),
+      currentBoardMembers: []
     }
   }
   
   componentDidMount = () => this.GetBoards()
 
   onBoardChange = id => {
-    let { avatarURLs } = this.state
+    let { boardMembers } = this.state
     const { boards } = this.state
-    avatarURLs.clear()
+    boardMembers.clear()
     this.setState({
       currentBoardId: id,
-      avatarURLs
+      boardMembers
     })
     boards
       .filter(board => board.id === id)
@@ -54,14 +54,26 @@ class App extends Component {
     this.setState({currentLabels})
   }
 
+  onToggleBoardMember = memberId => {
+    const { currentBoardMembers } = this.state
+    this.setState({
+      currentBoardMembers: currentBoardMembers.includes(memberId)
+      ? currentBoardMembers.filter(id => id !== memberId)
+      : [...currentBoardMembers, memberId]
+    })
+
+    console.log(this.state)
+  }
+
   GetMember = memberId => {
     trello.getMember(memberId, (error, member) => {
-        let { avatarURLs } = this.state
+        let { boardMembers } = this.state
         if (error) {
           console.log('Could not fetch member:', error)
         } else {
-          avatarURLs.add(getAvatarURL(member.avatarHash))
-          this.setState({avatarURLs})
+          console.log(member)
+          boardMembers.add(member)
+          this.setState({boardMembers})
         }
     });
   }
@@ -81,7 +93,14 @@ class App extends Component {
   }
 
   render() {
-    const { boards, currentBoardId, currentLabels, avatarURLs } = this.state
+    const { 
+      boards,
+      currentBoardId,
+      currentLabels,
+      boardMembers,
+      currentBoardMembers
+    } = this.state
+
     return (
       <div className="App">
         <Row type="flex" justify="space-around">
@@ -137,8 +156,23 @@ class App extends Component {
               </Form.Item>
 
               <Form.Item>
-                {!!avatarURLs.size && 
-                  [...avatarURLs].map(url => <Avatar src={url} key={url} />)}
+                {!!boardMembers.size && 
+                  [...boardMembers].map(member => 
+                    <Avatar 
+                      src={getAvatarURL(member.avatarHash)} 
+                      key={member.id} 
+                      size={64}
+                      onClick={e => {
+                        this.onToggleBoardMember(member.id)
+                      }}
+                      style={{
+                        filter: currentBoardMembers
+                          .some(id => member.id === id)
+                          ? 'none'
+                          : 'grayscale(100%) contrast(50%) brightness(150%)'
+                        , 
+                        cursor: 'pointer'}}
+                    />)}
               </Form.Item>
             </Form>
           </Col>
