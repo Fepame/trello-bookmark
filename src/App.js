@@ -7,8 +7,8 @@ const { Group } = Radio
 const { CheckableTag } = Tag;
 
 const trello = new Trello(
-  "e9d4b0061c2ac9a0529240b09d88521c", // api key
-  "5e410c1e8fc1c57aa6a3c4378a313131fd46977a19c39d53852698340fbbccc8" // user token
+  process.env.REACT_APP_TRELLO_API_KEY,
+  process.env.REACT_APP_TRELLO_TOKEN
 );
 
 const getAvatarURL = hash => `http://trello-avatars.s3.amazonaws.com/${hash}/170.png`
@@ -16,6 +16,8 @@ const getAvatarURL = hash => `http://trello-avatars.s3.amazonaws.com/${hash}/170
 class App extends Component {
   constructor(props) {
     super(props)
+
+    console.log(process.env.REACT_APP_TRELLO_TOKEN)
 
     this.state = {
       currentBoardId: "",
