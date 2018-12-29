@@ -1,10 +1,22 @@
 import React, { Component } from 'react'
 import Trello from 'trello'
-import { Input, Select, Radio, Button, Form, Row, Col, Icon, Tag, Avatar } from 'antd'
+import { 
+  Input,
+  Select,
+  Radio,
+  message,
+  Button,
+  Form,
+  Row,
+  Col,
+  Icon,
+  Tag,
+  Avatar
+} from 'antd'
+import convertCssColorNameToHex from 'convert-css-color-name-to-hex'
 const { TextArea } = Input
 const { Option } = Select
 const { Group } = Radio
-const { CheckableTag } = Tag;
 
 const trello = new Trello(
   process.env.REACT_APP_TRELLO_API_KEY,
@@ -26,19 +38,26 @@ class App extends Component {
       position: 'top',
       description: '',
       link: window.location.href,
-      currentLabels: new Set(),
-      boardMembers: new Set(),
+      labels: [],
+      selectedLabels: [],
+      boardMembers: [],
       cardAssignee: []
     }
   }
   
-  componentDidMount = () => trello.getBoards('me').then(boards => {
-    this.setState({
-      boards: boards.filter(board => !board.closed && !board.idOrganization)
-    })
-    this.onBoardChange("5c0e5da5f0d45186648e19d5")
-    console.log([boards.filter(board => board.id === this.state.currentBoardId)])
-  })
+  componentDidMount = () => 
+    trello
+      .getBoards('me')
+      .then(boards => {
+        this.setState({
+          boards: boards.filter(board => !board.closed && !board.idOrganization)
+        })
+        // 5ba3f5c0a3adf352ead8d4dd - angie
+        // 5c0e5da5f0d45186648e19d5 - big short
+        this.onBoardChange("5c0e5da5f0d45186648e19d5")
+        console.log(boards.filter(board => board.id === this.state.currentBoardId)[0])
+      })
+
 
   onLinkChange = link => this.setState({link})
 
@@ -50,44 +69,55 @@ class App extends Component {
 
   onListChange = listId => this.setState({currentListId: listId})
 
-  onBoardChange = id => {
-    let { boardMembers } = this.state
-    const { boards } = this.state
-    boardMembers.clear()
-    this.setState({
-      currentBoardId: id,
-      boardMembers
+  clearState = () => new Promise(resolve => this.setState({
+    boardMembers: [],
+    lists: [],
+    labels: [],
+    selectedLabels: [],
+    cardAssignee: []
+  }, () => resolve()))
+
+  onBoardChange = boardId => {
+    this.clearState().then(() => {
+      const { boards } = this.state
+      this.setState({currentBoardId: boardId})
+  
+      boards
+        .filter(board => board.id === boardId)
+        .map(board => {
+          trello
+            .getListsOnBoard(board.id)
+            .then(lists => this.setState({
+              lists,
+              currentListId: lists[0].id
+            }))
+          
+          trello
+            .getLabelsForBoard(boardId)
+            .then(labels => this.setState({labels}))
+  
+          return board.memberships.map(member => trello
+              .getMember(member.idMember)
+              .then(boardMember => {
+                const { boardMembers } = this.state
+                this.setState({
+                  boardMembers: [...boardMembers, boardMember]
+                })}
+              ))
+        })
     })
-    boards
-      .filter(board => board.id === id)
-      .map(board => {
-        let { boardMembers } = this.state
-        trello.getListsOnBoard(board.id).then(
-          lists => this.setState({
-            lists,
-            currentListId: lists[0].id
-          })
-        )
-        return board.memberships.map(member => 
-          trello.getMember(member.idMember).then(
-            boardMember => {
-              boardMembers.add(boardMember)
-              this.setState({boardMembers})
-            }
-          )
-        )
-      })
   }
   
-  onLabelChange = (label, checked) => {
-    let { currentLabels } = this.state
-    checked
-    ? currentLabels.add(label)
-    : currentLabels.delete(label)
-    this.setState({currentLabels})
+  onLabelChange = labelId => {
+    const { selectedLabels } = this.state
+    this.setState({
+      selectedLabels: selectedLabels.includes(labelId)
+        ? selectedLabels.filter(label => label !== labelId)
+        : [...selectedLabels, labelId]
+      })
   }
 
-  onToggleBoardMember = memberId => {
+  onToggleCardAssignee = memberId => {
     const { cardAssignee } = this.state
     this.setState({
       cardAssignee: cardAssignee.includes(memberId)
@@ -97,15 +127,33 @@ class App extends Component {
   }
 
   saveCard = () => {
-    const { title, description, position, currentListId} = this.state
+    const { 
+      title,
+      description,
+      position,
+      link,
+      currentListId,
+      selectedLabels,
+      cardAssignee
+    } = this.state
     trello.addCardWithExtraParams(
       title, 
       {
         desc: description,
-        pos: position
+        pos: position,
+        idLabels: selectedLabels.join(','),
+        idMembers: cardAssignee.join(',')
       }, 
       currentListId
-    ).then(card => console.log(card))
+    ).then(card => {
+      if(link) {
+        trello
+          .addAttachmentToCard(card.id, link)
+          .then(card => message.success("Card with link has been added"))
+      } else {
+        message.success("Card has been added")
+      }
+    })
   }
 
   render() {
@@ -118,7 +166,8 @@ class App extends Component {
       title,
       description,
       position,
-      currentLabels,
+      labels,
+      selectedLabels,
       boardMembers,
       cardAssignee
     } = this.state
@@ -191,37 +240,33 @@ class App extends Component {
                   <Radio.Button value="bottom">Bottom</Radio.Button>
                 </Group>
               </Form.Item>
-
+              {/* convertCssColorNameToHex('aliceblue') */}
               <Form.Item>
-                {!!boards.length && boards
-                  .filter(board => board.id === currentBoardId)
-                  .map(
-                    board => 
-                      Object
-                      .keys(board.labelNames)
-                      .filter(label => board.labelNames[label])
-                      .map(
-                        label => <CheckableTag 
-                          key={label}
-                          checked={currentLabels.has(label)}
-                          onChange={checked => this.onLabelChange(label, checked)}
-                        >
-                          {board.labelNames[label]}
-                        </CheckableTag>
-                      )
-                  )
-                }
+                {!!labels.length 
+                  && labels.map(
+                    label =>
+                      <Tag
+                        color={convertCssColorNameToHex(label.color)}
+                        key={label.id}
+                        onClick={e => this.onLabelChange(label.id)}
+                        style={{
+                          filter: selectedLabels.includes(label.id)
+                            ? 'none'
+                            : 'grayscale(30%) opacity(90%)'
+                        }}
+                      >{label.name || String.fromCharCode(160) }</Tag>
+                  )}
               </Form.Item>
 
               <Form.Item>
-                {!!boardMembers.size && 
-                  [...boardMembers].map(member => 
+                {!!boardMembers.length && 
+                  boardMembers.map(member => 
                     <Avatar 
                       src={getAvatarURL(member.avatarHash)} 
                       key={member.id} 
                       size={64}
                       onClick={e => {
-                        this.onToggleBoardMember(member.id)
+                        this.onToggleCardAssignee(member.id)
                       }}
                       style={{
                         filter: cardAssignee
