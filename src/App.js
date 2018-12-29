@@ -28,11 +28,17 @@ class App extends Component {
       link: window.location.href,
       currentLabels: new Set(),
       boardMembers: new Set(),
-      currentBoardMembers: []
+      cardAssignee: []
     }
   }
   
-  componentDidMount = () => this.GetBoards()
+  componentDidMount = () => trello.getBoards('me').then(boards => {
+    this.setState({
+      boards: boards.filter(board => !board.closed && !board.idOrganization)
+    })
+    this.onBoardChange("5c0e5da5f0d45186648e19d5")
+    console.log([boards.filter(board => board.id === this.state.currentBoardId)])
+  })
 
   onLinkChange = link => this.setState({link})
 
@@ -55,9 +61,20 @@ class App extends Component {
     boards
       .filter(board => board.id === id)
       .map(board => {
-        this.GetListsOnBoard(board.id)
+        let { boardMembers } = this.state
+        trello.getListsOnBoard(board.id).then(
+          lists => this.setState({
+            lists,
+            currentListId: lists[0].id
+          })
+        )
         return board.memberships.map(member => 
-          this.GetMember(member.idMember)
+          trello.getMember(member.idMember).then(
+            boardMember => {
+              boardMembers.add(boardMember)
+              this.setState({boardMembers})
+            }
+          )
         )
       })
   }
@@ -71,64 +88,24 @@ class App extends Component {
   }
 
   onToggleBoardMember = memberId => {
-    const { currentBoardMembers } = this.state
+    const { cardAssignee } = this.state
     this.setState({
-      currentBoardMembers: currentBoardMembers.includes(memberId)
-      ? currentBoardMembers.filter(id => id !== memberId)
-      : [...currentBoardMembers, memberId]
+      cardAssignee: cardAssignee.includes(memberId)
+      ? cardAssignee.filter(id => id !== memberId)
+      : [...cardAssignee, memberId]
     })
   }
 
   saveCard = () => {
-    const { title, description, currentListId} = this.state
-    this.AddCard(title, description, currentListId)
-  }
-
-  AddCard = (title, description, listId) => {
-    trello.addCard(title, description, listId, (error, card) => {
-      if (error) {
-        console.log('Could not add card:', error)
-      } else {
-        console.log(card)
-        // this.setState({lists})
-      }
-    });
-  }
-
-  GetListsOnBoard = boardId => {
-    trello.getListsOnBoard(boardId, (error, lists) => {
-      if (error) {
-        console.log('Could not fetch lists:', error)
-      } else {
-        this.setState({lists})
-      }
-    });
-  }
-
-  GetMember = memberId => {
-    trello.getMember(memberId, (error, member) => {
-        let { boardMembers } = this.state
-        if (error) {
-          console.log('Could not fetch member:', error)
-        } else {
-          boardMembers.add(member)
-          this.setState({boardMembers})
-        }
-    });
-  }
-
-  GetBoards = () => {
-      trello.getBoards('me', (error, boards) => {
-          if (error) {
-              console.log('Could not fetch boards:', error)
-          } else {
-            this.setState({
-              boards: boards.filter(board => !board.closed && !board.idOrganization)
-            })
-            this.onBoardChange("5c0e5da5f0d45186648e19d5")
-            console.log(boards.filter(board => board.id === this.state.currentBoardId)[0])
-          }
-      });
+    const { title, description, position, currentListId} = this.state
+    trello.addCardWithExtraParams(
+      title, 
+      {
+        desc: description,
+        pos: position
+      }, 
+      currentListId
+    ).then(card => console.log(card))
   }
 
   render() {
@@ -143,7 +120,7 @@ class App extends Component {
       position,
       currentLabels,
       boardMembers,
-      currentBoardMembers
+      cardAssignee
     } = this.state
 
     return (
@@ -247,7 +224,7 @@ class App extends Component {
                         this.onToggleBoardMember(member.id)
                       }}
                       style={{
-                        filter: currentBoardMembers
+                        filter: cardAssignee
                           .some(id => member.id === id)
                           ? 'none'
                           : 'grayscale(100%) contrast(50%) brightness(130%)'
