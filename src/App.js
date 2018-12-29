@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Trello from 'trello'
-import { Input, Select, Radio, Form, Row, Col, Icon, Tag, Avatar } from 'antd'
+import { Input, Select, Radio, Button, Form, Row, Col, Icon, Tag, Avatar } from 'antd'
 const { TextArea } = Input
 const { Option } = Select
 const { Group } = Radio
@@ -18,8 +18,13 @@ class App extends Component {
     super(props)
 
     this.state = {
-      currentBoardId: "",
       boards: [],
+      currentBoardId: undefined,
+      lists: [],
+      currentListId: undefined,
+      title: document.title,
+      position: 'top',
+      description: '',
       link: window.location.href,
       currentLabels: new Set(),
       boardMembers: new Set(),
@@ -28,6 +33,16 @@ class App extends Component {
   }
   
   componentDidMount = () => this.GetBoards()
+
+  onLinkChange = link => this.setState({link})
+
+  onDescriptionChange = description => this.setState({description})
+  
+  onTitleChange = title => this.setState({title})
+  
+  onPositionChange = position => this.setState({position})
+
+  onListChange = listId => this.setState({currentListId: listId})
 
   onBoardChange = id => {
     let { boardMembers } = this.state
@@ -39,11 +54,12 @@ class App extends Component {
     })
     boards
       .filter(board => board.id === id)
-      .map(board => 
-        board.memberships.map(member => 
+      .map(board => {
+        this.GetListsOnBoard(board.id)
+        return board.memberships.map(member => 
           this.GetMember(member.idMember)
         )
-      )
+      })
   }
   
   onLabelChange = (label, checked) => {
@@ -61,9 +77,21 @@ class App extends Component {
       ? currentBoardMembers.filter(id => id !== memberId)
       : [...currentBoardMembers, memberId]
     })
+  }
 
+  saveCard = () => {
     console.log(this.state)
   }
+
+  GetListsOnBoard = boardId => {
+    trello.getListsOnBoard(boardId, (error, lists) => {
+      if (error) {
+        console.log('Could not fetch lists:', error)
+      } else {
+        this.setState({lists})
+      }
+  });
+}
 
   GetMember = memberId => {
     trello.getMember(memberId, (error, member) => {
@@ -71,7 +99,6 @@ class App extends Component {
         if (error) {
           console.log('Could not fetch member:', error)
         } else {
-          console.log(member)
           boardMembers.add(member)
           this.setState({boardMembers})
         }
@@ -96,6 +123,12 @@ class App extends Component {
     const { 
       boards,
       currentBoardId,
+      lists,
+      currentListId,
+      link,
+      title,
+      description,
+      position,
       currentLabels,
       boardMembers,
       currentBoardMembers
@@ -107,30 +140,66 @@ class App extends Component {
           <Col span={22}>
             <Form layout="vertical" onSubmit={this.handleSubmit}>
               <Form.Item>
-                <TextArea placeholder="Card title" autosize={{ minRows: 1 }} />
+                <TextArea 
+                  placeholder="Card title" 
+                  autosize={{ minRows: 1 }}
+                  value={title}
+                  onChange={e => this.onTitleChange(e.target.value)}
+                />
               </Form.Item>
               
               <Form.Item>
-                <Input placeholder="Link" addonAfter={<Icon type="link" />} />
+                <Input 
+                  placeholder="Link" 
+                  addonAfter={<Icon type="link" />}
+                  value={link}
+                  onChange={e => this.onLinkChange(e.target.value)}
+                />
               </Form.Item>
               
               <Form.Item>
-                <TextArea placeholder="Card description" autosize={{ minRows: 1 }} />
+                <TextArea 
+                  placeholder="Card description" 
+                  autosize={{ minRows: 2 }}
+                  value={description}
+                  onChange={e => this.onDescriptionChange(e.target.value)}
+                />
               </Form.Item>
 
               <Form.Item>
-                <Select value={currentBoardId} onChange={this.onBoardChange}>
+                <Select 
+                  value={currentBoardId}
+                  onChange={this.onBoardChange}
+                  placeholder="Select a board"
+                >
                   {boards.map(
                     board => 
                       <Option value={board.id} key={board.id}>{board.name}</Option>
                   )}
                 </Select>
               </Form.Item>
+
+              <Form.Item>
+                <Select 
+                  value={currentListId}
+                  onChange={this.onListChange}
+                  placeholder="Select a list"
+                >
+                  {lists.map(
+                    list => 
+                      <Option value={list.id} key={list.id}>{list.name}</Option>
+                  )}
+                </Select>
+              </Form.Item>
               
               <Form.Item>
-                <Group defaultValue="a" buttonStyle="solid">
-                  <Radio.Button value="a">Top</Radio.Button>
-                  <Radio.Button value="b">Bottom</Radio.Button>
+                <Group 
+                  value={position}
+                  buttonStyle="solid"
+                  onChange={e => this.onPositionChange(e.target.value)}
+                >
+                  <Radio.Button value="top">Top</Radio.Button>
+                  <Radio.Button value="bottom">Bottom</Radio.Button>
                 </Group>
               </Form.Item>
 
@@ -169,10 +238,15 @@ class App extends Component {
                         filter: currentBoardMembers
                           .some(id => member.id === id)
                           ? 'none'
-                          : 'grayscale(100%) contrast(50%) brightness(150%)'
-                        , 
+                          : 'grayscale(100%) contrast(50%) brightness(130%)'
+                        ,
                         cursor: 'pointer'}}
                     />)}
+              </Form.Item>
+              
+              <Form.Item>
+                <Button type="primary" onClick={this.saveCard}>Save</Button>
+                {/* <Button>Cancel</Button> */}
               </Form.Item>
             </Form>
           </Col>
