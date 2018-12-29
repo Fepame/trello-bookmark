@@ -80,7 +80,19 @@ class App extends Component {
   }
 
   saveCard = () => {
-    console.log(this.state)
+    const { title, description, currentListId} = this.state
+    this.AddCard(title, description, currentListId)
+  }
+
+  AddCard = (title, description, listId) => {
+    trello.addCard(title, description, listId, (error, card) => {
+      if (error) {
+        console.log('Could not add card:', error)
+      } else {
+        console.log(card)
+        // this.setState({lists})
+      }
+    });
   }
 
   GetListsOnBoard = boardId => {
@@ -90,8 +102,8 @@ class App extends Component {
       } else {
         this.setState({lists})
       }
-  });
-}
+    });
+  }
 
   GetMember = memberId => {
     trello.getMember(memberId, (error, member) => {
@@ -113,7 +125,7 @@ class App extends Component {
             this.setState({
               boards: boards.filter(board => !board.closed && !board.idOrganization)
             })
-            this.onBoardChange("5ba3f5c0a3adf352ead8d4dd")
+            this.onBoardChange("5c0e5da5f0d45186648e19d5")
             console.log(boards.filter(board => board.id === this.state.currentBoardId)[0])
           }
       });
