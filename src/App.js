@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Trello from 'trello'
-import { Input, Select, Radio, Form, Row, Col, Icon, Tag } from 'antd'
+import { Input, Select, Radio, Form, Row, Col, Icon, Tag, Avatar } from 'antd'
 const { TextArea } = Input
 const { Option } = Select
 const { Group } = Radio
@@ -11,27 +11,57 @@ const trello = new Trello(
   "5e410c1e8fc1c57aa6a3c4378a313131fd46977a19c39d53852698340fbbccc8" // user token
 );
 
+const getAvatarURL = hash => `http://trello-avatars.s3.amazonaws.com/${hash}/170.png`
+
 class App extends Component {
   constructor(props) {
     super(props)
 
     this.state = {
-      currentBoardId: "5ba3f5c0a3adf352ead8d4dd",
+      currentBoardId: "",
       boards: [],
-      currentLabels: new Set()
+      currentLabels: new Set(),
+      avatarURLs: new Set()
     }
   }
   
   componentDidMount = () => this.GetBoards()
 
-  onBoardChange = id => this.setState({currentBoardId: id})
+  onBoardChange = id => {
+    let { avatarURLs } = this.state
+    const { boards } = this.state
+    avatarURLs.clear()
+    this.setState({
+      currentBoardId: id,
+      avatarURLs
+    })
+    boards
+      .filter(board => board.id === id)
+      .map(board => 
+        board.memberships.map(member => 
+          this.GetMember(member.idMember)
+        )
+      )
+  }
   
   onLabelChange = (label, checked) => {
-    let currentLabels = this.state.currentLabels
+    let { currentLabels } = this.state
     checked
     ? currentLabels.add(label)
     : currentLabels.delete(label)
     this.setState({currentLabels})
+  }
+
+  GetMember = memberId => {
+    trello.getMember(memberId, (error, member) => {
+        let { avatarURLs } = this.state
+        if (error) {
+          console.log('Could not fetch member:', error)
+        } else {
+          avatarURLs.add(getAvatarURL(member.avatarHash))
+          this.setState({avatarURLs})
+        }
+    });
   }
 
   GetBoards = () => {
@@ -39,16 +69,17 @@ class App extends Component {
           if (error) {
               console.log('Could not fetch boards:', error)
           } else {
-            console.log(boards.filter(board => board.id === this.state.currentBoardId)[0])
             this.setState({
               boards: boards.filter(board => !board.closed && !board.idOrganization)
             })
+            this.onBoardChange("5ba3f5c0a3adf352ead8d4dd")
+            console.log(boards.filter(board => board.id === this.state.currentBoardId)[0])
           }
       });
   }
 
   render() {
-    const { boards, currentBoardId, currentLabels } = this.state
+    const { boards, currentBoardId, currentLabels, avatarURLs } = this.state
     return (
       <div className="App">
         <Row type="flex" justify="space-around">
@@ -74,9 +105,16 @@ class App extends Component {
                   )}
                 </Select>
               </Form.Item>
+              
+              <Form.Item>
+                <Group defaultValue="a" buttonStyle="solid">
+                  <Radio.Button value="a">Top</Radio.Button>
+                  <Radio.Button value="b">Bottom</Radio.Button>
+                </Group>
+              </Form.Item>
 
               <Form.Item>
-                {boards.length && boards
+                {!!boards.length && boards
                   .filter(board => board.id === currentBoardId)
                   .map(
                     board => 
@@ -97,10 +135,8 @@ class App extends Component {
               </Form.Item>
 
               <Form.Item>
-                <Group defaultValue="a" buttonStyle="solid">
-                  <Radio.Button value="a">Top</Radio.Button>
-                  <Radio.Button value="b">Bottom</Radio.Button>
-                </Group>
+                {!!avatarURLs.size && 
+                  [...avatarURLs].map(url => <Avatar src={url} key={url} />)}
               </Form.Item>
             </Form>
           </Col>
