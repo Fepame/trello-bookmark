@@ -1,3 +1,4 @@
+/* eslint-disable no-loop-func */
 import React, { Component } from 'react'
 import Trello from 'trello'
 import { 
@@ -41,11 +42,13 @@ class App extends Component {
       labels: [],
       selectedLabels: [],
       boardMembers: [],
-      cardAssignee: []
+      cardAssignee: [],
+      imageSrc: ''
     }
   }
   
-  componentDidMount = () => 
+  componentDidMount = () => {
+    document.onpaste = e => this.onPaste(e)
     trello
       .getBoards('me')
       .then(boards => {
@@ -57,7 +60,29 @@ class App extends Component {
         this.onBoardChange("5c0e5da5f0d45186648e19d5")
         console.log(boards.filter(board => board.id === this.state.currentBoardId)[0])
       })
+  }
 
+  onPaste = e => {
+    const self = this
+    const items = e.clipboardData.items;
+
+    [...items].map(item => {
+      if (item.kind === 'file') {
+        const blob = item.getAsFile()
+        const reader = new FileReader()
+        reader.onload = e => {
+          const imageStr = e.target.result
+          if(/base64/.test(imageStr)) {
+            self.setState({
+              imageSrc: imageStr
+            })
+          }
+        }
+        reader.readAsDataURL(blob)
+      }
+      return ""
+    })
+  }
 
   onLinkChange = link => this.setState({link})
 
@@ -69,16 +94,16 @@ class App extends Component {
 
   onListChange = listId => this.setState({currentListId: listId})
 
-  clearState = () => new Promise(resolve => this.setState({
+  clearState = callback => this.setState({
     boardMembers: [],
     lists: [],
     labels: [],
     selectedLabels: [],
     cardAssignee: []
-  }, () => resolve()))
+  }, callback)
 
   onBoardChange = boardId => {
-    this.clearState().then(() => {
+    this.clearState(() => {
       const { boards } = this.state
       this.setState({currentBoardId: boardId})
   
@@ -167,6 +192,7 @@ class App extends Component {
       description,
       position,
       labels,
+      imageSrc,
       selectedLabels,
       boardMembers,
       cardAssignee
@@ -276,6 +302,14 @@ class App extends Component {
                         ,
                         cursor: 'pointer'}}
                     />)}
+              </Form.Item>
+              
+              <Form.Item>
+                {
+                  imageSrc
+                  ? <img src={imageSrc} width={100} height={100} alt="preview" />
+                  : <Icon type="eye" />
+                }
               </Form.Item>
               
               <Form.Item>
