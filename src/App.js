@@ -1,5 +1,6 @@
 /* eslint-disable no-loop-func */
 import React, { Component } from 'react'
+import { buildURL, getAvatarURL, attachBase64ImageToCard } from "./services/trello";
 import { 
   Input,
   Select,
@@ -18,19 +19,6 @@ import base64sample from "./services/base64";
 const { TextArea } = Input
 const { Option } = Select
 const { Group } = Radio
-
-const buildURL = (link, query) => {
-  const url = new URL(`https://api.trello.com/1/${link}`)
-  url.search = new URLSearchParams(
-    Object.assign({
-      key: process.env.REACT_APP_TRELLO_API_KEY,
-      token: process.env.REACT_APP_TRELLO_TOKEN
-    }, query)
-  )
-  return url
-}
-
-const getAvatarURL = hash => `http://trello-avatars.s3.amazonaws.com/${hash}/170.png`
 
 class App extends Component {
   constructor(props) {
@@ -165,6 +153,7 @@ class App extends Component {
       description,
       position,
       link,
+      imageSrc,
       currentListId,
       selectedLabels,
       cardAssignee
@@ -188,16 +177,16 @@ class App extends Component {
     )
     .then(response => response.json())
     .then(card => {
-      console.log(card)
-      // if(link) {
-      //   trello
-      //     .addAttachmentToCard(card.id, {
-      //       imageData: base64sample
-      //     })
-      //     .then(card => message.success("Card with link has been added"))
-      // } else {
-      //   message.success("Card has been added")
-      // }
+      if(imageSrc || link) {
+        attachBase64ImageToCard(
+          card.id,
+          imageSrc,
+          null,
+          message.success("Card with attachment has been added")
+        )
+      } else {
+        message.success("Card has been added")
+      }
     })
   }
 
