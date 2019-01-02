@@ -1,23 +1,22 @@
 /* eslint-disable no-loop-func */
 import React, { Component } from 'react'
-import { buildURL, getAvatarURL, generateBlob } from "./services/trello";
-import { 
-  Input,
-  Select,
-  Radio,
+import { buildURL, generateBlob } from "./services/trello"
+import {
   message,
   Button,
   Form,
   Row,
   Col,
-  Icon,
-  Tag,
-  Avatar
+  Icon
 } from 'antd'
-import convertCssColorNameToHex from 'convert-css-color-name-to-hex'
-const { TextArea } = Input
-const { Option } = Select
-const { Group } = Radio
+import Title from "./components/Title"
+import Description from "./components/Description"
+import Link from "./components/Link"
+import Board from "./components/Board"
+import Avatar from "./components/Avatar"
+import Tag from "./components/Tag"
+import Position from "./components/Position"
+import List from "./components/List"
 
 class App extends Component {
   constructor(props) {
@@ -244,106 +243,59 @@ class App extends Component {
           <Col span={22}>
             <Form layout="vertical" onSubmit={this.handleSubmit}>
               <Form.Item>
-                <TextArea 
-                  placeholder="Card title" 
-                  autosize={{ minRows: 1 }}
-                  value={title}
-                  onChange={e => this.onTitleChange(e.target.value)}
-                />
+                <Title title={title} onTitleChange={this.onTitleChange} />
               </Form.Item>
-              
+
               <Form.Item>
-                <Input 
-                  placeholder="Link" 
-                  addonAfter={<Icon type="link" />}
-                  value={link}
-                  onChange={e => this.onLinkChange(e.target.value)}
-                />
+                <Link link={link} onLinkChange={this.onLinkChange} />                
               </Form.Item>
-              
+
               <Form.Item>
-                <TextArea 
-                  placeholder="Card description" 
-                  autosize={{ minRows: 2 }}
-                  value={description}
-                  onChange={e => this.onDescriptionChange(e.target.value)}
+                <Description
+                  title={description}
+                  onDescriptionChange={this.onDescriptionChange}
                 />
               </Form.Item>
 
               <Form.Item>
-                <Select 
-                  value={currentBoardId}
-                  onChange={this.onBoardChange}
-                  placeholder="Select a board"
-                >
-                  {boards.map(
-                    board => 
-                      <Option value={board.id} key={board.id}>{board.name}</Option>
-                  )}
-                </Select>
+                <Board
+                  currentBoardId={currentBoardId}
+                  onBoardChange={this.onBoardChange}
+                  boards={boards}
+                />
               </Form.Item>
 
               <Form.Item>
-                <Select 
-                  value={currentListId}
-                  onChange={this.onListChange}
-                  placeholder="Select a list"
-                >
-                  {lists.map(
-                    list => 
-                      <Option value={list.id} key={list.id}>{list.name}</Option>
-                  )}
-                </Select>
-              </Form.Item>
-              
-              <Form.Item>
-                <Group 
-                  value={position}
-                  buttonStyle="solid"
-                  onChange={e => this.onPositionChange(e.target.value)}
-                >
-                  <Radio.Button value="top">Top</Radio.Button>
-                  <Radio.Button value="bottom">Bottom</Radio.Button>
-                </Group>
-              </Form.Item>
-              {/* convertCssColorNameToHex('aliceblue') */}
-              <Form.Item>
-                {!!labels.length 
-                  && labels.map(
-                    label =>
-                      <Tag
-                        color={convertCssColorNameToHex(label.color)}
-                        key={label.id}
-                        onClick={e => this.onLabelChange(label.id)}
-                        style={{
-                          filter: selectedLabels.includes(label.id)
-                            ? 'none'
-                            : 'grayscale(30%) opacity(90%)'
-                        }}
-                      >{label.name || String.fromCharCode(160) }</Tag>
-                  )}
+                <List
+                  currentListId={currentListId}
+                  onListChange={this.onListChange}
+                  lists={lists}
+                />
               </Form.Item>
 
               <Form.Item>
-                {!!boardMembers.length && 
-                  boardMembers.map(member => 
-                    <Avatar 
-                      src={getAvatarURL(member.avatarHash)} 
-                      key={member.id} 
-                      size={64}
-                      onClick={e => {
-                        this.onToggleCardAssignee(member.id)
-                      }}
-                      style={{
-                        filter: cardAssignee
-                          .some(id => member.id === id)
-                          ? 'none'
-                          : 'grayscale(100%) contrast(50%) brightness(130%)'
-                        ,
-                        cursor: 'pointer'}}
-                    />)}
+                <Position
+                  position={position}
+                  onPositionChange={this.onPositionChange}
+                />
               </Form.Item>
-              
+
+              <Form.Item>
+                <Tag
+                  labels={labels}
+                  selectedLabels={selectedLabels}
+                  onLabelChange={this.onLabelChange}
+                />
+              </Form.Item>
+
+              <Form.Item>
+                <Avatar
+                  boardMembers={boardMembers}
+                  cardAssignee={cardAssignee}
+                  onToggleCardAssignee={this.onToggleCardAssignee}
+                />
+              </Form.Item>
+
               <Form.Item>
                 {
                   imageSrc
@@ -351,7 +303,7 @@ class App extends Component {
                   : <Icon type="eye" />
                 }
               </Form.Item>
-              
+
               <Form.Item>
                 <Button type="primary" onClick={this.saveCard}>Save</Button>
                 {/* <Button>Cancel</Button> */}
