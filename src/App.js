@@ -1,6 +1,6 @@
 /* eslint-disable no-loop-func */
 import React, { Component } from 'react'
-import { buildURL, getAvatarURL, attachBase64ImageToCard } from "./services/trello";
+import { buildURL, getAvatarURL, generateBlob } from "./services/trello";
 import { 
   Input,
   Select,
@@ -178,12 +178,25 @@ class App extends Component {
     .then(response => response.json())
     .then(card => {
       if(imageSrc || link) {
-        attachBase64ImageToCard(
-          card.id,
-          imageSrc,
-          null,
-          message.success("Card with attachment has been added")
+        const formData = new FormData();
+        formData.append(
+          "file",
+          generateBlob(imageSrc),
+          "trello-capture-screenshot.jpg"
         )
+        
+        fetch(
+          buildURL(`cards/${card.id}/attachments`), {
+            method: 'POST',
+            body: formData
+          }
+        )
+        .then(response => response.json())
+        .then(data => {
+          message.success("Card with attachment has been added")
+        })
+
+          
       } else {
         message.success("Card has been added")
       }
