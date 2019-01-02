@@ -15,7 +15,6 @@ import {
   Avatar
 } from 'antd'
 import convertCssColorNameToHex from 'convert-css-color-name-to-hex'
-import base64sample from "./services/base64";
 const { TextArea } = Input
 const { Option } = Select
 const { Group } = Radio
@@ -53,7 +52,7 @@ class App extends Component {
         // 5ba3f5c0a3adf352ead8d4dd - angie
         // 5c0e5da5f0d45186648e19d5 - big short
         this.onBoardChange("5c0e5da5f0d45186648e19d5")
-        console.log(boards.filter(board => board.id === this.state.currentBoardId)[0])
+        // console.log(boards.filter(board => board.id === this.state.currentBoardId)[0])
       })
   }
 
