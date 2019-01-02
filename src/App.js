@@ -1,6 +1,5 @@
 /* eslint-disable no-loop-func */
 import React, { Component } from 'react'
-import Trello from 'trello'
 import { 
   Input,
   Select,
@@ -15,14 +14,21 @@ import {
   Avatar
 } from 'antd'
 import convertCssColorNameToHex from 'convert-css-color-name-to-hex'
+import base64sample from "./services/base64";
 const { TextArea } = Input
 const { Option } = Select
 const { Group } = Radio
 
-const trello = new Trello(
-  process.env.REACT_APP_TRELLO_API_KEY,
-  process.env.REACT_APP_TRELLO_TOKEN
-);
+const buildURL = (link, query) => {
+  const url = new URL(`https://api.trello.com/1/${link}`)
+  url.search = new URLSearchParams(
+    Object.assign({
+      key: process.env.REACT_APP_TRELLO_API_KEY,
+      token: process.env.REACT_APP_TRELLO_TOKEN
+    }, query)
+  )
+  return url
+}
 
 const getAvatarURL = hash => `http://trello-avatars.s3.amazonaws.com/${hash}/170.png`
 
@@ -49,8 +55,9 @@ class App extends Component {
   
   componentDidMount = () => {
     document.onpaste = e => this.onPaste(e)
-    trello
-      .getBoards('me')
+
+    fetch(buildURL('members/me/boards'))
+      .then(response => response.json())
       .then(boards => {
         this.setState({
           boards: boards.filter(board => !board.closed && !board.idOrganization)
@@ -110,19 +117,20 @@ class App extends Component {
       boards
         .filter(board => board.id === boardId)
         .map(board => {
-          trello
-            .getListsOnBoard(board.id)
+          fetch(buildURL(`boards/${board.id}/lists`))
+            .then(response => response.json())
             .then(lists => this.setState({
               lists,
               currentListId: lists[0].id
             }))
-          
-          trello
-            .getLabelsForBoard(boardId)
+
+          fetch(buildURL(`boards/${board.id}/labels`))
+            .then(response => response.json())
             .then(labels => this.setState({labels}))
-  
-          return board.memberships.map(member => trello
-              .getMember(member.idMember)
+
+          return board.memberships.map(
+            member => fetch(buildURL(`member/${member.idMember}`))
+              .then(response => response.json())
               .then(boardMember => {
                 const { boardMembers } = this.state
                 this.setState({
@@ -161,23 +169,35 @@ class App extends Component {
       selectedLabels,
       cardAssignee
     } = this.state
-    trello.addCardWithExtraParams(
-      title, 
+
+    fetch(
+      buildURL(
+        'cards',
+        {
+          name: title, 
+          desc: description,
+          pos: position,
+          idLabels: selectedLabels.join(','),
+          idMembers: cardAssignee.join(','),
+          idList: currentListId
+        }
+      ),
       {
-        desc: description,
-        pos: position,
-        idLabels: selectedLabels.join(','),
-        idMembers: cardAssignee.join(',')
-      }, 
-      currentListId
-    ).then(card => {
-      if(link) {
-        trello
-          .addAttachmentToCard(card.id, link)
-          .then(card => message.success("Card with link has been added"))
-      } else {
-        message.success("Card has been added")
+        method: 'POST'
       }
+    )
+    .then(response => response.json())
+    .then(card => {
+      console.log(card)
+      // if(link) {
+      //   trello
+      //     .addAttachmentToCard(card.id, {
+      //       imageData: base64sample
+      //     })
+      //     .then(card => message.success("Card with link has been added"))
+      // } else {
+      //   message.success("Card has been added")
+      // }
     })
   }
 

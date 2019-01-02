@@ -9,8 +9,7 @@
     "craco-antd": "^1.9.3",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
-    "react-scripts": "2.1.1",
-    "trello": "^0.9.1"
+    "react-scripts": "2.1.1"
   },
   "scripts": {
     "start": "craco start",
