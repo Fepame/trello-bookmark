@@ -66,10 +66,10 @@ class App extends Component {
         const blob = item.getAsFile()
         const reader = new FileReader()
         reader.onload = e => {
-          const imageStr = e.target.result
-          if(/base64/.test(imageStr)) {
+          const imageSrc = e.target.result
+          if(/base64/.test(imageSrc)) {
             self.setState({
-              imageSrc: imageStr
+              imageSrc: imageSrc
             })
           }
         }
@@ -177,30 +177,61 @@ class App extends Component {
     )
     .then(response => response.json())
     .then(card => {
-      if(imageSrc || link) {
-        const formData = new FormData();
-        formData.append(
-          "file",
-          generateBlob(imageSrc),
-          "trello-capture-screenshot.jpg"
+      const cardId = card.id
+      const successMsg = message.success("Card has been added")
+      if(imageSrc && link) {
+        this.uploadLink(
+          cardId,
+          this.uploadImage(
+            cardId,
+            successMsg
+          )
         )
-        
-        fetch(
-          buildURL(`cards/${card.id}/attachments`), {
-            method: 'POST',
-            body: formData
-          }
-        )
-        .then(response => response.json())
-        .then(data => {
-          message.success("Card with attachment has been added")
-        })
-
-          
+      } else if (imageSrc) {
+        this.uploadImage(cardId, successMsg)
+      } else if (link) {
+        this.uploadLink(cardId, successMsg)
       } else {
-        message.success("Card has been added")
+        successMsg()
       }
     })
+  }
+
+  uploadImage = (cardId, callback) => {
+    const formData = new FormData()
+    const { imageSrc } = this.state
+    formData.append(
+      "file",
+      generateBlob(imageSrc),
+      "trello-capture-screenshot.jpg"
+    )
+    
+    fetch(
+      buildURL(`cards/${cardId}/attachments`), {
+        method: 'POST',
+        body: formData
+      }
+    )
+    .then(response => response.json())
+    .then(callback)
+  }
+
+  uploadLink = (cardId, callback) => {
+    const formData = new FormData()
+    const { link } = this.state
+    formData.append(
+      "url",
+      link
+    )
+    
+    fetch(
+      buildURL(`cards/${cardId}/attachments`), {
+        method: 'POST',
+        body: formData
+      }
+    )
+    .then(response => response.json())
+    .then(callback)
   }
 
   render() {
