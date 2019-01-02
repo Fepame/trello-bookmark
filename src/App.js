@@ -180,49 +180,37 @@ class App extends Component {
       const cardId = card.id
       const successMsg = message.success("Card has been added")
       if(imageSrc && link) {
-        this.uploadLink(
+        this.addAttachment(
           cardId,
-          this.uploadImage(
+          'LINK',
+          this.addAttachment(
             cardId,
+            'IMAGE',
             successMsg
           )
         )
       } else if (imageSrc) {
-        this.uploadImage(cardId, successMsg)
+        this.addAttachment(cardId, 'IMAGE', successMsg)
       } else if (link) {
-        this.uploadLink(cardId, successMsg)
+        this.addAttachment(cardId, 'LINK', successMsg)
       } else {
         successMsg()
       }
     })
   }
 
-  uploadImage = (cardId, callback) => {
+  addAttachment = (cardId, attachmentType, callback) => {
     const formData = new FormData()
-    const { imageSrc } = this.state
-    formData.append(
-      "file",
-      generateBlob(imageSrc),
-      "trello-capture-screenshot.jpg"
-    )
-    
-    fetch(
-      buildURL(`cards/${cardId}/attachments`), {
-        method: 'POST',
-        body: formData
-      }
-    )
-    .then(response => response.json())
-    .then(callback)
-  }
-
-  uploadLink = (cardId, callback) => {
-    const formData = new FormData()
-    const { link } = this.state
-    formData.append(
-      "url",
-      link
-    )
+    const { imageSrc, link } = this.state
+    if (attachmentType === 'LINK') {
+      formData.append("url", link)
+    } else if (attachmentType === 'IMAGE') {
+      formData.append(
+        "file",
+        generateBlob(imageSrc),
+        "trello-capture-screenshot.jpg"
+      )
+    }
     
     fetch(
       buildURL(`cards/${cardId}/attachments`), {
