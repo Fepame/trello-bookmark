@@ -1,6 +1,5 @@
 import React from 'react'
 import { Tag, Select } from 'antd'
-import convertCssColorNameToHex from 'convert-css-color-name-to-hex'
 import { hexColor } from "../services/utils";
 import PropTypes from 'prop-types'
 const { Option } = Select

@@ -8,6 +8,7 @@ const List = ({ currentListId, onListChange, lists }) => (
     value={currentListId}
     onChange={onListChange}
     placeholder="Select a list"
+    style={{width: '100%'}}
   >
     {lists.map(
       list => 

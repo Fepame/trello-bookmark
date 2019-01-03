@@ -15,6 +15,7 @@ import {
   Button,
   Form,
   Row,
+  Divider,
   Col,
   Icon
 } from 'antd'
@@ -192,7 +193,33 @@ class App extends Component {
     return (
       <div className="App">
         <Row type="flex" justify="space-around">
-          <Col span={22}>
+          <Col span={11}>
+            <Divider>Card location</Divider>
+            <Row>
+              <Col span={7} offset={1}>
+                <Board
+                  currentBoardId={currentBoardId}
+                  onBoardChange={this.onBoardChange}
+                  boards={boards}
+                />
+              </Col>
+              <Col span={7} offset={1}>
+                <List
+                  currentListId={currentListId}
+                  onListChange={this.onListChange}
+                  lists={lists}
+                />
+              </Col>
+              <Col span={7} offset={1}>
+                <Position
+                  position={position}
+                  onPositionChange={this.onPositionChange}
+                />
+              </Col>
+            </Row>
+
+            <Divider>Card details</Divider>
+
             <Form layout="vertical" onSubmit={this.handleSubmit}>
               <Form.Item>
                 <Title title={title} onTitleChange={this.onTitleChange} />
@@ -206,29 +233,6 @@ class App extends Component {
                 <Description
                   title={description}
                   onDescriptionChange={this.onDescriptionChange}
-                />
-              </Form.Item>
-
-              <Form.Item>
-                <Board
-                  currentBoardId={currentBoardId}
-                  onBoardChange={this.onBoardChange}
-                  boards={boards}
-                />
-              </Form.Item>
-
-              <Form.Item>
-                <List
-                  currentListId={currentListId}
-                  onListChange={this.onListChange}
-                  lists={lists}
-                />
-              </Form.Item>
-
-              <Form.Item>
-                <Position
-                  position={position}
-                  onPositionChange={this.onPositionChange}
                 />
               </Form.Item>
 

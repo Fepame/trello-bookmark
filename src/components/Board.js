@@ -8,6 +8,7 @@ const Board = ({ currentBoardId, onBoardChange, boards }) => (
     value={currentBoardId}
     onChange={onBoardChange}
     placeholder="Select a board"
+    style={{width: '100%'}}
   >
     {boards.map(
       board => 
