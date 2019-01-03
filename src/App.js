@@ -1,6 +1,15 @@
 /* eslint-disable no-loop-func */
 import React, { Component } from 'react'
-import { buildURL, generateBlob } from "./services/trello"
+import { buildURL } from "./services/trello"
+import { 
+  getCardAssignee,
+  uploadAttachment,
+  getSelectedLabels,
+  getImageSrc,
+  fetchLabels,
+  fetchLists,
+  fetchMember
+} from './services/methods'
 import {
   message,
   Button,
@@ -55,27 +64,7 @@ class App extends Component {
       })
   }
 
-  onPaste = e => {
-    const self = this
-    const items = e.clipboardData.items;
-
-    [...items].map(item => {
-      if (item.kind === 'file') {
-        const blob = item.getAsFile()
-        const reader = new FileReader()
-        reader.onload = e => {
-          const imageSrc = e.target.result
-          if(/base64/.test(imageSrc)) {
-            self.setState({
-              imageSrc: imageSrc
-            })
-          }
-        }
-        reader.readAsDataURL(blob)
-      }
-      return ""
-    })
-  }
+  onPaste = e => getImageSrc(e, imageSrc => this.setState({imageSrc: imageSrc}))
 
   onLinkChange = link => this.setState({link})
 
@@ -95,6 +84,10 @@ class App extends Component {
     cardAssignee: []
   }, callback)
 
+  onToggleCardAssignee = memberId => this.setState({
+    cardAssignee: getCardAssignee(this.state.cardAssignee, memberId)
+  })
+
   onBoardChange = boardId => {
     this.clearState(() => {
       const { boards } = this.state
@@ -103,47 +96,24 @@ class App extends Component {
       boards
         .filter(board => board.id === boardId)
         .map(board => {
-          fetch(buildURL(`boards/${board.id}/lists`))
-            .then(response => response.json())
-            .then(lists => this.setState({
-              lists,
-              currentListId: lists[0].id
-            }))
-
-          fetch(buildURL(`boards/${board.id}/labels`))
-            .then(response => response.json())
-            .then(labels => this.setState({labels}))
+          fetchLists(board, lists => this.setState({
+            lists, currentListId: lists[0].id
+          }))
+          
+          fetchLabels(board, labels => this.setState({labels}))
 
           return board.memberships.map(
-            member => fetch(buildURL(`member/${member.idMember}`))
-              .then(response => response.json())
-              .then(boardMember => {
-                const { boardMembers } = this.state
-                this.setState({
-                  boardMembers: [...boardMembers, boardMember]
-                })}
-              ))
+            member => fetchMember(member, boardMember => this.setState({
+              boardMembers: [...this.state.boardMembers, boardMember]
+            }))
+          )
         })
     })
   }
   
-  onLabelChange = labelId => {
-    const { selectedLabels } = this.state
-    this.setState({
-      selectedLabels: selectedLabels.includes(labelId)
-        ? selectedLabels.filter(label => label !== labelId)
-        : [...selectedLabels, labelId]
-      })
-  }
-
-  onToggleCardAssignee = memberId => {
-    const { cardAssignee } = this.state
-    this.setState({
-      cardAssignee: cardAssignee.includes(memberId)
-      ? cardAssignee.filter(id => id !== memberId)
-      : [...cardAssignee, memberId]
-    })
-  }
+  onLabelChange = labelId => this.setState({
+    selectedLabels: getSelectedLabels(this.state.selectedLabels, labelId)
+  })
 
   saveCard = () => {
     const { 
@@ -198,26 +168,8 @@ class App extends Component {
   }
 
   addAttachment = (cardId, attachmentType, callback) => {
-    const formData = new FormData()
     const { imageSrc, link } = this.state
-    if (attachmentType === 'LINK') {
-      formData.append("url", link)
-    } else if (attachmentType === 'IMAGE') {
-      formData.append(
-        "file",
-        generateBlob(imageSrc),
-        "trello-capture-screenshot.jpg"
-      )
-    }
-    
-    fetch(
-      buildURL(`cards/${cardId}/attachments`), {
-        method: 'POST',
-        body: formData
-      }
-    )
-    .then(response => response.json())
-    .then(callback)
+    uploadAttachment(cardId, attachmentType, imageSrc, link, callback)
   }
 
   render() {
