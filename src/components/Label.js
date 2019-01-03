@@ -9,6 +9,7 @@ const LabelList = ({ labels, selectedLabels, onLabelChange }) =>
     mode="multiple"
     placeholder="Please select labels"
     onChange={onLabelChange}
+    style={{width: '100%'}}
   >
     {labels.map(
       label => <Option key={label.id} value={label.id}>

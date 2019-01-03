@@ -16,6 +16,7 @@ import {
   Form,
   Row,
   Divider,
+  Collapse,
   Col,
   Icon
 } from 'antd'
@@ -27,6 +28,7 @@ import Avatar from "./components/Avatar"
 import Label from "./components/Label"
 import Position from "./components/Position"
 import List from "./components/List"
+const { Panel } = Collapse
 
 class App extends Component {
   constructor(props) {
@@ -168,6 +170,8 @@ class App extends Component {
     })
   }
 
+  filledBackground = filled => filled ? '#e7f3ff' : 'none'
+
   addAttachment = (cardId, attachmentType, callback) => {
     const { imageSrc, link } = this.state
     uploadAttachment(cardId, attachmentType, imageSrc, link, callback)
@@ -220,51 +224,67 @@ class App extends Component {
 
             <Divider>Card details</Divider>
 
-            <Form layout="vertical" onSubmit={this.handleSubmit}>
-              <Form.Item>
-                <Title title={title} onTitleChange={this.onTitleChange} />
-              </Form.Item>
+            <Row>
+              <Col span={11}>
+                <Collapse bordered={false} accordion>
+                  <Panel header="Title" key="title" forceRender style={{
+                    background: this.filledBackground(title)
+                  }}>
+                    <Title title={title} onTitleChange={this.onTitleChange} />
+                  </Panel>
 
-              <Form.Item>
-                <Link link={link} onLinkChange={this.onLinkChange} />                
-              </Form.Item>
+                  <Panel header="Description" key="description" forceRender style={{
+                    background: this.filledBackground(description)
+                  }}>
+                    <Description
+                      description={description}
+                      onDescriptionChange={this.onDescriptionChange}
+                    />
+                  </Panel>
 
-              <Form.Item>
-                <Description
-                  title={description}
-                  onDescriptionChange={this.onDescriptionChange}
-                />
-              </Form.Item>
+                  <Panel header="Cover" key="cover" forceRender style={{
+                    background: this.filledBackground(imageSrc)
+                  }}>
+                    {
+                      imageSrc
+                      ? <img src={imageSrc} width={100} height={100} alt="preview" />
+                      : <Icon type="eye" />
+                    }
+                  </Panel>
+                </Collapse>
+              </Col>
+              <Col span={11} offset={2}>
+                <Collapse bordered={false} accordion>
+                  <Panel header="Link" key="link" forceRender style={{
+                    background: this.filledBackground(link)
+                  }}>
+                    <Link link={link} onLinkChange={this.onLinkChange} />
+                  </Panel>
 
-              <Form.Item>
-                <Label
-                  labels={labels}
-                  selectedLabels={selectedLabels}
-                  onLabelChange={this.onLabelChange}
-                />
-              </Form.Item>
+                  <Panel header="Labels" key="labels" forceRender style={{
+                    background: this.filledBackground(selectedLabels.length)
+                  }}>
+                    <Label
+                      labels={labels}
+                      selectedLabels={selectedLabels}
+                      onLabelChange={this.onLabelChange}
+                    />
+                  </Panel>
 
-              <Form.Item>
-                <Avatar
-                  boardMembers={boardMembers}
-                  cardAssignee={cardAssignee}
-                  onToggleCardAssignee={this.onToggleCardAssignee}
-                />
-              </Form.Item>
+                  <Panel header="Assignee" key="assignee" forceRender style={{
+                    background: this.filledBackground(cardAssignee.length)
+                  }}>
+                    <Avatar
+                      boardMembers={boardMembers}
+                      cardAssignee={cardAssignee}
+                      onToggleCardAssignee={this.onToggleCardAssignee}
+                    />
+                  </Panel>
+                </Collapse>
 
-              <Form.Item>
-                {
-                  imageSrc
-                  ? <img src={imageSrc} width={100} height={100} alt="preview" />
-                  : <Icon type="eye" />
-                }
-              </Form.Item>
-
-              <Form.Item>
+              </Col>
+            </Row>
                 <Button type="primary" onClick={this.saveCard}>Save</Button>
-                {/* <Button>Cancel</Button> */}
-              </Form.Item>
-            </Form>
           </Col>
         </Row>
       </div>
