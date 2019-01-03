@@ -1,4 +1,4 @@
-import { buildURL, generateBlob } from "../services/trello"
+import { buildURL, generateBlob } from "./utils"
 
 export const getCardAssignee = (cardAssignee, memberId) => 
   cardAssignee.includes(memberId)

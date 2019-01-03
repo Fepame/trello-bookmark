@@ -17,7 +17,7 @@ const Board = ({ currentBoardId, onBoardChange, boards }) => (
 )
 
 Board.propTypes = {
-  currentBoardId: PropTypes.string.isRequired,
+  currentBoardId: PropTypes.string,
   onBoardChange: PropTypes.func.isRequired,
   boards: PropTypes.arrayOf(PropTypes.object).isRequired
 }

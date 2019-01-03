@@ -17,7 +17,7 @@ const List = ({ currentListId, onListChange, lists }) => (
 )
 
 List.propTypes = {
-  currentBoardId: PropTypes.string.isRequired,
+  currentBoardId: PropTypes.string,
   onListChange: PropTypes.func.isRequired,
   lists: PropTypes.arrayOf(PropTypes.object).isRequired
 }

@@ -1,6 +1,6 @@
 /* eslint-disable no-loop-func */
 import React, { Component } from 'react'
-import { buildURL } from "./services/trello"
+import { buildURL } from "./services/utils"
 import { 
   getCardAssignee,
   uploadAttachment,
@@ -23,7 +23,7 @@ import Description from "./components/Description"
 import Link from "./components/Link"
 import Board from "./components/Board"
 import Avatar from "./components/Avatar"
-import Tag from "./components/Tag"
+import Label from "./components/Label"
 import Position from "./components/Position"
 import List from "./components/List"
 
@@ -233,7 +233,7 @@ class App extends Component {
               </Form.Item>
 
               <Form.Item>
-                <Tag
+                <Label
                   labels={labels}
                   selectedLabels={selectedLabels}
                   onLabelChange={this.onLabelChange}

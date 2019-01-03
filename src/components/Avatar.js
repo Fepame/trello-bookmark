@@ -1,6 +1,6 @@
 import React from 'react'
 import { Avatar } from 'antd'
-import { getAvatarURL } from "../services/trello"
+import { getAvatarURL } from "../services/utils"
 import PropTypes from 'prop-types'
 
 const AvatarList = ({ boardMembers, cardAssignee, onToggleCardAssignee }) => 
