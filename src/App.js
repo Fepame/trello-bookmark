@@ -27,6 +27,7 @@ import Link from "./components/Link"
 import DueTime from "./components/DueTime"
 import DueDate from "./components/DueDate"
 import Board from "./components/Board"
+import Cover from "./components/Cover"
 import Avatar from "./components/Avatar"
 import Label from "./components/Label"
 import Position from "./components/Position"
@@ -72,7 +73,7 @@ class App extends Component {
       })
   }
 
-  onPaste = e => getImageSrc(e, imageSrc => this.setState({imageSrc: imageSrc}))
+  onPaste = e => getImageSrc(e, imageSrc => this.setState({imageSrc}))
 
   onLinkChange = link => this.setState({link})
 
@@ -85,6 +86,8 @@ class App extends Component {
   onChangeDueTime = dueTime => this.setState({dueTime})
   
   onChangeDueDate = dueDate => this.setState({dueDate})
+
+  onRemoveCover = () => this.setState({imageSrc: ''})
   
   onListChange = listId => this.setState({currentListId: listId})
 
@@ -262,11 +265,7 @@ class App extends Component {
                   <Panel header="Cover" key="cover" forceRender style={{
                     background: this.filledBackground(imageSrc)
                   }}>
-                    {
-                      imageSrc
-                      ? <img src={imageSrc} width={100} height={100} alt="preview" />
-                      : <Icon type="eye" />
-                    }
+                    <Cover imageSrc={imageSrc} onRemoveCover={this.onRemoveCover} />
                   </Panel>
                 </Collapse>
               </Col>
