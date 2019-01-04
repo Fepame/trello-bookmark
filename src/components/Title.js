@@ -7,13 +7,14 @@ const { TextArea } = Input
 const Title = ({ title, onTitleChange }) => (
   <TextArea 
     placeholder="Card title" 
-    autosize={{ minRows: 1 }}
+    autosize={{ minRows: 1, maxRows: 1 }}
     value={title}
     onChange={e => onTitleChange(e.target.value)}
   />
 )
 
 Title.propTypes = {
+  title: PropTypes.string,
   onTitleChange: PropTypes.func.isRequired
 }
 

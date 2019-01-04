@@ -6,6 +6,7 @@
     "@craco/craco": "^3.2.3",
     "antd": "^3.11.6",
     "craco-antd": "^1.9.3",
+    "moment": "^2.23.0",
     "react": "^16.7.0",
     "react-dom": "^16.7.0",
     "react-scripts": "2.1.1"

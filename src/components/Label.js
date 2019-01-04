@@ -31,7 +31,7 @@ const LabelList = ({ labels, selectedLabels, onLabelChange }) =>
 LabelList.propTypes = {
   onLabelChange: PropTypes.func.isRequired,
   labels: PropTypes.arrayOf(PropTypes.object).isRequired,
-  selectedLabels: PropTypes.arrayOf(PropTypes.string).isRequired
+  selectedLabels: PropTypes.arrayOf(PropTypes.string)
 }
 
 export default LabelList

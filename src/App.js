@@ -1,5 +1,6 @@
 /* eslint-disable no-loop-func */
 import React, { Component } from 'react'
+import moment from 'moment'
 import { buildURL } from "./services/utils"
 import { 
   getCardAssignee,
@@ -23,6 +24,8 @@ import {
 import Title from "./components/Title"
 import Description from "./components/Description"
 import Link from "./components/Link"
+import DueTime from "./components/DueTime"
+import DueDate from "./components/DueDate"
 import Board from "./components/Board"
 import Avatar from "./components/Avatar"
 import Label from "./components/Label"
@@ -47,7 +50,9 @@ class App extends Component {
       selectedLabels: [],
       boardMembers: [],
       cardAssignee: [],
-      imageSrc: ''
+      imageSrc: '',
+      dueDate: null,
+      dueTime: '12:00'
     }
   }
   
@@ -76,7 +81,11 @@ class App extends Component {
   onTitleChange = title => this.setState({title})
   
   onPositionChange = position => this.setState({position})
-
+  
+  onChangeDueTime = dueTime => this.setState({dueTime})
+  
+  onChangeDueDate = dueDate => this.setState({dueDate})
+  
   onListChange = listId => this.setState({currentListId: listId})
 
   clearState = callback => this.setState({
@@ -114,9 +123,7 @@ class App extends Component {
     })
   }
   
-  onLabelChange = labelId => this.setState({
-    selectedLabels: getSelectedLabels(this.state.selectedLabels, labelId)
-  })
+  onLabelChange = selectedLabels => this.setState({selectedLabels})
 
   saveCard = () => {
     const { 
@@ -125,10 +132,15 @@ class App extends Component {
       position,
       link,
       imageSrc,
+      dueDate,
+      dueTime,
       currentListId,
       selectedLabels,
       cardAssignee
     } = this.state
+
+    const dueDateAndTime = dueDate 
+      && moment(`${dueDate} ${dueTime}`, "DD.MM.YYYY HH:mm").toISOString()
 
     fetch(
       buildURL(
@@ -137,6 +149,7 @@ class App extends Component {
           name: title, 
           desc: description,
           pos: position,
+          due: dueDateAndTime,
           idLabels: selectedLabels.join(','),
           idMembers: cardAssignee.join(','),
           idList: currentListId
@@ -170,7 +183,7 @@ class App extends Component {
     })
   }
 
-  filledBackground = filled => filled ? '#e7f3ff' : 'none'
+  filledBackground = filled => filled ? '#f6fbff' : 'none'
 
   addAttachment = (cardId, attachmentType, callback) => {
     const { imageSrc, link } = this.state
@@ -191,7 +204,9 @@ class App extends Component {
       imageSrc,
       selectedLabels,
       boardMembers,
-      cardAssignee
+      cardAssignee,
+      dueTime,
+      dueDate
     } = this.state
 
     return (
@@ -226,7 +241,9 @@ class App extends Component {
 
             <Row>
               <Col span={11}>
-                <Collapse bordered={false} accordion>
+                <Collapse bordered={false} defaultActiveKey={[
+                  'title', 'description', 'cover'
+                ]}>
                   <Panel header="Title" key="title" forceRender style={{
                     background: this.filledBackground(title)
                   }}>
@@ -254,7 +271,9 @@ class App extends Component {
                 </Collapse>
               </Col>
               <Col span={11} offset={2}>
-                <Collapse bordered={false} accordion>
+                <Collapse bordered={false} defaultActiveKey={[
+                  'link', 'labels', 'assignee', 'dueDateAndTime'
+                ]}>
                   <Panel header="Link" key="link" forceRender style={{
                     background: this.filledBackground(link)
                   }}>
@@ -280,11 +299,30 @@ class App extends Component {
                       onToggleCardAssignee={this.onToggleCardAssignee}
                     />
                   </Panel>
-                </Collapse>
 
+                  <Panel header="Due date" key="dueDateAndTime" forceRender style={{
+                    background: this.filledBackground(dueDate && dueTime)
+                  }}>
+                    <Row type="flex" justify="space-around">
+                      <Col span={13}>
+                        <DueDate
+                          dueDate={dueDate}
+                          onChangeDueDate={this.onChangeDueDate}
+                        />
+                      </Col>
+                      <Col span={9}>
+                        <DueTime
+                          dueDate={dueDate}
+                          dueTime={dueTime}
+                          onChangeDueTime={this.onChangeDueTime}
+                        />
+                      </Col>
+                    </Row>
+                  </Panel>
+                </Collapse>
               </Col>
             </Row>
-                <Button type="primary" onClick={this.saveCard}>Save</Button>
+            <Button type="primary" onClick={this.saveCard}>Save</Button>
           </Col>
         </Row>
       </div>

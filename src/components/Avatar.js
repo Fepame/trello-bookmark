@@ -24,7 +24,7 @@ const AvatarList = ({ boardMembers, cardAssignee, onToggleCardAssignee }) =>
 AvatarList.propTypes = {
   onToggleCardAssignee: PropTypes.func.isRequired,
   boardMembers: PropTypes.arrayOf(PropTypes.object).isRequired,
-  cardAssignee: PropTypes.arrayOf(PropTypes.object).isRequired
+  cardAssignee: PropTypes.arrayOf(PropTypes.string).isRequired
 }
 
 export default AvatarList

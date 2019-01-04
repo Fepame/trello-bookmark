@@ -7,7 +7,7 @@ const { TextArea } = Input
 const Description = ({ description, onDescriptionChange }) => (
   <TextArea 
     placeholder="Card description" 
-    autosize={{ minRows: 3 }}
+    autosize={{ minRows: 3, maxRows: 3 }}
     value={description}
     onChange={e => onDescriptionChange(e.target.value)}
   />
