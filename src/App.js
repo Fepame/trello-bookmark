@@ -28,8 +28,8 @@ import DueTime from "./components/DueTime"
 import DueDate from "./components/DueDate"
 import Board from "./components/Board"
 import Cover from "./components/Cover"
-import Avatar from "./components/Avatar"
-import Label from "./components/Label"
+import AssigneeList from "./components/AssigneeList"
+import LabelList from "./components/LabelList"
 import Position from "./components/Position"
 import List from "./components/List"
 const { Panel } = Collapse
@@ -268,7 +268,7 @@ class App extends Component {
                   </Item>
 
                   <Item>
-                    <Label
+                    <LabelList
                       labels={labels}
                       selectedLabels={selectedLabels}
                       onLabelChange={this.onLabelChange}
@@ -295,7 +295,7 @@ class App extends Component {
 
                   {
                     boardMembers.length > 1 && <Item>
-                      <Avatar
+                      <AssigneeList
                         boardMembers={boardMembers}
                         cardAssignee={cardAssignee}
                         onToggleCardAssignee={this.onToggleCardAssignee}

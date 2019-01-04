@@ -3,7 +3,7 @@ import { Avatar } from 'antd'
 import { getAvatarURL } from "../services/utils"
 import PropTypes from 'prop-types'
 
-const AvatarList = ({ boardMembers, cardAssignee, onToggleCardAssignee }) => 
+const AssigneeList = ({ boardMembers, cardAssignee, onToggleCardAssignee }) => 
   !!boardMembers.length && boardMembers.map(member => 
     <Avatar 
       src={getAvatarURL(member.avatarHash)} 
@@ -21,10 +21,10 @@ const AvatarList = ({ boardMembers, cardAssignee, onToggleCardAssignee }) =>
         cursor: 'pointer'}}
     />)
 
-AvatarList.propTypes = {
+AssigneeList.propTypes = {
   onToggleCardAssignee: PropTypes.func.isRequired,
   boardMembers: PropTypes.arrayOf(PropTypes.object).isRequired,
   cardAssignee: PropTypes.arrayOf(PropTypes.string).isRequired
 }
 
-export default AvatarList
+export default AssigneeList
