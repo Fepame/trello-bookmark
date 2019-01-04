@@ -1,5 +1,5 @@
 import React from 'react'
-import { Tag, Select } from 'antd'
+import { Tag, Select, Icon } from 'antd'
 import { hexColor } from "../services/utils";
 import PropTypes from 'prop-types'
 const { Option } = Select
@@ -7,7 +7,7 @@ const { Option } = Select
 const LabelList = ({ labels, selectedLabels, onLabelChange }) => 
   <Select
     mode="multiple"
-    placeholder="Please select labels"
+    placeholder="Select labels"
     onChange={onLabelChange}
     style={{width: '100%'}}
   >

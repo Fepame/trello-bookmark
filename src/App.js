@@ -33,6 +33,7 @@ import Label from "./components/Label"
 import Position from "./components/Position"
 import List from "./components/List"
 const { Panel } = Collapse
+const { Item } = Form
 
 class App extends Component {
   constructor(props) {
@@ -66,9 +67,11 @@ class App extends Component {
         this.setState({
           boards: boards.filter(board => !board.closed && !board.idOrganization)
         })
+
+        console.log(this.state.boards)
         // 5ba3f5c0a3adf352ead8d4dd - angie
-        // 5c0e5da5f0d45186648e19d5 - big short
-        this.onBoardChange("5c0e5da5f0d45186648e19d5")
+        // 5c256228249174105c2ac3a1 - trello bookmark
+        this.onBoardChange("5c256228249174105c2ac3a1")
         // console.log(boards.filter(board => board.id === this.state.currentBoardId)[0])
       })
   }
@@ -241,67 +244,38 @@ class App extends Component {
             </Row>
 
             <Divider>Card details</Divider>
-
-            <Row>
-              <Col span={11}>
-                <Collapse bordered={false} defaultActiveKey={[
-                  'title', 'description', 'cover'
-                ]}>
-                  <Panel header="Title" key="title" forceRender style={{
-                    background: this.filledBackground(title)
-                  }}>
+            <Form layout="vertical">
+              <Row>
+                <Col span={11}>
+                  <Item>
                     <Title title={title} onTitleChange={this.onTitleChange} />
-                  </Panel>
+                  </Item>
 
-                  <Panel header="Description" key="description" forceRender style={{
-                    background: this.filledBackground(description)
-                  }}>
+                  <Item>
+                    <Link link={link} onLinkChange={this.onLinkChange} />
+                  </Item>
+
+                  <Item>
+                    <Cover imageSrc={imageSrc} onRemoveCover={this.onRemoveCover} />
+                  </Item>
+                </Col>
+                <Col span={11} offset={2}>
+                  <Item>
                     <Description
                       description={description}
                       onDescriptionChange={this.onDescriptionChange}
                     />
-                  </Panel>
+                  </Item>
 
-                  <Panel header="Cover" key="cover" forceRender style={{
-                    background: this.filledBackground(imageSrc)
-                  }}>
-                    <Cover imageSrc={imageSrc} onRemoveCover={this.onRemoveCover} />
-                  </Panel>
-                </Collapse>
-              </Col>
-              <Col span={11} offset={2}>
-                <Collapse bordered={false} defaultActiveKey={[
-                  'link', 'labels', 'assignee', 'dueDateAndTime'
-                ]}>
-                  <Panel header="Link" key="link" forceRender style={{
-                    background: this.filledBackground(link)
-                  }}>
-                    <Link link={link} onLinkChange={this.onLinkChange} />
-                  </Panel>
-
-                  <Panel header="Labels" key="labels" forceRender style={{
-                    background: this.filledBackground(selectedLabels.length)
-                  }}>
+                  <Item>
                     <Label
                       labels={labels}
                       selectedLabels={selectedLabels}
                       onLabelChange={this.onLabelChange}
                     />
-                  </Panel>
+                  </Item>
 
-                  <Panel header="Assignee" key="assignee" forceRender style={{
-                    background: this.filledBackground(cardAssignee.length)
-                  }}>
-                    <Avatar
-                      boardMembers={boardMembers}
-                      cardAssignee={cardAssignee}
-                      onToggleCardAssignee={this.onToggleCardAssignee}
-                    />
-                  </Panel>
-
-                  <Panel header="Due date" key="dueDateAndTime" forceRender style={{
-                    background: this.filledBackground(dueDate && dueTime)
-                  }}>
+                  <Item>
                     <Row type="flex" justify="space-around">
                       <Col span={13}>
                         <DueDate
@@ -309,7 +283,7 @@ class App extends Component {
                           onChangeDueDate={this.onChangeDueDate}
                         />
                       </Col>
-                      <Col span={9}>
+                      <Col span={10} offset={1}>
                         <DueTime
                           dueDate={dueDate}
                           dueTime={dueTime}
@@ -317,11 +291,27 @@ class App extends Component {
                         />
                       </Col>
                     </Row>
-                  </Panel>
-                </Collapse>
-              </Col>
-            </Row>
-            <Button type="primary" onClick={this.saveCard}>Save</Button>
+                  </Item>
+
+                  {
+                    boardMembers.length > 1 && <Item>
+                      <Avatar
+                        boardMembers={boardMembers}
+                        cardAssignee={cardAssignee}
+                        onToggleCardAssignee={this.onToggleCardAssignee}
+                      />
+                    </Item>}
+
+                </Col>
+              </Row>
+              <Divider />
+              <Row type="flex" justify="space-around">
+                <Col span={24} style={{textAlign: 'right'}}>
+                  <Button style={{marginRight: 10}}>Cancel</Button>
+                  <Button type="primary" onClick={this.saveCard}>Save</Button>
+                </Col>
+              </Row>
+            </Form>
           </Col>
         </Row>
       </div>
