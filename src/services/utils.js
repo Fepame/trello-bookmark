@@ -16,7 +16,7 @@ export const buildURL = (link, query) => {
   url.search = new URLSearchParams(
     Object.assign({
       key: process.env.REACT_APP_TRELLO_API_KEY,
-      token: process.env.REACT_APP_TRELLO_TOKEN
+      token: localStorage.getItem("token")
     }, query)
   )
   return url

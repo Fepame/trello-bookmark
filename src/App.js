@@ -68,7 +68,7 @@ class App extends Component {
           boards: boards.filter(board => !board.closed && !board.idOrganization)
         })
 
-        console.log(this.state.boards)
+        // console.log(this.state.boards)
         // 5ba3f5c0a3adf352ead8d4dd - angie
         // 5c256228249174105c2ac3a1 - trello bookmark
         this.onBoardChange("5c256228249174105c2ac3a1")
