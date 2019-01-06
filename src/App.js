@@ -17,6 +17,7 @@ import {
   Spin,
   Icon,
   Divider,
+  Modal,
   Col
 } from 'antd'
 import Title from "./components/Title"
@@ -30,6 +31,7 @@ import AssigneeList from "./components/AssigneeList"
 import LabelList from "./components/LabelList"
 import Position from "./components/Position"
 import List from "./components/List"
+import Settings from "./Settings"
 const { Item } = Form
 
 const isExtension = window.location.protocol === 'chrome-extension:'
@@ -56,6 +58,7 @@ class App extends Component {
       dueDate: null,
       dueTime: '12:00',
       isUploading: false,
+      modalVisible: false,
       spinIndicator: <Icon type="loading" style={{ fontSize: 60 }} spin />
     }
   }
@@ -145,6 +148,8 @@ class App extends Component {
         })
     })
   }
+
+  toggleModal = modalVisible => this.setState({modalVisible})
   
   onLabelChange = selectedLabels => this.setState({selectedLabels})
 
@@ -236,6 +241,7 @@ class App extends Component {
       dueTime,
       dueDate,
       isUploading,
+      modalVisible,
       spinIndicator
     } = this.state
 
@@ -331,7 +337,18 @@ class App extends Component {
                 </Row>
                 <Divider />
                 <Row type="flex" justify="space-around">
-                  <Col span={24} style={{textAlign: 'right'}}>
+                  <Col span={12}>
+                    <Icon
+                      type="question-circle"
+                      style={{
+                        fontSize: 24,
+                        cursor: 'pointer',
+                        color: '#ddd'
+                      }}
+                      onClick={() => this.toggleModal(true)}
+                      />
+                  </Col>
+                  <Col span={12} style={{textAlign: 'right'}}>
                     <Button style={{marginRight: 10}} onClick={closeWindow}>Cancel</Button>
                     <Button type="primary" onClick={this.saveCard}>Save</Button>
                   </Col>
@@ -340,6 +357,14 @@ class App extends Component {
             </Spin>
           </Col>
         </Row>
+        <Modal
+          title="Plugin info"
+          visible={modalVisible}
+          footer={null}
+          onCancel={() => this.toggleModal(false)}
+        >
+          <Settings />
+        </Modal>
       </div>
     )
   }

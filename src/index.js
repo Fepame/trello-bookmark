@@ -6,12 +6,15 @@ import Settings from './Settings'
 
 const { location } = window
 const currentURL = location.href
+let route = <App />
 
 if(localStorage.getItem("token")){
-  ReactDOM.render(<App />, document.getElementById('root'))
+  if (currentURL.includes("settings")){
+    route = <Settings />
+  }
 } else {
   if(currentURL.includes("token")) {
-    ReactDOM.render(<Settings />, document.getElementById('root'))
+    route = <Settings />
   } else {
     window.open(
       `https://trello.com/1/authorize?expiration=never&callback_method=fragment&name=Trello%20Bookmark&scope=read,write,account&response_type=token&key=${process.env.REACT_APP_TRELLO_API_KEY}&redirect_uri=${encodeURIComponent(currentURL)}`,
@@ -19,3 +22,5 @@ if(localStorage.getItem("token")){
     )
   }
 }
+
+ReactDOM.render(route, document.getElementById('root'))
