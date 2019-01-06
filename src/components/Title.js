@@ -7,7 +7,7 @@ const { TextArea } = Input
 const Title = ({ title, onTitleChange }) => (
   <TextArea 
     placeholder="Card title" 
-    autosize={{ minRows: 1, maxRows: 1 }}
+    autosize={{ minRows: 2, maxRows: 2 }}
     value={title}
     onChange={e => onTitleChange(e.target.value)}
   />

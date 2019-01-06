@@ -1,5 +1,5 @@
 html {
-  height: 480px;
+  height: 500px;
 }
 
 body {
@@ -12,12 +12,16 @@ body {
   -moz-osx-font-smoothing: grayscale;
   width: 600px;
   max-width: 600px;
-  height: 480px;
+  height: 500px;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+.App .ant-form {
+  padding-bottom: 20px;
 }
 
 .App .ant-form-item {

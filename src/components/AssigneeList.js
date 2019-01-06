@@ -12,6 +12,7 @@ const AssigneeList = ({ boardMembers, cardAssignee, onToggleCardAssignee }) =>
         onToggleCardAssignee(member.id)
       },
       style: {
+        margin: 1,
         backgroundColor: '#1890ff',
         filter: cardAssignee
           .some(id => member.id === id)
