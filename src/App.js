@@ -11,10 +11,11 @@ import {
   fetchMember
 } from './services/methods'
 import {
-  message,
   Button,
   Form,
   Row,
+  Spin,
+  Icon,
   Divider,
   Col
 } from 'antd'
@@ -53,7 +54,9 @@ class App extends Component {
       cardAssignee: [],
       imageSrc: '',
       dueDate: null,
-      dueTime: '12:00'
+      dueTime: '12:00',
+      isUploading: false,
+      spinIndicator: <Icon type="loading" style={{ fontSize: 60 }} spin />
     }
   }
   
@@ -162,6 +165,8 @@ class App extends Component {
     const dueDateAndTime = dueDate 
       && moment(`${dueDate} ${dueTime}`, "DD.MM.YYYY HH:mm").toISOString()
 
+    this.setState({isUploading: true})
+
     fetch(
       buildURL(
         'cards',
@@ -183,7 +188,7 @@ class App extends Component {
     .then(card => {
       const cardId = card.id
       const successMsg = () => {
-        message.success("Card has been added")
+        this.setState({spinIndicator: <Icon type="check-circle" style={{ fontSize: 60 }} />})
         setTimeout(() => {
           closeWindow()
         }, 1000);
@@ -229,106 +234,110 @@ class App extends Component {
       boardMembers,
       cardAssignee,
       dueTime,
-      dueDate
+      dueDate,
+      isUploading,
+      spinIndicator
     } = this.state
 
     return (
       <div className="App">
         <Row type="flex" justify="space-around">
           <Col span={22}>
-            <Divider>Card location</Divider>
-            <Row>
-              <Col span={7} offset={1}>
-                <Board
-                  currentBoardId={currentBoardId}
-                  onBoardChange={this.onBoardChange}
-                  boards={boards}
-                />
-              </Col>
-              <Col span={7} offset={1}>
-                <List
-                  currentListId={currentListId}
-                  onListChange={this.onListChange}
-                  lists={lists}
-                />
-              </Col>
-              <Col span={7} offset={1}>
-                <Position
-                  position={position}
-                  onPositionChange={this.onPositionChange}
-                />
-              </Col>
-            </Row>
-
-            <Divider>Card details</Divider>
-            <Form layout="vertical">
+            <Spin spinning={isUploading} indicator={spinIndicator}>
+              <Divider>Card location</Divider>
               <Row>
-                <Col span={11}>
-                  <Item>
-                    <Title title={title} onTitleChange={this.onTitleChange} />
-                  </Item>
-
-                  <Item>
-                    <Link link={link} onLinkChange={this.onLinkChange} />
-                  </Item>
-
-                  <Item>
-                    <Cover imageSrc={imageSrc} onRemoveCover={this.onRemoveCover} />
-                  </Item>
+                <Col span={7} offset={1}>
+                  <Board
+                    currentBoardId={currentBoardId}
+                    onBoardChange={this.onBoardChange}
+                    boards={boards}
+                  />
                 </Col>
-                <Col span={11} offset={2}>
-                  <Item>
-                    <Description
-                      description={description}
-                      onDescriptionChange={this.onDescriptionChange}
-                    />
-                  </Item>
+                <Col span={7} offset={1}>
+                  <List
+                    currentListId={currentListId}
+                    onListChange={this.onListChange}
+                    lists={lists}
+                  />
+                </Col>
+                <Col span={7} offset={1}>
+                  <Position
+                    position={position}
+                    onPositionChange={this.onPositionChange}
+                  />
+                </Col>
+              </Row>
 
-                  <Item>
-                    <LabelList
-                      labels={labels}
-                      selectedLabels={selectedLabels}
-                      onLabelChange={this.onLabelChange}
-                    />
-                  </Item>
+              <Divider>Card details</Divider>
+              <Form layout="vertical">
+                <Row>
+                  <Col span={11}>
+                    <Item>
+                      <Title title={title} onTitleChange={this.onTitleChange} />
+                    </Item>
 
-                  <Item>
-                    <Row type="flex" justify="space-around">
-                      <Col span={13}>
-                        <DueDate
-                          dueDate={dueDate}
-                          onChangeDueDate={this.onChangeDueDate}
-                        />
-                      </Col>
-                      <Col span={10} offset={1}>
-                        <DueTime
-                          dueDate={dueDate}
-                          dueTime={dueTime}
-                          onChangeDueTime={this.onChangeDueTime}
-                        />
-                      </Col>
-                    </Row>
-                  </Item>
+                    <Item>
+                      <Link link={link} onLinkChange={this.onLinkChange} />
+                    </Item>
 
-                  {
-                    boardMembers.length > 1 && <Item>
-                      <AssigneeList
-                        boardMembers={boardMembers}
-                        cardAssignee={cardAssignee}
-                        onToggleCardAssignee={this.onToggleCardAssignee}
+                    <Item>
+                      <Cover imageSrc={imageSrc} onRemoveCover={this.onRemoveCover} />
+                    </Item>
+                  </Col>
+                  <Col span={11} offset={2}>
+                    <Item>
+                      <Description
+                        description={description}
+                        onDescriptionChange={this.onDescriptionChange}
                       />
-                    </Item>}
+                    </Item>
 
-                </Col>
-              </Row>
-              <Divider />
-              <Row type="flex" justify="space-around">
-                <Col span={24} style={{textAlign: 'right'}}>
-                  <Button style={{marginRight: 10}} onClick={closeWindow}>Cancel</Button>
-                  <Button type="primary" onClick={this.saveCard}>Save</Button>
-                </Col>
-              </Row>
-            </Form>
+                    <Item>
+                      <LabelList
+                        labels={labels}
+                        selectedLabels={selectedLabels}
+                        onLabelChange={this.onLabelChange}
+                      />
+                    </Item>
+
+                    <Item>
+                      <Row type="flex" justify="space-around">
+                        <Col span={13}>
+                          <DueDate
+                            dueDate={dueDate}
+                            onChangeDueDate={this.onChangeDueDate}
+                          />
+                        </Col>
+                        <Col span={10} offset={1}>
+                          <DueTime
+                            dueDate={dueDate}
+                            dueTime={dueTime}
+                            onChangeDueTime={this.onChangeDueTime}
+                          />
+                        </Col>
+                      </Row>
+                    </Item>
+
+                    {
+                      boardMembers.length > 1 && <Item>
+                        <AssigneeList
+                          boardMembers={boardMembers}
+                          cardAssignee={cardAssignee}
+                          onToggleCardAssignee={this.onToggleCardAssignee}
+                        />
+                      </Item>}
+
+                  </Col>
+                </Row>
+                <Divider />
+                <Row type="flex" justify="space-around">
+                  <Col span={24} style={{textAlign: 'right'}}>
+                    <Button style={{marginRight: 10}} onClick={closeWindow}>Cancel</Button>
+                    <Button type="primary" onClick={this.saveCard}>Save</Button>
+                  </Col>
+                </Row>
+              </Form>
+            </Spin>
           </Col>
         </Row>
       </div>
