@@ -2,17 +2,20 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
 import App from './App'
+import Settings from './Settings'
 
-const { location, history } = window
+const { location } = window
 const currentURL = location.href
 
-if(!localStorage.getItem("token")){
+if(localStorage.getItem("token")){
+  ReactDOM.render(<App />, document.getElementById('root'))
+} else {
   if(currentURL.includes("token")) {
-    localStorage.setItem("token", location.hash.split("=").pop())
-    history.pushState({}, null, location.origin)
+    ReactDOM.render(<Settings />, document.getElementById('root'))
   } else {
-    location.href = `https://trello.com/1/authorize?expiration=never&name=Trello%20Bookmark&scope=read,write,account&response_type=token&key=${process.env.REACT_APP_TRELLO_API_KEY}&return_url=${currentURL}`
+    window.open(
+      `https://trello.com/1/authorize?expiration=never&callback_method=fragment&name=Trello%20Bookmark&scope=read,write,account&response_type=token&key=${process.env.REACT_APP_TRELLO_API_KEY}&redirect_uri=${encodeURIComponent(currentURL)}`,
+      '_blank'
+    )
   }
 }
-
-ReactDOM.render(<App />, document.getElementById('root'))

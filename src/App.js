@@ -222,7 +222,7 @@ class App extends Component {
     return (
       <div className="App">
         <Row type="flex" justify="space-around">
-          <Col span={11}>
+          <Col span={22}>
             <Divider>Card location</Divider>
             <Row>
               <Col span={7} offset={1}>
@@ -311,7 +311,7 @@ class App extends Component {
               <Divider />
               <Row type="flex" justify="space-around">
                 <Col span={24} style={{textAlign: 'right'}}>
-                  <Button style={{marginRight: 10}}>Cancel</Button>
+                  <Button style={{marginRight: 10}} onClick={() => {window.close()}}>Cancel</Button>
                   <Button type="primary" onClick={this.saveCard}>Save</Button>
                 </Col>
               </Row>

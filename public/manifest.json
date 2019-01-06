@@ -13,5 +13,8 @@
   "permissions": [
     "tabs",
     "https://api.trello.com/"
+  ],
+  "web_accessible_resources": [
+    "index.html"
   ]
 }
