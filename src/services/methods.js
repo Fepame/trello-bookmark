@@ -5,11 +5,6 @@ export const getCardAssignee = (cardAssignee, memberId) =>
     ? cardAssignee.filter(id => id !== memberId)
     : [...cardAssignee, memberId]
 
-export const getSelectedLabels = (selectedLabels, labelId) =>
-  selectedLabels.includes(labelId)
-    ? selectedLabels.filter(label => label !== labelId)
-    : [...selectedLabels, labelId]
-
 export const getImageSrc = (e, callback) => {
   const items = e.clipboardData.items;
 
@@ -54,7 +49,7 @@ export const uploadAttachment = (
     formData.append(
       "file",
       generateBlob(imageSrc),
-      "trello-capture-screenshot.jpg"
+      "cover.jpg"
     )
   }
   

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Tag, Select, Icon } from 'antd'
+import { Tag, Select } from 'antd'
 import { hexColor } from "../services/utils";
 import PropTypes from 'prop-types'
 const { Option } = Select

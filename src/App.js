@@ -5,7 +5,6 @@ import { buildURL } from "./services/utils"
 import { 
   getCardAssignee,
   uploadAttachment,
-  getSelectedLabels,
   getImageSrc,
   fetchLabels,
   fetchLists,
@@ -17,9 +16,7 @@ import {
   Form,
   Row,
   Divider,
-  Collapse,
-  Col,
-  Icon
+  Col
 } from 'antd'
 import Title from "./components/Title"
 import Description from "./components/Description"
@@ -32,7 +29,6 @@ import AssigneeList from "./components/AssigneeList"
 import LabelList from "./components/LabelList"
 import Position from "./components/Position"
 import List from "./components/List"
-const { Panel } = Collapse
 const { Item } = Form
 
 class App extends Component {
@@ -67,12 +63,7 @@ class App extends Component {
         this.setState({
           boards: boards.filter(board => !board.closed && !board.idOrganization)
         })
-
-        // console.log(this.state.boards)
-        // 5ba3f5c0a3adf352ead8d4dd - angie
-        // 5c256228249174105c2ac3a1 - trello bookmark
-        this.onBoardChange("5c256228249174105c2ac3a1")
-        // console.log(boards.filter(board => board.id === this.state.currentBoardId)[0])
+        localStorage.lastBoardId && this.onBoardChange(localStorage.lastBoardId)
       })
   }
 
@@ -92,13 +83,17 @@ class App extends Component {
 
   onRemoveCover = () => this.setState({imageSrc: ''})
   
-  onListChange = listId => this.setState({currentListId: listId})
+  onListChange = listId => {
+    this.setState({currentListId: listId})
+    localStorage.setItem(this.state.currentBoardId, listId)
+  }
 
   clearState = callback => this.setState({
-    boardMembers: [],
     lists: [],
+    currentListId: undefined,
     labels: [],
     selectedLabels: [],
+    boardMembers: [],
     cardAssignee: []
   }, callback)
 
@@ -110,13 +105,24 @@ class App extends Component {
     this.clearState(() => {
       const { boards } = this.state
       this.setState({currentBoardId: boardId})
+      localStorage.setItem("lastBoardId", boardId)
   
       boards
         .filter(board => board.id === boardId)
         .map(board => {
-          fetchLists(board, lists => this.setState({
-            lists, currentListId: lists[0].id
-          }))
+          fetchLists(board, lists => {
+            const lastUsedListIdOnThisBoard = localStorage.getItem(boardId)
+            let currentListId
+            if(lastUsedListIdOnThisBoard 
+              && lists.some(list => list.id === lastUsedListIdOnThisBoard)
+            ){
+              currentListId = lastUsedListIdOnThisBoard
+            } else {
+              currentListId = lists[0].id
+              localStorage.setItem(boardId, currentListId)
+            }
+            this.setState({lists, currentListId})
+          })
           
           fetchLabels(board, labels => this.setState({labels}))
 
@@ -188,8 +194,6 @@ class App extends Component {
       }
     })
   }
-
-  filledBackground = filled => filled ? '#f6fbff' : 'none'
 
   addAttachment = (cardId, attachmentType, callback) => {
     const { imageSrc, link } = this.state
