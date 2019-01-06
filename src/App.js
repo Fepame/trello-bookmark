@@ -1,7 +1,7 @@
 /* eslint-disable no-loop-func */
 import React, { Component } from 'react'
 import moment from 'moment'
-import { buildURL } from "./services/utils"
+import { buildURL, getCurrentTab } from "./services/utils"
 import { 
   getCardAssignee,
   uploadAttachment,
@@ -31,6 +31,9 @@ import Position from "./components/Position"
 import List from "./components/List"
 const { Item } = Form
 
+const isExtension = window.location.protocol === 'chrome-extension:'
+const closeWindow = () => isExtension && window.close()
+
 class App extends Component {
   constructor(props) {
     super(props)
@@ -40,10 +43,10 @@ class App extends Component {
       currentBoardId: undefined,
       lists: [],
       currentListId: undefined,
-      title: document.title,
+      title: '',
       position: 'top',
       description: '',
-      link: window.location.href,
+      link: '',
       labels: [],
       selectedLabels: [],
       boardMembers: [],
@@ -56,6 +59,11 @@ class App extends Component {
   
   componentDidMount = () => {
     document.onpaste = e => this.onPaste(e)
+
+    isExtension && getCurrentTab(tab => this.setState({
+      title: tab.title,
+      link: tab.url
+    }))
 
     fetch(buildURL('members/me/boards'))
       .then(response => response.json())
@@ -174,7 +182,12 @@ class App extends Component {
     .then(response => response.json())
     .then(card => {
       const cardId = card.id
-      const successMsg = message.success("Card has been added")
+      const successMsg = () => {
+        message.success("Card has been added")
+        setTimeout(() => {
+          closeWindow()
+        }, 1000);
+      }
       if(imageSrc && link) {
         this.addAttachment(
           cardId,
@@ -311,7 +324,7 @@ class App extends Component {
               <Divider />
               <Row type="flex" justify="space-around">
                 <Col span={24} style={{textAlign: 'right'}}>
-                  <Button style={{marginRight: 10}} onClick={() => {window.close()}}>Cancel</Button>
+                  <Button style={{marginRight: 10}} onClick={closeWindow}>Cancel</Button>
                   <Button type="primary" onClick={this.saveCard}>Save</Button>
                 </Col>
               </Row>

@@ -22,6 +22,18 @@ export const buildURL = (link, query) => {
   return url
 }
 
+export const getCurrentTab = callback => {
+  const queryInfo = {
+    active: true,
+    currentWindow: true
+  }
+
+  window.chrome.tabs.query(queryInfo, tabs => {
+    // send the first tab through the callback
+    callback(tabs[0])
+  })
+}
+
 export const getAvatarURL = hash => `http://trello-avatars.s3.amazonaws.com/${hash}/170.png`
 
 export const generateBlob = imageData => {
