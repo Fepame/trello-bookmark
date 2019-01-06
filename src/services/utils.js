@@ -34,8 +34,6 @@ export const getCurrentTab = callback => {
   })
 }
 
-export const getAvatarURL = hash => `http://trello-avatars.s3.amazonaws.com/${hash}/170.png`
-
 export const generateBlob = imageData => {
   var imageDataElements = imageData.split(',')
     , mimeType = imageDataElements[0].split(':')[1].split(';')[0]

@@ -1,25 +1,40 @@
 import React from 'react'
 import { Avatar } from 'antd'
-import { getAvatarURL } from "../services/utils"
 import PropTypes from 'prop-types'
 
 const AssigneeList = ({ boardMembers, cardAssignee, onToggleCardAssignee }) => 
-  !!boardMembers.length && boardMembers.map(member => 
-    <Avatar 
-      src={getAvatarURL(member.avatarHash)} 
-      key={member.id} 
-      size={64}
-      onClick={e => {
+  !!boardMembers.length && boardMembers.map(member => {
+    const sharedProps = {
+      key: member.id,
+      size: 64,
+      alt: member.fullName,
+      onClick: e => {
         onToggleCardAssignee(member.id)
-      }}
-      style={{
+      },
+      style: {
+        backgroundColor: '#1890ff',
         filter: cardAssignee
           .some(id => member.id === id)
           ? 'none'
           : 'grayscale(100%) contrast(50%) brightness(130%)'
         ,
-        cursor: 'pointer'}}
-    />)
+        cursor: 'pointer'
+      }
+    }
+    
+    if(member.avatarUrl) {
+      return <Avatar 
+        src={`${member.avatarUrl}/170.png`} 
+        {...sharedProps}
+      />
+    } else {
+      return <Avatar
+        {...sharedProps}
+      >
+        {member.initials}
+      </Avatar>
+    }
+  })
 
 AssigneeList.propTypes = {
   onToggleCardAssignee: PropTypes.func.isRequired,
