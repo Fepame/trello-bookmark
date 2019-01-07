@@ -5,6 +5,8 @@ const { Option } = Select
 
 const List = ({ currentListId, onListChange, lists }) => (
   <Select 
+    showSearch
+    optionFilterProp="children"
     value={currentListId}
     onChange={onListChange}
     placeholder="Select a list"

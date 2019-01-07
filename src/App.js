@@ -59,6 +59,7 @@ class App extends Component {
       dueTime: '12:00',
       isUploading: false,
       modalVisible: false,
+      teams: [],
       spinIndicator: <Icon type="loading" style={{ fontSize: 60 }} spin />
     }
   }
@@ -74,10 +75,42 @@ class App extends Component {
     fetch(buildURL('members/me/boards'))
       .then(response => response.json())
       .then(boards => {
+        const allBoards = boards.filter(board => !board.closed)
+        const uniqTeamIDs = [...new Set(
+          allBoards
+            .filter(board => board.idOrganization)
+            .map(board => board.idOrganization)
+          )]
+
+        const url 
+          = 'https://api.trello.com/1/batch?urls=' 
+          + uniqTeamIDs.map(id => `/organizations/${id}`).join(",") 
+          + `&key=${process.env.REACT_APP_TRELLO_API_KEY}&token=${localStorage.getItem("token")}`
+
         this.setState({
-          boards: boards.filter(board => !board.closed && !board.idOrganization)
+          boards: allBoards
         })
+
         localStorage.lastBoardId && this.onBoardChange(localStorage.lastBoardId)
+        fetch(url).then(response => response.json())
+        .then(teams => {
+          const teamsArr = [...teams
+            .map(code => code[200])
+            .map(team => {
+              team.boards = allBoards
+                .filter(board => board.idOrganization === team.id)
+                .map(board => board.id)
+              return team
+            }), {
+              id: null,
+              displayName: "Private",
+              boards: allBoards
+                .filter(board => !board.idOrganization)
+                .map(board => board.id)
+            }]
+          
+          this.setState({teams: teamsArr})
+        })
       })
   }
 
@@ -240,6 +273,7 @@ class App extends Component {
       cardAssignee,
       dueTime,
       dueDate,
+      teams,
       isUploading,
       modalVisible,
       spinIndicator
@@ -254,6 +288,7 @@ class App extends Component {
               <Row>
                 <Col span={7} offset={1}>
                   <Board
+                    teams={teams}
                     currentBoardId={currentBoardId}
                     onBoardChange={this.onBoardChange}
                     boards={boards}
