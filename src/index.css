@@ -27,3 +27,7 @@ code {
 .App .ant-form-item {
   margin-bottom: 0;
 }
+
+.ant-select-dropdown-menu-item-group-title {
+  overflow: hidden;
+}

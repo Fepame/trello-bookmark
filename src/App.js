@@ -95,6 +95,7 @@ class App extends Component {
         fetch(url).then(response => response.json())
         .then(teams => {
           const teamsArr = [...teams
+            .filter(responseObj => typeof responseObj === "object")
             .map(code => code[200])
             .map(team => {
               team.boards = allBoards
@@ -229,7 +230,7 @@ class App extends Component {
         this.setState({spinIndicator: <Icon type="check-circle" style={{ fontSize: 60 }} />})
         setTimeout(() => {
           closeWindow()
-        }, 1000);
+        }, 300);
       }
       if(imageSrc && link) {
         this.addAttachment(
