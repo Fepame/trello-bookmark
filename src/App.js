@@ -12,6 +12,7 @@ import {
 } from './services/methods'
 import {
   Button,
+  Popover,
   Form,
   Row,
   Spin,
@@ -287,7 +288,7 @@ class App extends Component {
             <Spin spinning={isUploading} indicator={spinIndicator}>
               <Divider>Card location</Divider>
               <Row>
-                <Col span={7} offset={1}>
+                <Col span={7}>
                   <Board
                     teams={teams}
                     currentBoardId={currentBoardId}
@@ -302,7 +303,25 @@ class App extends Component {
                     lists={lists}
                   />
                 </Col>
-                <Col span={7} offset={1}>
+                <Col span={3}>
+                  <Popover content={<div>
+                    <div><a href="#">Angie + Marat > Reading</a></div>
+                    <Divider />
+                    <div>List1</div>
+                    <Divider />
+                    <div>List1</div>
+                  </div>}>
+                    <Button
+                      shape="circle"
+                      icon="ordered-list"
+                      style={{
+                        marginLeft: 12,
+                        border: 'none'
+                      }}
+                      />
+                  </Popover>
+                </Col>
+                <Col span={6}>
                   <Position
                     position={position}
                     onPositionChange={this.onPositionChange}

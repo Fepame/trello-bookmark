@@ -31,3 +31,7 @@ code {
 .ant-select-dropdown-menu-item-group-title {
   overflow: hidden;
 }
+
+.ant-popover .ant-divider {
+  margin: 6px 0;
+}
