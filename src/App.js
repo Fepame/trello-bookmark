@@ -67,10 +67,14 @@ class App extends Component {
   componentDidMount = () => {
     document.onpaste = e => this.onPaste(e)
 
-    isExtension && getCurrentTab(tab => this.setState({
-      title: tab.title,
-      link: tab.url
-    }))
+    isExtension && getCurrentTab(tab => {
+      if(tab.url !== "chrome://newtab/") {
+        this.setState({
+          title: tab.title,
+          link: tab.url
+        })
+      } 
+    })
 
     fetch(buildURL('members/me/boards'))
       .then(response => response.json())
