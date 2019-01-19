@@ -15,12 +15,14 @@ import Teams from './components/Teams'
 
 const restLink = new RestLink({
   uri: 'https://api.trello.com/1/members/me/',
-});
+})
 
 const client = new ApolloClient({
   link: restLink,
-  cache: new InMemoryCache(),
-});
+  cache: new InMemoryCache({
+    dataIdFromObject: obj => obj.id
+  })
+})
 
 const generateList = teams => console.log(teams)
 
