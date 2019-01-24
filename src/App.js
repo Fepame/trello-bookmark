@@ -6,10 +6,12 @@ import {
   Modal,
   Col
 } from 'antd'
+import { ApolloLink } from 'apollo-link'
 import { ApolloClient } from 'apollo-client'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { ApolloProvider } from 'react-apollo'
 import { RestLink } from 'apollo-link-rest'
+import { withClientState } from 'apollo-link-state'
 import Settings from "./Settings"
 import Teams from './components/Teams'
 
@@ -17,11 +19,24 @@ const restLink = new RestLink({
   uri: 'https://api.trello.com/1/members/me/',
 })
 
-const client = new ApolloClient({
-  link: restLink,
-  cache: new InMemoryCache({
-    dataIdFromObject: obj => obj.id
+const defaults = {
+  teams: [],
+  currentTeamId: '',
+}
+
+const cache = new InMemoryCache()
+
+const link = ApolloLink.from([
+  restLink,
+  withClientState({ 
+    defaults,
+    cache
   })
+])
+
+const client = new ApolloClient({
+  link,
+  cache
 })
 
 const generateList = teams => console.log(teams)
