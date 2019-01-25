@@ -13,6 +13,7 @@ import { ApolloProvider } from 'react-apollo'
 import { RestLink } from 'apollo-link-rest'
 import { withClientState } from 'apollo-link-state'
 import Settings from "./Settings"
+import gql from 'graphql-tag'
 import Teams from './components/Teams'
 
 const restLink = new RestLink({
@@ -20,18 +21,35 @@ const restLink = new RestLink({
 })
 
 const defaults = {
-  teams: [],
-  currentTeamId: '',
+  selectedTeamId: '',
 }
 
 const cache = new InMemoryCache()
 
+const stateLink = withClientState({ 
+  cache,
+  defaults,
+  resolvers: {
+    Mutation: {
+      setSelectedTeam: (root, { selectedTeamId }, { cache }) => {
+        cache.writeQuery({
+          query: gql`
+            query GetSelectedTeam {
+              selectedTeamId @client
+            }
+          `,
+          data: {
+            selectedTeamId
+          },
+        })
+      }
+    }
+  }
+})
+
 const link = ApolloLink.from([
   restLink,
-  withClientState({ 
-    defaults,
-    cache
-  })
+  stateLink
 ])
 
 const client = new ApolloClient({

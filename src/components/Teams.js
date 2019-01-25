@@ -34,7 +34,7 @@ const Teams = () => (
         {setSelectedTeam => <Select
           style={{width: 200}}
           onChange={id => {
-            setSelectedTeam(id)
+            setSelectedTeam({variables: { selectedTeamId: id }})
           }}
         >
           {data.teams.map(team => <Option
