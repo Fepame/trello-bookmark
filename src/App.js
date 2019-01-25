@@ -86,36 +86,45 @@ class App extends Component {
             .map(board => board.idOrganization)
           )]
 
-        const url 
-          = 'https://api.trello.com/1/batch?urls=' 
-          + uniqTeamIDs.map(id => `/organizations/${id}`).join(",") 
-          + `&key=${process.env.REACT_APP_TRELLO_API_KEY}&token=${localStorage.getItem("token")}`
-
         this.setState({
-          boards: allBoards
-        })
-
-        localStorage.lastBoardId && this.onBoardChange(localStorage.lastBoardId)
-        fetch(url).then(response => response.json())
-        .then(teams => {
-          const teamsArr = [...teams
-            .filter(responseObj => typeof responseObj === "object")
-            .map(code => code[200])
-            .map(team => {
-              team.boards = allBoards
-                .filter(board => board.idOrganization === team.id)
-                .map(board => board.id)
-              return team
-            }), {
+          boards: allBoards,
+          teams: [
+            {
               id: null,
               displayName: "Private",
               boards: allBoards
                 .filter(board => !board.idOrganization)
                 .map(board => board.id)
-            }]
-          
-          this.setState({teams: teamsArr})
+            }
+          ]
         })
+
+        if(uniqTeamIDs.length) {
+          const url 
+          = 'https://api.trello.com/1/batch?urls=' 
+          + uniqTeamIDs.map(id => `/organizations/${id}`).join(",") 
+          + `&key=${process.env.REACT_APP_TRELLO_API_KEY}&token=${localStorage.getItem("token")}`
+
+          localStorage.lastBoardId && this.onBoardChange(localStorage.lastBoardId)
+          fetch(url).then(response => response.json())
+          .then(teamsArr => {
+            const { teams } = this.state
+            this.setState({
+              teams: [
+                ...teams,
+                ...teamsArr
+                .filter(responseObj => typeof responseObj === "object")
+                .map(code => code[200])
+                .map(team => {
+                  team.boards = allBoards
+                  .filter(board => board.idOrganization === team.id)
+                  .map(board => board.id)
+                  return team
+                })
+              ]
+            })
+          })
+        }
       })
   }
 
