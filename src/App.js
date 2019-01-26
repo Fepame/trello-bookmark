@@ -25,6 +25,11 @@ const stateLink = withClientState({
   cache,
   defaults: {},
   resolvers: {
+    Query: {
+      getSelectedTeam: () => {
+        console.log("heyeyeas")
+      }
+    },
     Mutation: {
       setSelectedTeam: (root, { selectedTeamId }, { cache, getCacheKey }) => {
         const query = gql`

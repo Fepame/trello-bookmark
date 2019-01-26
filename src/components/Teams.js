@@ -27,9 +27,8 @@ const SET_SELECTED_TEAM = gql`
 
 const Teams = () => (
   <Query query={GET_TEAMS} variables={{ path: addToken('organizations') }}>
-    {({ loading, error, data, client }) => {
-      if (loading) return null
-      if (error) return `Error!: ${error}`
+    {({ data, client }) => {
+      if (!Object.keys(data).length) return null
 
       return <Mutation mutation={SET_SELECTED_TEAM}>
         {setSelectedTeam => <Select

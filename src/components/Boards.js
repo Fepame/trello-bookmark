@@ -23,7 +23,7 @@ const GET_BOARDS = gql`
 `
 
 const GET_SELECTED_TEAM = gql`
-  query getSelectedTeam($selected: Boolean!) {
+  {
     teams {
       id
       selected @client
@@ -33,36 +33,40 @@ const GET_SELECTED_TEAM = gql`
 
 const Boards = () => (
   <div>
-  <Query query={GET_SELECTED_TEAM} variables={{ selected: true }} >
-    {({ loading, error, data, client: { cache } }) => {
-        if (loading) return null
-        if (error) return `Error!: ${error}`
-        console.log(data)
+    <Query query={GET_SELECTED_TEAM} variables={{ selected: true }} >
+      {({ data: { teams }, client: { cache } }) => {
+        if (!teams) return null
+        const isFoundSelected = teams.some(team => team.selected)
+        const selectedTeamId = isFoundSelected ? teams.find(team => team.selected).id : null 
 
-        return <div>"hey"</div>
-    }}
-  </Query>
-  <Query query={GET_BOARDS} variables={{ path: addToken('boards') }}>
-    {({ loading, error, data, client: { cache } }) => {
-      if (loading) return null
-      if (error) return `Error!: ${error}`
+        return <Query query={GET_BOARDS} variables={{ path: addToken('boards')}}>
+          {({ data, client: { cache } }) => {
+            if (data && !Object.keys(data).length) return null
 
-      return <Select
-        style={{width: '100%'}}
-      >
-        {data.boards.map(board => {
-          /* console.log(board) */
-          return (<Option
-              key={board.id}
-              value={board.id}
+            return <Select
+              style={{width: '100%'}}
             >
-              {board.name}
-            </Option>
-          )}
-        )}
-      </Select>
-    }}
-  </Query>
+              {
+                data
+                .boards
+                .filter(board => !board.closed)
+                .filter(board => board.idOrganization === selectedTeamId)
+                .map(board => {
+                // console.log(board)
+                  return (<Option
+                      key={board.id}
+                      value={board.id}
+                    >
+                      {board.name}
+                    </Option>
+                  )
+                }
+              )}
+            </Select>
+          }}
+        </Query>
+      }}
+    </Query>
   </div>
 )
 
