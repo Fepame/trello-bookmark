@@ -33,10 +33,6 @@ const GET_BOARDS = gql`
   }
 `
 
-function displayRender(label) {
-  return label[label.length - 1];
-}
-
 const Location = () => (
   <Query query={GET_TEAMS} variables={{ path: addToken('organizations') }}>
     {({ data: { teams }, client }) => {
@@ -49,25 +45,24 @@ const Location = () => (
             id: null,
             displayName: "Private"
           }, ...teams].map(team => ({
-            value: team.id,
-            label: team.displayName,
+            ...team,
+            name: team.displayName,
             children: boards
               .filter(board => board.idOrganization === team.id)
               .map(board => ({
-                value: board.id,
-                label: board.name,
-                children: board.lists.map(list => ({
-                  value: list.id,
-                  label: list.name
-                }))
+                ...board,
+                children: board.lists
               }))
           }))
 
           return <Cascader
             style={{width: '100%'}}
             options={options}
+            fieldNames={{ label: 'name', value: 'id' }}
             expandTrigger="hover"
-            changeOnSelect
+            placeholder="Select card location"
+            popupClassName="cascader-popup"
+            autoFocus
           />
         }}
       </Query>
