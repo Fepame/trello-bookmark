@@ -6,21 +6,24 @@ const { Option } = Select
 
 const addToken = path => `${path}?token=d2a458be144dbcb2e8ed01d0b95c2a274dbe70873f8ceaa1a6180ddaf9487495&key=e9d4b0061c2ac9a0529240b09d88521c`
 
-const GET_TEAMS = gql`
+const GET_BOARDS = gql`
   query ($path: String!) {
-    teams @rest(
-      type: "Team", path: $path
+    boards @rest(
+      type: "Board", path: $path
     ) {
       __typename
-      displayName
+      name
       id
+      closed
+      url
+      idOrganization
       selected @client
     }
   }
 `
 
-const Teams = () => (
-  <Query query={GET_TEAMS} variables={{ path: addToken('organizations') }}>
+const Boards = () => (
+  <Query query={GET_BOARDS} variables={{ path: addToken('boards') }}>
     {({ loading, error, data, client: { cache } }) => {
       if (loading) return null
       if (error) return `Error!: ${error}`
@@ -50,16 +53,19 @@ const Teams = () => (
           })
         }}
       >
-        {data.teams.map(team => <Option
-            key={team.id}
-            value={team.id}
-          >
-            {team.displayName}
-          </Option>
+        {data.boards.map(board => {
+          console.log(board)
+          return (<Option
+              key={board.id}
+              value={board.id}
+            >
+              {board.name}
+            </Option>
+          )}
         )}
       </Select>
     }}
   </Query>
 )
 
-export default Teams
+export default Boards

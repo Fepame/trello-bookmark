@@ -15,46 +15,18 @@ import { withClientState } from 'apollo-link-state'
 import Settings from "./Settings"
 import gql from 'graphql-tag'
 import TeamsComp from './components/Teams'
+import BoardsComp from './components/Boards'
 
 const restLink = new RestLink({
   uri: 'https://api.trello.com/1/members/me/',
 })
 
-const defaults = {
-  selectedTeamId: '',
-}
-
 const cache = new InMemoryCache()
 
 const stateLink = withClientState({ 
   cache,
-  defaults,
-  resolvers: {
-    Mutation: {
-      setSelectedTeam: (root, { selectedTeamId }, { cache, getCacheKey }) => {
-        const query = gql`
-          {
-            teams {
-              selected @client
-              id
-              displayName
-              __typename
-            }
-          }
-        `
-        const data = cache.readQuery({ query })
-        cache.writeQuery({
-          query,
-          data: {
-            teams: data.teams.map(team => ({
-              ...team,
-              selected: team.id === selectedTeamId
-            }))
-          }
-        })
-      }
-    }
-  }
+  defaults: {},
+  resolvers: {}
 })
 
 const link = ApolloLink.from([
@@ -97,16 +69,12 @@ class App extends Component {
             <Col span={22}>
               <Divider>Card location</Divider>
               <Row>
-                <Col span={7} offset={1}>
-                  {/* <Select 
-                    showSearch
-                    optionFilterProp="children"
-                    placeholder="Select a board"
-                    style={{width: '100%'}}
-                  >
-                    {generateList(teams)}
-                  </Select> */}
+                <Col span={8} offset={1}>
                   <TeamsComp />
+                </Col>
+                
+                <Col span={8} offset={1}>
+                  <BoardsComp />
                 </Col>
               </Row>
             </Col>
