@@ -10,10 +10,8 @@ import { InMemoryCache } from 'apollo-cache-inmemory'
 import { ApolloProvider } from 'react-apollo'
 import { RestLink } from 'apollo-link-rest'
 import { withClientState } from 'apollo-link-state'
-import gql from 'graphql-tag'
 
-import TeamsComp from './components/Teams'
-import BoardsComp from './components/Boards'
+import Location from './components/Location'
 
 const restLink = new RestLink({
   uri: 'https://api.trello.com/1/members/me/',
@@ -44,12 +42,8 @@ const App = () => (
         <Col span={22}>
           <Divider>Card location</Divider>
           <Row>
-            <Col span={8} offset={1}>
-              <TeamsComp />
-            </Col>
-            
-            <Col span={8} offset={1}>
-              {/* <BoardsComp /> */}
+            <Col span={24}>
+              <Location />
             </Col>
           </Row>
         </Col>
