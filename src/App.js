@@ -24,39 +24,7 @@ const cache = new InMemoryCache()
 const stateLink = withClientState({ 
   cache,
   defaults: {},
-  resolvers: {
-    Query: {
-      getSelectedTeam: () => {
-        console.log("heyeyeas")
-      }
-    },
-    Mutation: {
-      setSelectedTeam: (root, { selectedTeamId }, { cache, getCacheKey }) => {
-        const query = gql`
-          {
-            teams {
-              selected @client
-              id
-              displayName
-              __typename
-            }
-          }
-        `
-        const data = cache.readQuery({ query })
-        cache.writeQuery({
-          query,
-          data: {
-            teams: data.teams.map(team => ({
-              ...team,
-              selected: team.id === selectedTeamId
-            }))
-          }
-        })
-
-        return null
-      }
-    }
-  }
+  resolvers: {}
 })
 
 const link = ApolloLink.from([
@@ -81,7 +49,7 @@ const App = () => (
             </Col>
             
             <Col span={8} offset={1}>
-              <BoardsComp />
+              {/* <BoardsComp /> */}
             </Col>
           </Row>
         </Col>

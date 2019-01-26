@@ -14,42 +14,52 @@ const GET_TEAMS = gql`
       __typename
       displayName
       id
-      selected @client
     }
   }
 `
 
-const SET_SELECTED_TEAM = gql`
-  mutation setSelectedTeam($selectedTeamId: String!) {
-    setSelectedTeam(selectedTeamId: $selectedTeamId) @client
+const addTokenFithFilter = path => `${path}?filter=open&lists=open&token=d2a458be144dbcb2e8ed01d0b95c2a274dbe70873f8ceaa1a6180ddaf9487495&key=e9d4b0061c2ac9a0529240b09d88521c`
+
+const GET_BOARDS = gql`
+  query ($path: String!) {
+    boards @rest(
+      type: "Board", path: $path
+    ) {
+      __typename
+      name
+      id
+      lists
+      idOrganization
+    }
   }
 `
 
 const Teams = () => (
   <Query query={GET_TEAMS} variables={{ path: addToken('organizations') }}>
-    {({ data, client }) => {
-      if (!Object.keys(data).length) return null
-
-      return <Mutation mutation={SET_SELECTED_TEAM}>
-        {setSelectedTeam => <Select
-          style={{width: 200}}
-          onChange={selectedTeamId => {
-            setSelectedTeam({
-              variables: {
-                selectedTeamId
-              }
-            })
-          }}
-        >
-          {data.teams.map(team => <Option
-              key={team.id}
-              value={team.id}
-            >
-              {team.displayName}
-            </Option>
-          )}
-        </Select>}
-      </Mutation>
+    {({ data: { teams }, client }) => {
+      if(!teams) return null
+      return <Query query={GET_BOARDS} variables={{ path: addTokenFithFilter('boards') }}>
+        {({ data: { boards }, client }) => {
+          if(!boards) return null
+          console.log(boards)
+          const options = teams.map(team => ({
+            value: team.id,
+            label: team.displayName,
+            children: boards
+              .filter(board => board.idOrganization === team.id)
+              .map(board => ({
+                value: board.id,
+                label: board.name,
+                children: board.lists.map(list => ({
+                  value: list.id,
+                  label: list.name
+                }))
+              }))
+          }))
+          console.log(options)
+          return null
+        }}
+      </Query>
     }}
   </Query>
 )
