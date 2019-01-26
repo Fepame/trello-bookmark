@@ -1,6 +1,6 @@
 import React from 'react'
 import { Select } from 'antd'
-import { Query } from 'react-apollo'
+import { Query, Mutation } from 'react-apollo'
 import gql from 'graphql-tag'
 const { Option } = Select
 
@@ -19,45 +19,38 @@ const GET_TEAMS = gql`
   }
 `
 
+const SET_SELECTED_TEAM = gql`
+  mutation setSelectedTeam($selectedTeamId: String!) {
+    setSelectedTeam(selectedTeamId: $selectedTeamId) @client
+  }
+`
+
 const Teams = () => (
   <Query query={GET_TEAMS} variables={{ path: addToken('organizations') }}>
-    {({ loading, error, data, client: { cache } }) => {
+    {({ loading, error, data, client }) => {
       if (loading) return null
       if (error) return `Error!: ${error}`
 
-      return <Select
-        style={{width: '100%'}}
-        onChange={id => {
-          const query = gql`
-            {
-              teams {
-                selected @client
-                id
-                displayName
-                __typename
+      return <Mutation mutation={SET_SELECTED_TEAM}>
+        {setSelectedTeam => <Select
+          style={{width: 200}}
+          onChange={selectedTeamId => {
+            setSelectedTeam({
+              variables: {
+                selectedTeamId
               }
-            }
-          `
-          const data = cache.readQuery({ query })
-          cache.writeQuery({
-            query,
-            data: {
-              teams: data.teams.map(team => ({
-                ...team,
-                selected: team.id === id
-              }))
-            }
-          })
-        }}
-      >
-        {data.teams.map(team => <Option
-            key={team.id}
-            value={team.id}
-          >
-            {team.displayName}
-          </Option>
-        )}
-      </Select>
+            })
+          }}
+        >
+          {data.teams.map(team => <Option
+              key={team.id}
+              value={team.id}
+            >
+              {team.displayName}
+            </Option>
+          )}
+        </Select>}
+      </Mutation>
     }}
   </Query>
 )

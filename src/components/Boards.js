@@ -22,7 +22,26 @@ const GET_BOARDS = gql`
   }
 `
 
+const GET_SELECTED_TEAM = gql`
+  query getSelectedTeam($selected: Boolean!) {
+    teams {
+      id
+      selected @client
+    }
+  }
+`
+
 const Boards = () => (
+  <div>
+  <Query query={GET_SELECTED_TEAM} variables={{ selected: true }} >
+    {({ loading, error, data, client: { cache } }) => {
+        if (loading) return null
+        if (error) return `Error!: ${error}`
+        console.log(data)
+
+        return <div>"hey"</div>
+    }}
+  </Query>
   <Query query={GET_BOARDS} variables={{ path: addToken('boards') }}>
     {({ loading, error, data, client: { cache } }) => {
       if (loading) return null
@@ -44,6 +63,7 @@ const Boards = () => (
       </Select>
     }}
   </Query>
+  </div>
 )
 
 export default Boards

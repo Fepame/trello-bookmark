@@ -10,6 +10,8 @@ import { InMemoryCache } from 'apollo-cache-inmemory'
 import { ApolloProvider } from 'react-apollo'
 import { RestLink } from 'apollo-link-rest'
 import { withClientState } from 'apollo-link-state'
+import gql from 'graphql-tag'
+
 import TeamsComp from './components/Teams'
 import BoardsComp from './components/Boards'
 
@@ -23,9 +25,30 @@ const stateLink = withClientState({
   cache,
   defaults: {},
   resolvers: {
-    Query: {
-      boards: () => {
-        console.log('jej')
+    Mutation: {
+      setSelectedTeam: (root, { selectedTeamId }, { cache, getCacheKey }) => {
+        const query = gql`
+          {
+            teams {
+              selected @client
+              id
+              displayName
+              __typename
+            }
+          }
+        `
+        const data = cache.readQuery({ query })
+        cache.writeQuery({
+          query,
+          data: {
+            teams: data.teams.map(team => ({
+              ...team,
+              selected: team.id === selectedTeamId
+            }))
+          }
+        })
+
+        return null
       }
     }
   }
