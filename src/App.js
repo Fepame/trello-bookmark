@@ -32,50 +32,24 @@ const stateLink = withClientState({
   resolvers: {
     Mutation: {
       setSelectedTeam: (root, { selectedTeamId }, { cache, getCacheKey }) => {
-        const selectedTeams = cache.readQuery({
-          query: gql`
-            {
-              teams {
-                selected @client
-                id
-                displayName
-              }
+        const query = gql`
+          {
+            teams {
+              selected @client
+              id
+              displayName
+              __typename
             }
-          `
-        });
-
-        selectedTeams
-          .teams
-          .filter(team => team.selected)
-          .map(team => {
-            const id = getCacheKey({ __typename: 'Team', id: team.id })
-            cache.writeFragment({
-              id,
-              fragment: gql`
-                fragment SelectTeam on Team {
-                    selected @client
-                }
-              `,
-              data: {
-                selected: false,
-                __typename: "Team"
-              }
-            })
-            return null
-          })
-        
-        
-        const id = getCacheKey({ __typename: 'Team', id: selectedTeamId })
-        cache.writeFragment({
-          id,
-          fragment: gql`
-            fragment SelectTeam on Team {
-                selected @client
-            }
-          `,
+          }
+        `
+        const data = cache.readQuery({ query })
+        cache.writeQuery({
+          query,
           data: {
-            selected: true,
-            __typename: "Team"
+            teams: data.teams.map(team => ({
+              ...team,
+              selected: team.id === selectedTeamId
+            }))
           }
         })
       }
