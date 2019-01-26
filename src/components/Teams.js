@@ -9,11 +9,12 @@ const addToken = path => `${path}?token=d2a458be144dbcb2e8ed01d0b95c2a274dbe7087
 const GET_TEAMS = gql`
   query ($path: String!) {
     teams @rest(
-      type: "Teams", path: $path
+      type: "Team", path: $path
     ) {
       __typename
       displayName
       id
+      selected @client
     }
   }
 `

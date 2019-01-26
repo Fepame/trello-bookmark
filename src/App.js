@@ -14,7 +14,7 @@ import { RestLink } from 'apollo-link-rest'
 import { withClientState } from 'apollo-link-state'
 import Settings from "./Settings"
 import gql from 'graphql-tag'
-import Teams from './components/Teams'
+import TeamsComp from './components/Teams'
 
 const restLink = new RestLink({
   uri: 'https://api.trello.com/1/members/me/',
@@ -31,16 +31,52 @@ const stateLink = withClientState({
   defaults,
   resolvers: {
     Mutation: {
-      setSelectedTeam: (root, { selectedTeamId }, { cache }) => {
-        cache.writeQuery({
+      setSelectedTeam: (root, { selectedTeamId }, { cache, getCacheKey }) => {
+        const selectedTeams = cache.readQuery({
           query: gql`
-            query GetSelectedTeam {
-              selectedTeamId @client
+            {
+              teams {
+                selected @client
+                id
+                displayName
+              }
+            }
+          `
+        });
+
+        selectedTeams
+          .teams
+          .filter(team => team.selected)
+          .map(team => {
+            const id = getCacheKey({ __typename: 'Team', id: team.id })
+            cache.writeFragment({
+              id,
+              fragment: gql`
+                fragment SelectTeam on Team {
+                    selected @client
+                }
+              `,
+              data: {
+                selected: false,
+                __typename: "Team"
+              }
+            })
+            return null
+          })
+        
+        
+        const id = getCacheKey({ __typename: 'Team', id: selectedTeamId })
+        cache.writeFragment({
+          id,
+          fragment: gql`
+            fragment SelectTeam on Team {
+                selected @client
             }
           `,
           data: {
-            selectedTeamId
-          },
+            selected: true,
+            __typename: "Team"
+          }
         })
       }
     }
@@ -96,7 +132,7 @@ class App extends Component {
                   >
                     {generateList(teams)}
                   </Select> */}
-                  <Teams />
+                  <TeamsComp />
                 </Col>
               </Row>
             </Col>
