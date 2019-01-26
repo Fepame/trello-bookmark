@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { Select } from 'antd'
-import { Query, Mutation } from 'react-apollo'
+import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
 const { Option } = Select
 
