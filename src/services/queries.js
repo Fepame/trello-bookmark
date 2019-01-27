@@ -8,9 +8,17 @@ export const GET_BOARDS = gql`
     ) {
       __typename
       name
-      id
+      id @export(as: "boardId")
       lists
       idOrganization
+      labels (credentials: $credentials) @rest(
+        type: "Label",
+        path: "boards/{exportVariables.boardId}/labels?{args.credentials}"
+      ) {
+        id
+        name
+        color
+      }
     }
   }
 `
@@ -28,6 +36,14 @@ export const GET_TEAMS = gql`
   }
 `
 
+export const GET_LABELS = gql`
+  {
+    boards {
+      id
+    }
+  }
+`
+
 export const GET_CARD = gql`
   {
     card {
@@ -35,6 +51,7 @@ export const GET_CARD = gql`
       title
       link
       description
+      boardId
       listId
       __typename
     }

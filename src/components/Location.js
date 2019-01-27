@@ -42,10 +42,18 @@ const Location = () => (
               allowClear={false}
               onChange={path => {
                 const [listId] = path.slice(-1)
+                const [boardId] = path.slice(-2)
                 setCardField({
                   variables: {
                     fieldName: "listId",
                     fieldValue: listId,
+                    __typename: "Card"
+                  }
+                })
+                setCardField({
+                  variables: {
+                    fieldName: "boardId",
+                    fieldValue: boardId,
                     __typename: "Card"
                   }
                 })

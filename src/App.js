@@ -19,6 +19,7 @@ import Title from './components/Title'
 import Description from './components/Description'
 import Link from './components/Link'
 import Submit from './components/Submit'
+import Labels from './components/Labels'
 
 const restLink = new RestLink({
   uri: 'https://api.trello.com/1/',
@@ -35,6 +36,7 @@ const stateLink = withClientState({
       link: "http://google.com",
       title: "Some title",
       description: "Some desc",
+      boardId: '',
       listId: ''
     }
   },
@@ -90,6 +92,10 @@ const App = () => (
             
             <Col span={11}>
               <Submit />
+            </Col>
+            
+            <Col span={11}>
+              <Labels />
             </Col>
           </Row>
         </Col>
