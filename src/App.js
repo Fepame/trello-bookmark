@@ -14,6 +14,7 @@ import gql from 'graphql-tag'
 
 import Location from './components/Location'
 import Position from './components/Position'
+import Title from './components/Title'
 
 const restLink = new RestLink({
   uri: 'https://api.trello.com/1/members/me/',
@@ -26,7 +27,8 @@ const stateLink = withClientState({
   defaults: {
     card: {
       __typename: "Card",
-      position: "top"
+      position: "top",
+      title: "Some title"
     }
   },
   resolvers: {
@@ -46,6 +48,27 @@ const stateLink = withClientState({
             card: {
               ...card,
               position,
+              __typename: "Card"
+            }
+          }
+        })
+        return null
+      },
+      setTitle: (_, { title }, { cache }) => {
+        const query = gql`
+          {
+            card {
+              title
+            }
+          }
+        `
+        const card = cache.readQuery({ query })
+        cache.writeQuery({
+          query,
+          data: {
+            card: {
+              ...card,
+              title,
               __typename: "Card"
             }
           }
@@ -78,6 +101,13 @@ const App = () => (
             </Col>
             <Col span={6} offset={1}>
               <Position />
+            </Col>
+          </Row>
+          
+          <Divider>Card details</Divider>
+          <Row>
+            <Col span={11}>
+              <Title />
             </Col>
           </Row>
         </Col>

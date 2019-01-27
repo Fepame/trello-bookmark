@@ -29,7 +29,7 @@ const Position = () => (
             value={card.position}
             buttonStyle="solid"
             onChange={e => {
-                setPosition({
+              setPosition({
                 variables: {
                   position: e.target.value,
                   __typename: "Card"
