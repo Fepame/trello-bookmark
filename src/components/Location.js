@@ -3,15 +3,17 @@ import { Cascader } from 'antd'
 import { Query, Mutation } from 'react-apollo'
 import { GET_BOARDS, GET_TEAMS } from '../services/queries'
 import { SET_CARD_FIELD } from '../services/mutations'
-
-const addToken = path => `${path}?token=d2a458be144dbcb2e8ed01d0b95c2a274dbe70873f8ceaa1a6180ddaf9487495&key=e9d4b0061c2ac9a0529240b09d88521c`
-const addTokenFithFilter = path => `${path}?filter=open&lists=open&token=d2a458be144dbcb2e8ed01d0b95c2a274dbe70873f8ceaa1a6180ddaf9487495&key=e9d4b0061c2ac9a0529240b09d88521c`
+import { credentials } from '../services/utils'
 
 const Location = () => (
-  <Query query={GET_TEAMS} variables={{ path: addToken('organizations') }}>
-    {({ data: { teams }, client }) => {
+  <Query query={GET_TEAMS} variables={{
+    credentials
+  }}>
+    {({data: { teams }}) => {
       if(!teams) return null
-      return <Query query={GET_BOARDS} variables={{ path: addTokenFithFilter('boards') }}>
+      return <Query query={GET_BOARDS} variables={{
+        credentials
+      }}>
         {({ data: { boards }, client }) => {
           if(!boards) return null
 
