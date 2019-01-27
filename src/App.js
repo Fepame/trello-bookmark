@@ -59,7 +59,7 @@ const App = () => (
             </Col>
             <Col span={6} offset={1}>
               <FieldWrapper>
-                {props => <Position {...props} />}
+                <Position />
               </FieldWrapper>
             </Col>
           </Row>
@@ -68,13 +68,13 @@ const App = () => (
           <Row>
             <Col span={11}>
               <FieldWrapper>
-                {props => <Title {...props} />}
+                <Title />
               </FieldWrapper>
             </Col>
             
             <Col span={11}>
               <FieldWrapper>
-                {props => <Link {...props} />}
+                <Link />
               </FieldWrapper>
             </Col>
           </Row>
