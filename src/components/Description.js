@@ -2,15 +2,15 @@ import React from 'react'
 import { Input } from 'antd'
 const { TextArea } = Input
 
-const Title = ({ setCardField, card })  => (
+const Description = ({ setCardField, card })  => (
   <TextArea 
-    placeholder="Card title" 
-    autosize={{ minRows: 2, maxRows: 2 }}
-    value={card.title}
+    placeholder="Card description" 
+    autosize={{ minRows: 4, maxRows: 4 }}
+    value={card.description}
     onChange={e => {
       setCardField({
         variables: {
-          fieldName: "title",
+          fieldName: "description",
           fieldValue: e.target.value,
           __typename: "Card"
         }
@@ -19,4 +19,4 @@ const Title = ({ setCardField, card })  => (
   />
 )
 
-export default Title
+export default Description

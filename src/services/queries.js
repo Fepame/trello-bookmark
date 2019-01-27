@@ -6,6 +6,7 @@ export const GET_CARD = gql`
       position
       title
       link
+      description
       __typename
     }
   }

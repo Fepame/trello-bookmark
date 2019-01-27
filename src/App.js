@@ -16,6 +16,7 @@ import FieldWrapper from './components/FieldWrapper'
 import Location from './components/Location'
 import Position from './components/Position'
 import Title from './components/Title'
+import Description from './components/Description'
 import Link from './components/Link'
 
 const restLink = new RestLink({
@@ -31,7 +32,8 @@ const stateLink = withClientState({
       __typename: "Card",
       position: "top",
       link: "http...",
-      title: "Some title"
+      title: "Some title",
+      description: "Some desc"
     }
   },
   resolvers
@@ -75,6 +77,12 @@ const App = () => (
             <Col span={11}>
               <FieldWrapper>
                 <Link />
+              </FieldWrapper>
+            </Col>
+            
+            <Col span={11}>
+              <FieldWrapper>
+                <Description />
               </FieldWrapper>
             </Col>
           </Row>
