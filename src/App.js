@@ -18,6 +18,7 @@ import Position from './components/Position'
 import Title from './components/Title'
 import Description from './components/Description'
 import Link from './components/Link'
+import Submit from './components/Submit'
 
 const restLink = new RestLink({
   uri: 'https://api.trello.com/1/members/me/',
@@ -31,9 +32,10 @@ const stateLink = withClientState({
     card: {
       __typename: "Card",
       position: "top",
-      link: "http...",
+      link: "http://google.com",
       title: "Some title",
-      description: "Some desc"
+      description: "Some desc",
+      listId: ''
     }
   },
   resolvers
@@ -84,6 +86,10 @@ const App = () => (
               <FieldWrapper>
                 <Description />
               </FieldWrapper>
+            </Col>
+            
+            <Col span={11}>
+              <Submit />
             </Col>
           </Row>
         </Col>
