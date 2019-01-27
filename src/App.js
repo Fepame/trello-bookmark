@@ -12,6 +12,7 @@ import { RestLink } from 'apollo-link-rest'
 import { withClientState } from 'apollo-link-state'
 import resolvers from './services/resolvers'
 
+import FieldWrapper from './components/FieldWrapper'
 import Location from './components/Location'
 import Position from './components/Position'
 import Title from './components/Title'
@@ -57,18 +58,24 @@ const App = () => (
               <Location />
             </Col>
             <Col span={6} offset={1}>
-              <Position />
+              <FieldWrapper>
+                {props => <Position {...props} />}
+              </FieldWrapper>
             </Col>
           </Row>
           
           <Divider>Card details</Divider>
           <Row>
             <Col span={11}>
-              <Title />
+              <FieldWrapper>
+                {props => <Title {...props} />}
+              </FieldWrapper>
             </Col>
             
             <Col span={11}>
-              <Link />
+              <FieldWrapper>
+                {props => <Link {...props} />}
+              </FieldWrapper>
             </Col>
           </Row>
         </Col>
