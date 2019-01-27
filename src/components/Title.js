@@ -2,15 +2,8 @@ import React from 'react'
 import { Input } from 'antd'
 import { Query, Mutation } from 'react-apollo'
 import gql from 'graphql-tag'
+import { GET_TITLE } from '../services/queries'
 const { TextArea } = Input
-
-const GET_TITLE = gql`
-  {
-    card {
-      title
-    }
-  }
-`
 
 const SET_TITLE = gql`
   mutation setTitle($title: String!) {

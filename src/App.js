@@ -10,7 +10,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory'
 import { ApolloProvider } from 'react-apollo'
 import { RestLink } from 'apollo-link-rest'
 import { withClientState } from 'apollo-link-state'
-import gql from 'graphql-tag'
+import resolvers from './services/resolvers'
 
 import Location from './components/Location'
 import Position from './components/Position'
@@ -31,52 +31,7 @@ const stateLink = withClientState({
       title: "Some title"
     }
   },
-  resolvers: {
-    Mutation: {
-      setPosition: (_, { position }, { cache }) => {
-        const query = gql`
-          {
-            card {
-              position
-            }
-          }
-        `
-        const card = cache.readQuery({ query })
-        cache.writeQuery({
-          query,
-          data: {
-            card: {
-              ...card,
-              position,
-              __typename: "Card"
-            }
-          }
-        })
-        return null
-      },
-      setTitle: (_, { title }, { cache }) => {
-        const query = gql`
-          {
-            card {
-              title
-            }
-          }
-        `
-        const card = cache.readQuery({ query })
-        cache.writeQuery({
-          query,
-          data: {
-            card: {
-              ...card,
-              title,
-              __typename: "Card"
-            }
-          }
-        })
-        return null
-      }
-    }
-  }
+  resolvers
 })
 
 const link = ApolloLink.from([

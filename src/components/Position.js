@@ -2,15 +2,8 @@ import React from 'react'
 import { Radio } from 'antd'
 import { Query, Mutation } from 'react-apollo'
 import gql from 'graphql-tag'
+import { GET_POSITION } from '../services/queries';
 const { Group, Button } = Radio
-
-const GET_POSITION = gql`
-  {
-    card {
-      position
-    }
-  }
-`
 
 const SET_POSITION = gql`
   mutation setPosition($position: String!) {
