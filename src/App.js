@@ -21,7 +21,7 @@ import Link from './components/Link'
 import Submit from './components/Submit'
 
 const restLink = new RestLink({
-  uri: 'https://api.trello.com/1/members/me/',
+  uri: 'https://api.trello.com/1/',
 })
 
 const cache = new InMemoryCache()

@@ -4,7 +4,7 @@ export const GET_BOARDS = gql`
   query ($credentials: String!) {
     boards (credentials: $credentials) @rest(
       type: "Board",
-      path: "boards?filter=open&lists=open&{args.credentials}"
+      path: "members/me/boards?filter=open&lists=open&{args.credentials}"
     ) {
       __typename
       name
@@ -19,7 +19,7 @@ export const GET_TEAMS = gql`
   query ($credentials: String!) {
     teams (credentials: $credentials) @rest(
       type: "Team", 
-      path: "organizations?{args.credentials}"
+      path: "members/me/organizations?{args.credentials}"
     ) {
       __typename
       displayName

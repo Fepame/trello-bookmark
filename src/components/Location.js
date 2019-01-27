@@ -39,6 +39,7 @@ const Location = () => (
               expandTrigger="hover"
               placeholder="Select card location"
               popupClassName="cascader-popup"
+              allowClear={false}
               onChange={path => {
                 const [listId] = path.slice(-1)
                 setCardField({
