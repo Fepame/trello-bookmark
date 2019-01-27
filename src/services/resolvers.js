@@ -1,30 +1,15 @@
-import { GET_POSITION, GET_TITLE } from './queries';
+import { GET_CARD } from './queries';
 
 const resolvers = {
   Mutation: {
-    setPosition: (_, { position }, { cache }) => {
-      const card = cache.readQuery({ query: GET_POSITION })
+    setCardField: (_, { fieldName, fieldValue }, { cache } ) => {
+      const { card } = cache.readQuery({ query: GET_CARD })
       cache.writeQuery({
-        query: GET_POSITION,
+        query: GET_CARD,
         data: {
           card: {
             ...card,
-            position,
-            __typename: "Card"
-          }
-        }
-      })
-      return null
-    },
-    setTitle: (_, { title }, { cache }) => {
-      const card = cache.readQuery({ query: GET_TITLE })
-      cache.writeQuery({
-        query: GET_TITLE,
-        data: {
-          card: {
-            ...card,
-            title,
-            __typename: "Card"
+            [fieldName]: fieldValue
           }
         }
       })
