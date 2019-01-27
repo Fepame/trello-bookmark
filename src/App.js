@@ -15,6 +15,7 @@ import resolvers from './services/resolvers'
 import Location from './components/Location'
 import Position from './components/Position'
 import Title from './components/Title'
+import Link from './components/Link'
 
 const restLink = new RestLink({
   uri: 'https://api.trello.com/1/members/me/',
@@ -28,6 +29,7 @@ const stateLink = withClientState({
     card: {
       __typename: "Card",
       position: "top",
+      link: "http...",
       title: "Some title"
     }
   },
@@ -63,6 +65,10 @@ const App = () => (
           <Row>
             <Col span={11}>
               <Title />
+            </Col>
+            
+            <Col span={11}>
+              <Link />
             </Col>
           </Row>
         </Col>
