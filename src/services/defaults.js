@@ -7,6 +7,8 @@ export default {
     description: "Some desc",
     boardId: '',
     listId: '',
+    dueDate: '',
+    dueTime: '',
     selectedLabels: []
   }
 }

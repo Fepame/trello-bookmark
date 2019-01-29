@@ -21,6 +21,8 @@ import Description from './components/Description'
 import Link from './components/Link'
 import Submit from './components/Submit'
 import Labels from './components/Labels'
+import DueDate from './components/DueDate'
+import DueTime from './components/DueTime'
 
 const restLink = new RestLink({
   uri: 'https://api.trello.com/1/',
@@ -80,14 +82,27 @@ const App = () => (
                 <Description />
               </FieldWrapper>
             </Col>
-            
+
             <Col span={11}>
-              <Submit />
+              <FieldWrapper>
+                <DueDate />
+              </FieldWrapper>
+            </Col>
+
+            <Col span={11}>
+              <FieldWrapper>
+                <DueTime />
+              </FieldWrapper>
             </Col>
             
             <Col span={11}>
               <Labels />
             </Col>
+            
+            <Col span={11}>
+              <Submit />
+            </Col>
+            
           </Row>
         </Col>
       </Row>

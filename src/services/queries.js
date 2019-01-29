@@ -51,6 +51,8 @@ export const GET_CARD = gql`
       description
       boardId
       listId
+      dueDate
+      dueTime
       __typename
     }
   }
