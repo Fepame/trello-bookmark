@@ -8,17 +8,9 @@ export const GET_BOARDS = gql`
     ) {
       __typename
       name
-      id @export(as: "boardId")
+      id
       lists
       idOrganization
-      labels (credentials: $credentials) @rest(
-        type: "Label",
-        path: "boards/{exportVariables.boardId}/labels?{args.credentials}"
-      ) {
-        id
-        name
-        color
-      }
     }
   }
 `
@@ -37,9 +29,14 @@ export const GET_TEAMS = gql`
 `
 
 export const GET_LABELS = gql`
-  {
-    boards {
+  query ($credentials: String!, $boardId: String!) {
+    labels (credentials: $credentials, boardId: $boardId) @rest(
+      type: "Label",
+      path: "boards/{args.boardId}/labels?{args.credentials}"
+    ) {
       id
+      name
+      color
     }
   }
 `
@@ -49,6 +46,7 @@ export const GET_CARD = gql`
     card {
       position
       title
+      selectedLabels
       link
       description
       boardId

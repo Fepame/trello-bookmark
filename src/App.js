@@ -11,6 +11,7 @@ import { ApolloProvider } from 'react-apollo'
 import { RestLink } from 'apollo-link-rest'
 import { withClientState } from 'apollo-link-state'
 import resolvers from './services/resolvers'
+import defaults from './services/defaults'
 
 import FieldWrapper from './components/FieldWrapper'
 import Location from './components/Location'
@@ -29,17 +30,7 @@ const cache = new InMemoryCache()
 
 const stateLink = withClientState({ 
   cache,
-  defaults: {
-    card: {
-      __typename: "Card",
-      position: "top",
-      link: "http://google.com",
-      title: "Some title",
-      description: "Some desc",
-      boardId: '',
-      listId: ''
-    }
-  },
+  defaults,
   resolvers
 })
 

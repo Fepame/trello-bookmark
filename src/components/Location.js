@@ -57,6 +57,13 @@ const Location = () => (
                     __typename: "Card"
                   }
                 })
+                setCardField({
+                  variables: {
+                    fieldName: "selectedLabels",
+                    fieldValue: [],
+                    __typename: "Card"
+                  }
+                })
               }}
               autoFocus
             />}
