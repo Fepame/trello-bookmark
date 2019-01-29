@@ -7,7 +7,7 @@ import { credentials, hexColor } from '../services/utils'
 
 const { Option } = Select
 
-
+console.error("refactor labels")
 const Labels = ({children}) => (
   <Query query={GET_CARD}>
     {({ data: { card }, client }) => {

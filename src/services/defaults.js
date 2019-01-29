@@ -8,7 +8,7 @@ export default {
     boardId: '',
     listId: '',
     dueDate: '',
-    dueTime: '',
+    dueTime: '12:00',
     selectedLabels: []
   }
 }
