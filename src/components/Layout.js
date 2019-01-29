@@ -63,7 +63,9 @@ const Layout = () => (
             </Item>
 
             <Item>
-              <Labels />
+              <FieldWrapper>
+                <Labels />
+              </FieldWrapper>
             </Item>
 
             <Item>
