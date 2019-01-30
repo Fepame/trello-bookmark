@@ -10,6 +10,7 @@ export default {
     listId: '',
     dueDate: '',
     dueTime: '12:00',
-    labels: []
+    labels: [],
+    assignees: []
   }
 }

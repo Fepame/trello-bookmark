@@ -18,6 +18,7 @@ import Labels from './Labels'
 import DueDate from './DueDate'
 import DueTime from './DueTime'
 import Cover from './Cover'
+import Assignees from './Assignees'
 
 const { Item } = Form
 
@@ -86,8 +87,10 @@ const Layout = () => (
               </Row>
             </Item>
 
-            <Item>
-              Assignees
+            <Item>        
+              <FieldWrapper>
+                <Assignees />
+              </FieldWrapper>
             </Item>
           </Col>
         </Row>
