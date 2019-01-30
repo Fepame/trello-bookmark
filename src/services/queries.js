@@ -28,6 +28,26 @@ export const GET_TEAMS = gql`
   }
 `
 
+export const GET_ASSIGNEES = gql`
+  query ($credentials: String!, $boardId: String!) {
+    assignees (credentials: $credentials, boardId: $boardId) @rest(
+      type: "Assignee",
+      path: "boards/{args.boardId}/members?{args.credentials}"
+    ) {
+      id @export(as: "id")
+      fullName
+      username
+      details (credentials: $credentials) @rest(
+        type: "AssigneeDetails",
+        path: "member/{exportVariables.id}?{args.credentials}"
+      ) {
+        initials
+        avatarUrl    
+      }
+    }
+  }
+`
+
 export const GET_LABELS = gql`
   query ($credentials: String!, $boardId: String!) {
     labels (credentials: $credentials, boardId: $boardId) @rest(
@@ -54,6 +74,7 @@ export const GET_CARD = gql`
       dueDate
       dueTime
       cover
+      assignees
       __typename
     }
   }
