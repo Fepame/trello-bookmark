@@ -6,9 +6,10 @@ export default {
     title: "Some title",
     description: "Some desc",
     boardId: '',
+    cover: '',
     listId: '',
     dueDate: '',
     dueTime: '12:00',
-    selectedLabels: []
+    labels: []
   }
 }

@@ -14,16 +14,25 @@ export const hexColor = {
   yellow: "#f2d600"
 }
 
-export const buildURL = (link, query) => {
-  const url = new URL(`https://api.trello.com/1/${link}`)
-  url.search = new URLSearchParams(
-    Object.assign({
-      key: process.env.REACT_APP_TRELLO_API_KEY,
-      token: localStorage.getItem("token")
-    }, query)
-  )
-  return url
+export const getImageSrc = (e, callback) => {
+  const items = e.clipboardData.items;
+
+  [...items].map(item => {
+    if (item.kind === 'file') {
+      const blob = item.getAsFile()
+      const reader = new FileReader()
+      reader.onload = e => {
+        const imageSrc = e.target.result
+        if(/base64/.test(imageSrc)) {
+          callback(imageSrc)
+        }
+      }
+      reader.readAsDataURL(blob)
+    }
+    return ""
+  })
 }
+
 
 export const getCurrentTab = callback => {
   const queryInfo = {

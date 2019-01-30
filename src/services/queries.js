@@ -46,13 +46,14 @@ export const GET_CARD = gql`
     card {
       position
       title
-      selectedLabels
+      labels
       link
       description
       boardId
       listId
       dueDate
       dueTime
+      cover
       __typename
     }
   }

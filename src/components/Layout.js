@@ -17,6 +17,7 @@ import Submit from './Submit'
 import Labels from './Labels'
 import DueDate from './DueDate'
 import DueTime from './DueTime'
+import Cover from './Cover'
 
 const { Item } = Form
 
@@ -52,7 +53,9 @@ const Layout = () => (
             </Item>
 
             <Item>
-              Cover
+              <FieldWrapper>
+                <Cover />
+              </FieldWrapper>
             </Item>
           </Col>
           <Col span={11} offset={2}>

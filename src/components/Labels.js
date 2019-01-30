@@ -18,12 +18,12 @@ const Labels = ({ setCardField, card }) => {
       return <Select
         mode="multiple"
         placeholder="Select labels"
-        value={card.selectedLabels}
-        onChange={selectedLabels => {
+        value={card.labels}
+        onChange={labels => {
           setCardField({
             variables: {
-              fieldName: "selectedLabels",
-              fieldValue: selectedLabels,
+              fieldName: "labels",
+              fieldValue: labels,
               __typename: "Card"
             }
           })
@@ -37,7 +37,7 @@ const Labels = ({ setCardField, card }) => {
               style={{
                 width: '100%',
                 textShadow: '1px 1px 1px rgba(50,50,50,0.7)',
-                filter: card.selectedLabels.includes(label.id)
+                filter: card.labels.includes(label.id)
                   ? 'none'
                   : 'grayscale(30%) opacity(90%)'
               }}
