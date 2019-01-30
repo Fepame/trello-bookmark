@@ -1,21 +1,26 @@
 import React from 'react'
-import { Cascader } from 'antd'
+import { Cascader, Select } from 'antd'
 import { Query, Mutation } from 'react-apollo'
 import { GET_BOARDS, GET_TEAMS } from '../services/queries'
 import { SET_CARD_FIELD } from '../services/mutations'
 import { credentials } from '../services/utils'
+
+const LocationStub = <Select
+  placeholder="Select card location"
+  style={{ width: '100%' }}
+/>
 
 const Location = () => (
   <Query query={GET_TEAMS} variables={{
     credentials
   }}>
     {({data: { teams }}) => {
-      if(!teams) return null
+      if(!teams) return LocationStub
       return <Query query={GET_BOARDS} variables={{
         credentials
       }}>
         {({ data: { boards }, client }) => {
-          if(!boards) return null
+          if(!boards) return LocationStub
 
           const options = [{
             id: null,
