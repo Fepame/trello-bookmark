@@ -1,6 +1,6 @@
 import React from 'react'
 import { Icon } from 'antd'
-import { getImageSrc } from '../services/utils'
+import { getImageSrc } from '../../../../services/utils'
 
 const Cover = ({ setCardField, card }) => {
   document.onpaste = e => getImageSrc(

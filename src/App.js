@@ -7,7 +7,7 @@ import { RestLink } from 'apollo-link-rest'
 import { withClientState } from 'apollo-link-state'
 import resolvers from './services/resolvers'
 import defaults from './services/defaults'
-import Layout from './components/Layout'
+import MainPage from './components/pages/main'
 
 const restLink = new RestLink({
   uri: 'https://api.trello.com/1/',
@@ -34,7 +34,7 @@ const client = new ApolloClient({
 const App = () => (
   <ApolloProvider client={client}>
     <div className="App">
-      <Layout />
+      <MainPage />
     </div>
   </ApolloProvider>
 )

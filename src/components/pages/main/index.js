@@ -7,18 +7,18 @@ import {
   Button
 } from 'antd'
 
-import FieldWrapper from './FieldWrapper'
-import Location from './Location'
-import Position from './Position'
-import Title from './Title'
-import Description from './Description'
-import Link from './Link'
-import Submit from './Submit'
-import Labels from './Labels'
-import DueDate from './DueDate'
-import DueTime from './DueTime'
-import Cover from './Cover'
-import Assignees from './Assignees'
+import FieldWrapper from './fields/FieldWrapper'
+import Location from './fields/Location'
+import Position from './fields/Position'
+import Title from './fields/Title'
+import Description from './fields/Description'
+import Link from './fields/Link'
+import Submit from './fields/Submit'
+import Labels from './fields/Labels'
+import DueDate from './fields/DueDate'
+import DueTime from './fields/DueTime'
+import Cover from './fields/Cover'
+import Assignees from './fields/Assignees'
 
 const { Item } = Form
 

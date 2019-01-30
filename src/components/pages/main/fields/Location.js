@@ -1,9 +1,9 @@
 import React from 'react'
 import { Cascader, Select } from 'antd'
 import { Query, Mutation } from 'react-apollo'
-import { GET_BOARDS, GET_TEAMS } from '../services/queries'
-import { SET_CARD_FIELD } from '../services/mutations'
-import { credentials } from '../services/utils'
+import { GET_BOARDS, GET_TEAMS } from '../../../../services/queries'
+import { SET_CARD_FIELD } from '../../../../services/mutations'
+import { credentials } from '../../../../services/utils'
 
 const LocationStub = <Select
   placeholder="Select card location"

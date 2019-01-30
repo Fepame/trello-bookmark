@@ -1,8 +1,8 @@
 import React from 'react'
 import { Select, Tag, Input } from 'antd'
 import { Query} from 'react-apollo'
-import { GET_LABELS } from '../services/queries'
-import { credentials, hexColor } from '../services/utils'
+import { GET_LABELS } from '../../../../services/queries'
+import { credentials, hexColor } from '../../../../services/utils'
 
 const { Option } = Select
 const LabelsStub = <Input disabled placeholder="Select board to add labels" />

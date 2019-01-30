@@ -1,8 +1,8 @@
 import React from 'react'
 import { Avatar } from 'antd'
 import { Query } from 'react-apollo'
-import { GET_ASSIGNEES } from '../services/queries'
-import { credentials } from '../services/utils'
+import { GET_ASSIGNEES } from '../../../../services/queries'
+import { credentials } from '../../../../services/utils'
 
 const noBoardMessage = "Select board to set assignees"
 

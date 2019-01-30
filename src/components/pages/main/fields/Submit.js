@@ -1,8 +1,8 @@
 import React from 'react'
 import { Query, Mutation } from 'react-apollo'
-import { SUBMIT_CARD } from '../services/mutations'
-import { GET_CARD } from '../services/queries'
-import { credentials } from '../services/utils'
+import { SUBMIT_CARD } from '../../../../services/mutations'
+import { GET_CARD } from '../../../../services/queries'
+import { credentials } from '../../../../services/utils'
 import { Button } from 'antd'
 
 const Submit = ()  => (
