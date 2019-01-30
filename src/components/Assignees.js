@@ -19,8 +19,18 @@ const Assignees = ({ setCardField, card }) => {
           key: member.id,
           size: 64,
           alt: member.fullName,
-          onClick: e => {
-            {/* onToggleCardAssignee(member.id) */}
+          onClick: () => {
+            const assignees = card.assignees.includes(member.id)
+              ? card.assignees.filter(assigneeId => member.id !== assigneeId)
+              : [...card.assignees, member.id]
+
+            setCardField({
+              variables: {
+                fieldName: "assignees",
+                fieldValue: assignees,
+                __typename: "Card"
+              }
+            })
           },
           style: {
             margin: 1,
