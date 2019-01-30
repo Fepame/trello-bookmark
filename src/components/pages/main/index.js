@@ -4,8 +4,10 @@ import {
   Divider,
   Form,
   Col,
+  Icon,
   Button
 } from 'antd'
+import { Link as RouterLink } from 'react-router-dom'
 
 import FieldWrapper from './fields/FieldWrapper'
 import Location from './fields/Location'
@@ -22,7 +24,7 @@ import Assignees from './fields/Assignees'
 
 const { Item } = Form
 
-const Layout = () => (
+const Main = () => (
   <Row type="flex" justify="space-around">
     <Col span={22}>
       <Divider>Card location</Divider>
@@ -98,7 +100,9 @@ const Layout = () => (
 
         <Row type="flex" justify="space-around">
           <Col span={12}>
-            help
+            <RouterLink to="/settings">
+              <Icon type="setting" />
+            </RouterLink>
           </Col>
           <Col span={12} style={{textAlign: 'right'}}>
             <Button style={{marginRight: 10}}>Cancel</Button>
@@ -110,4 +114,4 @@ const Layout = () => (
   </Row>
 )
 
-export default Layout
+export default Main

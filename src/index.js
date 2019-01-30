@@ -1,26 +1,49 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { BrowserRouter, Route } from 'react-router-dom'
+import { ApolloLink } from 'apollo-link'
+import { ApolloClient } from 'apollo-client'
+import { InMemoryCache } from 'apollo-cache-inmemory'
+import { ApolloProvider } from 'react-apollo'
+import { RestLink } from 'apollo-link-rest'
+import { withClientState } from 'apollo-link-state'
+import resolvers from './services/resolvers'
+import defaults from './services/defaults'
+import MainPage from './components/pages/main'
+import SettingsPage from './components/pages/settings'
 import './index.css'
-import App from './App'
-import Settings from './Settings'
 
-const { location } = window
-const currentURL = location.href
-let route = <App />
+const restLink = new RestLink({
+  uri: 'https://api.trello.com/1/',
+})
 
-if(localStorage.getItem("token")){
-  if (currentURL.includes("settings")){
-    route = <Settings />
-  }
-} else {
-  if(currentURL.includes("token")) {
-    route = <Settings />
-  } else {
-    window.open(
-      `https://trello.com/1/authorize?expiration=never&callback_method=fragment&name=Trello%20Bookmark&scope=read,write,account&response_type=token&key=${process.env.REACT_APP_TRELLO_API_KEY}&redirect_uri=${encodeURIComponent(currentURL)}`,
-      '_blank'
-    )
-  }
-}
+const cache = new InMemoryCache()
 
-ReactDOM.render(route, document.getElementById('root'))
+const stateLink = withClientState({ 
+  cache,
+  defaults,
+  resolvers
+})
+
+const link = ApolloLink.from([
+  restLink,
+  stateLink
+])
+
+const client = new ApolloClient({
+  link,
+  cache
+})
+
+const App = () => (
+  <BrowserRouter>
+    <ApolloProvider client={client}>
+      <div className="App">
+        <Route path="/" exact component={MainPage} />
+        <Route path="/settings" exact component={SettingsPage} />
+      </div>
+    </ApolloProvider>
+  </BrowserRouter>
+)
+
+ReactDOM.render(<App />, document.getElementById('root'))
