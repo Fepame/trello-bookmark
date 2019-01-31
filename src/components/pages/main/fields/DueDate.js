@@ -10,7 +10,7 @@ const DueDate = ({ setCardField, card }) => (
     placeholder="Select date"
     style={{width: '100%'}}
     value={card.dueDate ? moment(card.dueDate, dateFormat) : null}
-    onChange={(momentObj, dateString) => setCardField({
+    onChange={(_, dateString) => setCardField({
       variables: {
         fieldName: "dueDate",
         fieldValue: dateString,

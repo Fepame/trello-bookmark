@@ -24,9 +24,7 @@ import Assignees from './fields/Assignees'
 
 const { Item } = Form
 
-const Main = props => {
-  console.log(props)
-  return (
+const Main = () => (
   <Row type="flex" justify="space-around">
     <Col span={22}>
       <Divider>Card location</Divider>
@@ -114,6 +112,6 @@ const Main = props => {
       </Form>
     </Col>
   </Row>
-)}
+)
 
 export default Main

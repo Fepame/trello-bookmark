@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import qs from 'qs'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import { ApolloLink } from 'apollo-link'
 import { ApolloClient } from 'apollo-client'
@@ -41,8 +42,8 @@ const App = () => {
   let token = localStorage.getItem("token") 
 
   if (hash.includes("#token")) {
-    token = hash.split("=").pop()
-    localStorage.setItem("token", token)
+    const parsedHash = qs.parse(hash)
+    localStorage.setItem("token", parsedHash['#token'])
     window.location.href = origin
     return null
   }

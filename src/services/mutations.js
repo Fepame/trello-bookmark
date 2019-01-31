@@ -13,6 +13,7 @@ export const SUBMIT_CARD = gql`
       path: "cards?{args.input.params}&{args.input.credentials}"
     ) {
       id
+      __typeName
     }
   }
 `

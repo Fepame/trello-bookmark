@@ -64,7 +64,7 @@ const Location = () => (
                 })
                 setCardField({
                   variables: {
-                    fieldName: "selectedLabels",
+                    fieldName: "labels",
                     fieldValue: [],
                     __typename: "Card"
                   }
