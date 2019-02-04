@@ -3,7 +3,6 @@ import { Cascader, Select } from 'antd'
 import { Query, Mutation } from 'react-apollo'
 import { GET_BOARDS, GET_TEAMS } from '../../../../services/queries'
 import { SET_CARD_FIELD } from '../../../../services/mutations'
-import { credentials } from '../../../../services/utils'
 
 const LocationStub = <Select
   placeholder="Select card location"
@@ -11,14 +10,10 @@ const LocationStub = <Select
 />
 
 const Location = () => (
-  <Query query={GET_TEAMS} variables={{
-    credentials
-  }}>
+  <Query query={GET_TEAMS}>
     {({data: { teams }}) => {
       if(!teams) return LocationStub
-      return <Query query={GET_BOARDS} variables={{
-        credentials
-      }}>
+      return <Query query={GET_BOARDS}>
         {({ data: { boards }, client }) => {
           if(!boards) return LocationStub
 

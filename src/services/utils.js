@@ -1,6 +1,3 @@
-export const credentials =
-  `key=${process.env.REACT_APP_TRELLO_API_KEY}&token=${process.env.REACT_APP_TRELLO_TOKEN}`
-
 export const hexColor = {
   black: "#355263",
   blue: "#0079bf",

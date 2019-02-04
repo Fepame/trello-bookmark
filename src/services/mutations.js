@@ -7,13 +7,29 @@ export const SET_CARD_FIELD = gql`
 `
 
 export const SUBMIT_CARD = gql`
-  mutation submitCard ($params: String!, $credentials: String!) {
-    submitCard (input: {params: $params, credentials: $credentials}) @rest (
+  mutation submitCard ($params: String!) {
+    submitCard (input: {params: $params}) @rest (
       method: "POST",
-      path: "cards?{args.input.params}&{args.input.credentials}"
+      path: "cards?{args.input.params}"
     ) {
       id
       __typeName
     }
+  }
+`
+
+export const SUBMIT_CARD_ATTACHMENT = gql`
+  mutation submitCardAttachment (
+    $params: any, 
+    $cardId: String!
+  ){
+    submitCardAttachment (
+      input: {params: $params},
+      cardId: $cardId
+    ) @rest (
+      method: "POST",
+      bodySerializerKey: "form",
+      path: "cards/{args.cardId}/attachments"
+    )
   }
 `

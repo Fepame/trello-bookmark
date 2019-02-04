@@ -2,14 +2,12 @@ import React from 'react'
 import { Avatar } from 'antd'
 import { Query } from 'react-apollo'
 import { GET_ASSIGNEES } from '../../../../services/queries'
-import { credentials } from '../../../../services/utils'
 
 const noBoardMessage = "Select board to set assignees"
 
 const Assignees = ({ setCardField, card }) => {
   if(!card || !card.boardId) return noBoardMessage
   return <Query query={GET_ASSIGNEES} variables={{
-    credentials,
     boardId: card.boardId
   }}>
     {({ data: { assignees }, client }) => {

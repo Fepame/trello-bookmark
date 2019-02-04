@@ -2,7 +2,7 @@ import React from 'react'
 import { Select, Tag, Input } from 'antd'
 import { Query} from 'react-apollo'
 import { GET_LABELS } from '../../../../services/queries'
-import { credentials, hexColor } from '../../../../services/utils'
+import { hexColor } from '../../../../services/utils'
 
 const { Option } = Select
 const LabelsStub = <Input disabled placeholder="Select board to add labels" />
@@ -10,7 +10,6 @@ const LabelsStub = <Input disabled placeholder="Select board to add labels" />
 const Labels = ({ setCardField, card }) => {
   if(!card || !card.boardId) return LabelsStub
   return <Query query={GET_LABELS} variables={{
-    credentials,
     boardId: card.boardId
   }}>
     {({ data: { labels }, client }) => {

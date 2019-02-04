@@ -1,10 +1,10 @@
 import gql from 'graphql-tag'
 
 export const GET_BOARDS = gql`
-  query ($credentials: String!) {
-    boards (credentials: $credentials) @rest(
+  query {
+    boards @rest(
       type: "Board",
-      path: "members/me/boards?filter=open&lists=open&{args.credentials}"
+      path: "members/me/boards?filter=open&lists=open"
     ) {
       __typename
       name
@@ -16,10 +16,10 @@ export const GET_BOARDS = gql`
 `
 
 export const GET_TEAMS = gql`
-  query ($credentials: String!) {
-    teams (credentials: $credentials) @rest(
+  query {
+    teams @rest(
       type: "Team", 
-      path: "members/me/organizations?{args.credentials}"
+      path: "members/me/organizations"
     ) {
       __typename
       displayName
@@ -29,17 +29,17 @@ export const GET_TEAMS = gql`
 `
 
 export const GET_ASSIGNEES = gql`
-  query ($credentials: String!, $boardId: String!) {
-    assignees (credentials: $credentials, boardId: $boardId) @rest(
+  query ($boardId: String!) {
+    assignees (boardId: $boardId) @rest(
       type: "Assignee",
-      path: "boards/{args.boardId}/members?{args.credentials}"
+      path: "boards/{args.boardId}/members"
     ) {
       id @export(as: "id")
       fullName
       username
-      details (credentials: $credentials) @rest(
+      details @rest(
         type: "AssigneeDetails",
-        path: "member/{exportVariables.id}?{args.credentials}"
+        path: "member/{exportVariables.id}"
       ) {
         initials
         avatarUrl    
@@ -49,10 +49,10 @@ export const GET_ASSIGNEES = gql`
 `
 
 export const GET_LABELS = gql`
-  query ($credentials: String!, $boardId: String!) {
-    labels (credentials: $credentials, boardId: $boardId) @rest(
+  query ($boardId: String!) {
+    labels (boardId: $boardId) @rest(
       type: "Label",
-      path: "boards/{args.boardId}/labels?{args.credentials}"
+      path: "boards/{args.boardId}/labels"
     ) {
       id
       name

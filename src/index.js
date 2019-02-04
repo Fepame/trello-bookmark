@@ -17,6 +17,16 @@ import './index.css'
 
 const restLink = new RestLink({
   uri: 'https://api.trello.com/1/',
+  customFetch: (uri, options) => new Promise((resolve, reject) => {
+    const combiner = uri.includes("?") ? "&" : "?"
+
+    fetch(
+      `${uri}${combiner}key=${process.env.REACT_APP_TRELLO_API_KEY}&token=${process.env.REACT_APP_TRELLO_TOKEN}`,
+      options
+    ).then(
+      r => resolve(r)
+    )
+  }),
 })
 
 const cache = new InMemoryCache()
