@@ -27,6 +27,17 @@ const restLink = new RestLink({
       r => resolve(r)
     )
   }),
+  bodySerializers: {
+    form: ({ url }) => {
+      const formData = new FormData();
+      formData.append("url", url);
+
+      const headers = new Headers()
+      headers.set('Content-Type', 'multipart/form-data');
+
+      return {body: formData};
+    }
+  }
 })
 
 const cache = new InMemoryCache()

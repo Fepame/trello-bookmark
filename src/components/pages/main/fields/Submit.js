@@ -37,12 +37,11 @@ const Submit = ()  => (
                 }).then(response => {
                   const { data: { submitCard: { id }}} = response
 
-                  let formData = new FormData()
-                  formData.append("url", card.link)
-
                   submitCardAttachment({
                     variables: {
-                      params: formData,
+                      data: {
+                        url: card.link
+                      },
                       cardId: id
                     }
                   })

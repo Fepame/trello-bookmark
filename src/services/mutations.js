@@ -20,15 +20,15 @@ export const SUBMIT_CARD = gql`
 
 export const SUBMIT_CARD_ATTACHMENT = gql`
   mutation submitCardAttachment (
-    $params: any, 
+    $data: any, 
     $cardId: String!
   ){
     submitCardAttachment (
-      input: {params: $params},
+      input: $data,
       cardId: $cardId
     ) @rest (
       method: "POST",
-      bodySerializerKey: "form",
+      bodySerializer: "form",
       path: "cards/{args.cardId}/attachments"
     )
   }
