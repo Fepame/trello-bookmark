@@ -5,6 +5,10 @@ export default {
       type: "loading",
       isVisible: false,
       __typename: "Spinner"
+    },
+    pathDefaults: {
+      lastUsed: [],
+      __typename: "PathDefaults"
     }
   },
   card: {

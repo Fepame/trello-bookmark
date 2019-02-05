@@ -69,6 +69,10 @@ export const GET_SETTINGS = gql`
         isVisible
         __typename
       }
+      pathDefaults {
+        lastUsed
+        __typename
+      }
       __typename
     }
   }

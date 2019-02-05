@@ -47,7 +47,7 @@ const Main = () => (
               <Divider>Card location</Divider>
               <Row>
                 <Col span={17}>
-                  <Location />
+                  <Location pathDefaults={settings.pathDefaults} />
                 </Col>
                 <Col span={6} offset={1}>
                   <FieldWrapper>

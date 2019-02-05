@@ -68,7 +68,7 @@ const Submit = ()  => (
                           __typename: "Settings"
                         }
                       })
-                    }, 1000)
+                    }, 300)
                   }
 
                   submitCard({
