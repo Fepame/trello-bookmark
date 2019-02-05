@@ -48,10 +48,10 @@ const restLink = new RestLink({
 
 const cache = new InMemoryCache()
 
-persistCache({
-  cache,
-  storage: window.localStorage
-})
+// persistCache({
+//   cache,
+//   storage: window.localStorage
+// })
 
 const stateLink = withClientState({ 
   cache,
