@@ -40,7 +40,8 @@ const Submit = ()  => (
                   submitCardAttachment({
                     variables: {
                       data: {
-                        url: card.link
+                        url: card.link,
+                        cover: card.cover
                       },
                       cardId: id
                     }

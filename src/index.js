@@ -13,6 +13,7 @@ import defaults from './services/defaults'
 import MainPage from './components/pages/main'
 import SettingsPage from './components/pages/settings'
 import NoMatchPage from './components/pages/no_match'
+import { generateBlob } from './services/utils';
 import './index.css'
 
 const restLink = new RestLink({
@@ -28,14 +29,18 @@ const restLink = new RestLink({
     )
   }),
   bodySerializers: {
-    form: ({ url }) => {
-      const formData = new FormData();
-      formData.append("url", url);
+    form: ({ url, cover }) => {
+      const formData = new FormData()
+      if(url) formData.append("url", url)
+      if(cover) {
+        formData.append(
+          "file",
+          generateBlob(cover),
+          "cover.jpg"
+        )
+      }
 
-      const headers = new Headers()
-      headers.set('Content-Type', 'multipart/form-data');
-
-      return {body: formData};
+      return {body: formData}
     }
   }
 })
