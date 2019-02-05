@@ -61,6 +61,15 @@ export const GET_LABELS = gql`
   }
 `
 
+export const GET_SETTINGS = gql`
+  {
+    settings {
+      isLoading
+      __typename
+    }
+  }
+`
+
 export const GET_CARD = gql`
   {
     card {

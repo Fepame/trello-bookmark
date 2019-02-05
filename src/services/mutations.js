@@ -6,6 +6,12 @@ export const SET_CARD_FIELD = gql`
   }
 `
 
+export const SET_SETTING = gql`
+  mutation setSetting($fieldName: String!, $fieldValue: any!) {
+    setSetting (fieldName: $fieldName, fieldValue: $fieldValue) @client
+  }
+`
+
 export const SUBMIT_CARD = gql`
   mutation submitCard ($params: String!) {
     submitCard (input: {params: $params}) @rest (

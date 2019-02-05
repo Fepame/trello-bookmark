@@ -3,11 +3,14 @@ import {
   Row,
   Divider,
   Form,
+  Spin,
   Col,
   Icon,
   Button
 } from 'antd'
+import { Query } from 'react-apollo'
 import { Link as RouterLink } from 'react-router-dom'
+import { GET_SETTINGS } from '../../../services/queries'
 
 import FieldWrapper from './fields/FieldWrapper'
 import Location from './fields/Location'
@@ -23,95 +26,104 @@ import Cover from './fields/Cover'
 import Assignees from './fields/Assignees'
 
 const { Item } = Form
+const spinIndicator = <Icon type="loading" style={{ fontSize: 60 }} spin />
 
 const Main = () => (
-  <Row type="flex" justify="space-around">
-    <Col span={22}>
-      <Divider>Card location</Divider>
-      <Row>
-        <Col span={17}>
-          <Location />
-        </Col>
-        <Col span={6} offset={1}>
-          <FieldWrapper>
-            <Position />
-          </FieldWrapper>
-        </Col>
-      </Row>
-      
-      <Divider>Card details</Divider>
-      <Form layout="vertical">
-        <Row>
-          <Col span={11}>
-            <Item>
-              <FieldWrapper>
-                <Title />
-              </FieldWrapper>
-            </Item>
-
-            <Item>
-              <FieldWrapper>
-                <Link />
-              </FieldWrapper>
-            </Item>
-
-            <Item>
-              <FieldWrapper>
-                <Cover />
-              </FieldWrapper>
-            </Item>
-          </Col>
-          <Col span={11} offset={2}>
-            <Item>
-              <FieldWrapper>
-                <Description />
-              </FieldWrapper>
-            </Item>
-
-            <Item>
-              <FieldWrapper>
-                <Labels />
-              </FieldWrapper>
-            </Item>
-
-            <Item>
-              <Row type="flex" justify="space-around">
-                <Col span={13}>
-                  <FieldWrapper>
-                    <DueDate />
-                  </FieldWrapper>
+  <Query query={GET_SETTINGS}>
+    {({ data: { settings }, client }) => {
+      if(!settings) return null
+      return (
+        <Row type="flex" justify="space-around">
+          <Spin spinning={settings.isLoading} indicator={spinIndicator}>
+            <Col span={22}>
+              <Divider>Card location</Divider>
+              <Row>
+                <Col span={17}>
+                  <Location />
                 </Col>
-                <Col span={10} offset={1}>
+                <Col span={6} offset={1}>
                   <FieldWrapper>
-                    <DueTime />
+                    <Position />
                   </FieldWrapper>
                 </Col>
               </Row>
-            </Item>
+              
+              <Divider>Card details</Divider>
+              <Form layout="vertical">
+                <Row>
+                  <Col span={11}>
+                    <Item>
+                      <FieldWrapper>
+                        <Title />
+                      </FieldWrapper>
+                    </Item>
 
-            <Item>        
-              <FieldWrapper>
-                <Assignees />
-              </FieldWrapper>
-            </Item>
-          </Col>
-        </Row>
-        <Divider />
+                    <Item>
+                      <FieldWrapper>
+                        <Link />
+                      </FieldWrapper>
+                    </Item>
 
-        <Row type="flex" justify="space-around">
-          <Col span={12}>
-            <RouterLink to="/settings">
-              <Icon type="setting" />
-            </RouterLink>
-          </Col>
-          <Col span={12} style={{textAlign: 'right'}}>
-            <Button style={{marginRight: 10}}>Cancel</Button>
-            <Submit />
-          </Col>
+                    <Item>
+                      <FieldWrapper>
+                        <Cover />
+                      </FieldWrapper>
+                    </Item>
+                  </Col>
+                  <Col span={11} offset={2}>
+                    <Item>
+                      <FieldWrapper>
+                        <Description />
+                      </FieldWrapper>
+                    </Item>
+
+                    <Item>
+                      <FieldWrapper>
+                        <Labels />
+                      </FieldWrapper>
+                    </Item>
+
+                    <Item>
+                      <Row type="flex" justify="space-around">
+                        <Col span={13}>
+                          <FieldWrapper>
+                            <DueDate />
+                          </FieldWrapper>
+                        </Col>
+                        <Col span={10} offset={1}>
+                          <FieldWrapper>
+                            <DueTime />
+                          </FieldWrapper>
+                        </Col>
+                      </Row>
+                    </Item>
+
+                    <Item>        
+                      <FieldWrapper>
+                        <Assignees />
+                      </FieldWrapper>
+                    </Item>
+                  </Col>
+                </Row>
+                <Divider />
+
+                <Row type="flex" justify="space-around">
+                  <Col span={12}>
+                    <RouterLink to="/settings">
+                      <Icon type="setting" />
+                    </RouterLink>
+                  </Col>
+                  <Col span={12} style={{textAlign: 'right'}}>
+                    <Button style={{marginRight: 10}}>Cancel</Button>
+                    <Submit />
+                  </Col>
+                </Row>
+              </Form>
+            </Col>
+          </Spin>
         </Row>
-      </Form>
-    </Col>
-  </Row>
+      )}}
+  </Query>
 )
 
 export default Main
