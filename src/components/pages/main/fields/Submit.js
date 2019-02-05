@@ -36,16 +36,28 @@ const Submit = ()  => (
                   }
                 }).then(response => {
                   const { data: { submitCard: { id }}} = response
-
-                  submitCardAttachment({
+                  const submit = data => submitCardAttachment({
                     variables: {
-                      data: {
-                        url: card.link,
-                        cover: card.cover
-                      },
+                      data: data,
                       cardId: id
                     }
                   })
+
+                  if(card.link && card.cover) {
+                    submit({
+                      url: card.link,
+                    }).then(() => submit({
+                      cover: card.cover
+                    }))
+                  } else if (card.link) {
+                    submit({
+                      url: card.link
+                    })
+                  } else if (card.cover) {
+                    submit({
+                      cover: card.cover
+                    })
+                  }
                 })
               }}
             >

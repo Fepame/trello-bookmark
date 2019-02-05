@@ -30,6 +30,9 @@ export const SUBMIT_CARD_ATTACHMENT = gql`
       method: "POST",
       bodySerializer: "form",
       path: "cards/{args.cardId}/attachments"
-    )
+    ) {
+      id
+      __typeName
+    }
   }
 `
