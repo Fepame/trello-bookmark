@@ -26,7 +26,6 @@ import Cover from './fields/Cover'
 import Assignees from './fields/Assignees'
 
 const { Item } = Form
-const spinIndicator = <Icon type="loading" style={{ fontSize: 60 }} spin />
 
 const Main = () => (
   <Query query={GET_SETTINGS}>
@@ -34,7 +33,16 @@ const Main = () => (
       if(!settings) return null
       return (
         <Row type="flex" justify="space-around">
-          <Spin spinning={settings.isLoading} indicator={spinIndicator}>
+          <Spin
+            spinning={settings.spinner.isVisible}
+            indicator={
+              <Icon
+                type={settings.spinner.type}
+                style={{ fontSize: 60 }}
+                spin={settings.spinner.type === "loading"}
+              />
+            }
+          >
             <Col span={22}>
               <Divider>Card location</Divider>
               <Row>

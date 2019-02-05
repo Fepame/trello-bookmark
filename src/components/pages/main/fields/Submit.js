@@ -31,15 +31,45 @@ const Submit = ()  => (
                     idList: card.listId
                   })
 
-                  const setLoading = isLoading => setSetting({
+                  setSetting({
                     variables: {
-                      fieldName: "isLoading",
-                      fieldValue: isLoading,
+                      fieldName: "spinner",
+                      fieldValue: {
+                        type: "loading",
+                        isVisible: true,
+                        __typename: "Spinner"
+                      },
                       __typename: "Settings"
                      }
                   })
 
-                  setLoading(true)
+                  const onSubmitSuccess = () => {
+                    setSetting({
+                      variables: {
+                        fieldName: "spinner",
+                        fieldValue: {
+                          type: "check-circle",
+                          isVisible: true,
+                          __typename: "Spinner"
+                        },
+                        __typename: "Settings"
+                      }
+                    })
+
+                    window.setTimeout(() => {
+                      setSetting({
+                        variables: {
+                          fieldName: "spinner",
+                          fieldValue: {
+                            type: "loading",
+                            isVisible: false,
+                            __typename: "Spinner"
+                          },
+                          __typename: "Settings"
+                        }
+                      })
+                    }, 1000)
+                  }
 
                   submitCard({
                     variables: {
@@ -59,17 +89,17 @@ const Submit = ()  => (
                         url: card.link,
                       }).then(() => submit({
                         cover: card.cover
-                      })).then(() => setLoading(false))
+                      })).then(() => onSubmitSuccess())
                     } else if (card.link) {
                       submit({
                         url: card.link
-                      }).then(() => setLoading(false))
+                      }).then(() => onSubmitSuccess())
                     } else if (card.cover) {
                       submit({
                         cover: card.cover
-                      }).then(() => setLoading(false))
+                      }).then(() => onSubmitSuccess())
                     } else {
-                      setLoading(false)
+                      onSubmitSuccess()
                     }
                   })
                 }}

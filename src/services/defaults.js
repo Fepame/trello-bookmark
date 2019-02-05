@@ -1,4 +1,12 @@
 export default {
+  settings: {
+    __typename: "Settings",
+    spinner: {
+      type: "loading",
+      isVisible: false,
+      __typename: "Spinner"
+    }
+  },
   card: {
     __typename: "Card",
     position: "top",

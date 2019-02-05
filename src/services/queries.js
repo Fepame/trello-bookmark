@@ -64,7 +64,11 @@ export const GET_LABELS = gql`
 export const GET_SETTINGS = gql`
   {
     settings {
-      isLoading
+      spinner {
+        type
+        isVisible
+        __typename
+      }
       __typename
     }
   }
