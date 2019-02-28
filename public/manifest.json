@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Trello Bookmark",
   "description": "Store your bookmarks as Trello Cards",
-  "version": "1.10.0",
+  "version": "2.0.0",
   "browser_action": {
     "default_popup": "index.html",
     "default_title": "Trello Bookmark"
