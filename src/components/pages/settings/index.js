@@ -1,15 +1,26 @@
 import React from 'react'
-import { Icon } from 'antd'
+import { Row, Col, Icon, Divider, Select } from 'antd'
 import { Link } from 'react-router-dom'
 
 const Settings = () => (
-  <div>
-    Settings page
-    <Link to="/">
-      <Icon type="home" />
-    </Link>
-
-  </div>
+  <Row type="flex" justify="space-around">
+    <Col span={22}>
+      <Divider>Card location</Divider>
+      <Row>
+        <Select
+          mode="multiple"
+          style={{ width: '100%' }}
+          placeholder="Please select"
+          defaultValue={['a10', 'c12']}
+        >
+          {[]}
+        </Select>
+      </Row>
+      <Link to="/">
+        <Icon type="arrow-left" />
+      </Link>
+    </Col>
+  </Row>
 )
 
 export default Settings

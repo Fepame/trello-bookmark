@@ -9,6 +9,16 @@ const LocationStub = <Select
   style={{ width: '100%' }}
 />
 
+const filter = (inputValue, path) => path
+  .some(option => 
+    option
+    .name
+    .toLowerCase()
+    .indexOf(
+      inputValue.toLowerCase()
+    ) > -1
+  )
+
 const Location = ({ pathDefaults }) => (
   <Mutation mutation={SET_SETTING}>
     {setSetting => (
@@ -44,6 +54,7 @@ const Location = ({ pathDefaults }) => (
                   popupClassName="cascader-popup"
                   value={pathDefaults.lastUsed}
                   allowClear={false}
+                  showSearch={{ filter }}
                   onChange={path => {
                     const [listId] = path.slice(-1)
                     const [boardId] = path.slice(-2)
