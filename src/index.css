@@ -23,10 +23,10 @@ body {
   margin-bottom: 0;
 }
 
-.App .cascader-popup .ant-cascader-menu-item.ant-cascader-menu-item-active {
+.cascader-popup .ant-cascader-menu-item.ant-cascader-menu-item-active {
   font-weight: normal !important;
 }
 
-.App .cascader-popup .ant-cascader-menu-item .ant-cascader-menu-item-expand-icon {
+.cascader-popup .ant-cascader-menu-item .ant-cascader-menu-item-expand-icon {
   right: 5px;
 }

@@ -89,6 +89,13 @@ const Location = ({ pathDefaults }) => (
                         __typename: "Card"
                       }
                     })
+                    setCardField({
+                      variables: {
+                        fieldName: "assignees",
+                        fieldValue: [],
+                        __typename: "Card"
+                      }
+                    })
                   }}
                 />}
               </Mutation>
