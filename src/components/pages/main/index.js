@@ -43,7 +43,7 @@ const Main = () => (
               />
             }
           >
-            <Col span={22}>
+            <Col span={22} offset={1}>
               <Divider>Card location</Divider>
               <Row>
                 <Col span={17}>

@@ -1,3 +1,17 @@
+export const getTabInfo = cb => window
+  .location
+  .protocol === 'chrome-extension:'
+  && window
+    .chrome
+    .tabs
+    .query(
+      {
+        active: true,
+        currentWindow: true
+      },
+      tabs => !tabs[0].url.includes("chrome:") && cb(tabs[0])
+    )
+
 export const hexColor = {
   black: "#355263",
   blue: "#0079bf",
@@ -27,19 +41,6 @@ export const getImageSrc = (e, callback) => {
       reader.readAsDataURL(blob)
     }
     return ""
-  })
-}
-
-
-export const getCurrentTab = callback => {
-  const queryInfo = {
-    active: true,
-    currentWindow: true
-  }
-
-  window.chrome.tabs.query(queryInfo, tabs => {
-    // send the first tab through the callback
-    callback(tabs[0])
   })
 }
 

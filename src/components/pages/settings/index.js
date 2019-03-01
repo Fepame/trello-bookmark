@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 
 const Settings = () => (
   <Row type="flex" justify="space-around">
-    <Col span={22}>
+    <Col span={22} offset={1}>
       <Divider>Card location</Divider>
       <Row>
         <Select

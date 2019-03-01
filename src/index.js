@@ -70,13 +70,17 @@ const client = new ApolloClient({
 })
 
 const App = () => {
-  const { window: { location: { href, hash, origin }}} = window
+  const { window: { location: { href, hash }}} = window
   let token = localStorage.getItem("token") 
 
   if (hash.includes("#token")) {
     const parsedHash = qs.parse(hash)
     localStorage.setItem("token", parsedHash['#token'])
-    window.location.href = origin
+    // window.location.href = origin
+    document.body.innerText = 'Access granted'
+    window.setTimeout(() => {
+      window.close()
+    }, 1000)
     return null
   }
 
@@ -87,12 +91,15 @@ const App = () => {
           {token 
             ? (
               <Switch>
-                <Route path="/" exact component={MainPage} />
+                <Route path="/" component={MainPage} />
                 <Route path="/settings" exact component={SettingsPage} />
                 <Route component={NoMatchPage} />
               </Switch>
             )
-            : window.location.href = `https://trello.com/1/authorize?expiration=never&callback_method=fragment&name=Trello%20Bookmark&scope=read,write,account&response_type=token&key=${process.env.REACT_APP_TRELLO_API_KEY}&redirect_uri=${encodeURIComponent(href)}`
+            : window.open(
+              `https://trello.com/1/authorize?expiration=never&callback_method=fragment&name=Trello%20Bookmark&scope=read,write,account&response_type=token&key=${process.env.REACT_APP_TRELLO_API_KEY}&redirect_uri=${encodeURIComponent(href)}`,
+              '_blank'
+            )
           }
           
         </div>

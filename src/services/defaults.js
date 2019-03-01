@@ -1,16 +1,3 @@
-import { getCurrentTab } from './utils';
-
-let link = ""
-let title = ""
-const isExtension = window.location.protocol === 'chrome-extension:'
-
-isExtension && getCurrentTab(tab => {
-  if(!tab.url.icludes("chrome://")) {
-    title = tab.title
-    link = tab.url
-  } 
-})
-
 export default {
   settings: {
     __typename: "Settings",
@@ -27,8 +14,8 @@ export default {
   card: {
     __typename: "Card",
     position: "top",
-    link,
-    title,
+    link: '',
+    title: '',
     description: "",
     boardId: '',
     cover: '',
