@@ -10,7 +10,6 @@
     "apollo-client": "^2.5.1",
     "apollo-link": "^1.2.8",
     "apollo-link-rest": "^0.7.0",
-    "apollo-link-state": "^0.4.2",
     "craco-antd": "^1.10.0",
     "graphql": "^14.1.1",
     "graphql-anywhere": "^4.2.1",

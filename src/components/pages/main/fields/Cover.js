@@ -2,17 +2,20 @@ import React from 'react'
 import { Icon } from 'antd'
 import { getImageSrc } from '../../../../services/utils'
 
+// const updateCover = (cover, cb) => cb(cover)
+// document.onpaste = e => getImageSrc(
+//   e, 
+//   cover => setCardField({
+//     variables: {
+//       fieldName: "cover",
+//       fieldValue: cover,
+//       __typename: "Card"
+//     }
+//   })
+// )
+
 const Cover = ({ setCardField, card }) => {
-  document.onpaste = e => getImageSrc(
-    e, 
-    cover => setCardField({
-      variables: {
-        fieldName: "cover",
-        fieldValue: cover,
-        __typename: "Card"
-      }
-    })
-  )
+  console.log("Cover")
 
   return (
     <figure

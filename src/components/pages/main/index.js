@@ -43,6 +43,7 @@ const Main = () => (
               />
             }
           >
+          {console.log("main.js")}
             <Col span={22} offset={1}>
               <Divider>Card location</Divider>
               <Row>
@@ -80,9 +81,7 @@ const Main = () => (
                   </Col>
                   <Col span={11} offset={2}>
                     <Item>
-                      <FieldWrapper>
-                        <Description />
-                      </FieldWrapper>
+                      <Description />
                     </Item>
 
                     <Item>

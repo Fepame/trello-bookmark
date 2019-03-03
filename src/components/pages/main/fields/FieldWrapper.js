@@ -7,9 +7,10 @@ const FieldWrapper = ({children}) => (
   <Query query={GET_CARD}>
     {({ data: { card }, client }) => {
       if(!card) return null
+      console.log("card query", card)
       return (
       <Mutation mutation={SET_CARD_FIELD}>
-        {setCardField => React.Children.map(children, child =>
+        {setCardField => console.log("card mutation") || React.Children.map(children, child =>
           React.cloneElement(child, { setCardField, card })
         )}
       </Mutation>

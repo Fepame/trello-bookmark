@@ -2,13 +2,12 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import qs from 'qs'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
-import { ApolloLink } from 'apollo-link'
+// import { ApolloLink } from 'apollo-link'
 import { ApolloClient } from 'apollo-client'
 // import { persistCache } from 'apollo-cache-persist'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { ApolloProvider } from 'react-apollo'
 import { RestLink } from 'apollo-link-rest'
-import { withClientState } from 'apollo-link-state'
 import resolvers from './services/resolvers'
 import defaults from './services/defaults'
 import MainPage from './components/pages/main'
@@ -46,28 +45,24 @@ const restLink = new RestLink({
   }
 })
 
-const cache = new InMemoryCache()
 
 // persistCache({
 //   cache,
 //   storage: window.localStorage
 // })
 
-const stateLink = withClientState({ 
-  cache,
-  defaults,
-  resolvers
-})
 
-const link = ApolloLink.from([
-  restLink,
-  stateLink
-])
+const cache = new InMemoryCache()
 
 const client = new ApolloClient({
-  link,
-  cache
-})
+  cache,
+  link: restLink,
+  resolvers
+});
+
+cache.writeData({
+  data: defaults,
+});
 
 const App = () => {
   const { window: { location: { href, hash }}} = window
