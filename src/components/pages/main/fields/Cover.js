@@ -1,5 +1,7 @@
 import React from 'react'
 import { Icon } from 'antd'
+import { Query } from 'react-apollo'
+import gql from 'graphql-tag'
 import { getImageSrc } from '../../../../services/utils'
 
 // const updateCover = (cover, cb) => cb(cover)
@@ -14,55 +16,55 @@ import { getImageSrc } from '../../../../services/utils'
 //   })
 // )
 
-const Cover = ({ setCardField, card }) => {
-  console.log("Cover")
+export default () => (
+  <Query query={gql`{ card { cover }}`}>
+    {({ data: {card: { cover }}, client }) => (
+      <figure
+        className="ant-input"
+        style={{
+          lineHeight: '10px',
+          padding: 4,
+          height: 150,
+          textAlign: cover ? 'right' : 'center',
+          color: '#bfbfbf',
+          transition: 'none',
+          background: cover ? `#fff url(${cover}) 50% 50% / contain no-repeat` : 'none'
+        }}
+      >
+        {
+          cover ? <Icon
+            type="close"
+              style={{
+                fontSize: 10,
+                cursor: 'pointer',
+                color: '#333'
+              }}
+              onClick={() => client.writeData({
+                data: {
+                  card: {
+                    cover: '',
+                    __typename: "Card"
+                  }
+                }
+              })}
+            />
+            : <span>
+            <Icon
+              type="eye"
+              style={{
+                clear: 'both',
+                display: 'block',
+                color: '#ddd',
+                marginTop: 30,
+                height: 70,
+                fontSize: 50
+              }}
+            />
+            Paste image from clipboard
+          </span>
+        }
+      </figure>
+    )}
+  </Query>
+)
 
-  return (
-    <figure
-      className="ant-input"
-      style={{
-        lineHeight: '10px',
-        padding: 4,
-        height: 150,
-        textAlign: card.cover ? 'right' : 'center',
-        color: '#bfbfbf',
-        transition: 'none',
-        background: card.cover ? `#fff url(${card.cover}) 50% 50% / contain no-repeat` : 'none'
-      }}
-    >
-      {
-        card.cover ? <Icon
-          type="close"
-            style={{
-              fontSize: 10,
-              cursor: 'pointer',
-              color: '#333'
-            }}
-            onClick={() => setCardField({
-              variables: {
-                fieldName: "cover",
-                fieldValue: '',
-                __typename: "Card"
-              }
-            })}
-          />
-          : <span>
-          <Icon
-            type="eye"
-            style={{
-              clear: 'both',
-              display: 'block',
-              color: '#ddd',
-              marginTop: 30,
-              height: 70,
-              fontSize: 50
-            }}
-          />
-          Paste image from clipboard
-        </span>
-      }
-    </figure>
-  )
-}
-
-export default Cover

@@ -28,21 +28,21 @@ export const GET_TEAMS = gql`
   }
 `
 
-export const GET_ASSIGNEES = gql`
+export const GET_MEMBERS = gql`
   query ($boardId: String!) {
-    assignees (boardId: $boardId) @rest(
-      type: "Assignee",
+    members (boardId: $boardId) @rest(
+      type: "Member",
       path: "boards/{args.boardId}/members"
     ) {
       id @export(as: "id")
       fullName
       username
       details @rest(
-        type: "AssigneeDetails",
+        type: "MemberDetails",
         path: "member/{exportVariables.id}"
       ) {
         initials
-        avatarUrl    
+        avatarUrl
       }
     }
   }
@@ -50,7 +50,7 @@ export const GET_ASSIGNEES = gql`
 
 export const GET_LABELS = gql`
   query ($boardId: String!) {
-    labels (boardId: $boardId) @rest(
+    boardLabels (boardId: $boardId) @rest(
       type: "Label",
       path: "boards/{args.boardId}/labels"
     ) {
@@ -67,10 +67,6 @@ export const GET_SETTINGS = gql`
       spinner {
         type
         isVisible
-        __typename
-      }
-      pathDefaults {
-        lastUsed
         __typename
       }
       __typename

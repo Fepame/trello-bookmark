@@ -12,7 +12,6 @@ import { Query } from 'react-apollo'
 // import { Link as RouterLink } from 'react-router-dom'
 import { GET_SETTINGS } from '../../../services/queries'
 
-import FieldWrapper from './fields/FieldWrapper'
 import Location from './fields/Location'
 import Position from './fields/Position'
 import Title from './fields/Title'
@@ -43,17 +42,14 @@ const Main = () => (
               />
             }
           >
-          {/* {console.log("main.js")} */}
             <Col span={22} offset={1}>
               <Divider>Card location</Divider>
               <Row>
                 <Col span={17}>
-                  <Location pathDefaults={settings.pathDefaults} />
+                  <Location />
                 </Col>
                 <Col span={6} offset={1}>
-                  <FieldWrapper>
-                    <Position />
-                  </FieldWrapper>
+                  <Position />
                 </Col>
               </Row>
               
@@ -62,21 +58,15 @@ const Main = () => (
                 <Row>
                   <Col span={11}>
                     <Item>
-                      <FieldWrapper>
-                        <Title />
-                      </FieldWrapper>
+                      <Title />
                     </Item>
 
                     <Item>
-                      <FieldWrapper>
-                        <Link />
-                      </FieldWrapper>
+                      <Link />
                     </Item>
 
                     <Item>
-                      <FieldWrapper>
-                        <Cover />
-                      </FieldWrapper>
+                      <Cover />
                     </Item>
                   </Col>
                   <Col span={11} offset={2}>
@@ -85,30 +75,22 @@ const Main = () => (
                     </Item>
 
                     <Item>
-                      <FieldWrapper>
-                        <Labels />
-                      </FieldWrapper>
+                      <Labels />
                     </Item>
 
                     <Item>
                       <Row type="flex" justify="space-around">
                         <Col span={13}>
-                          <FieldWrapper>
-                            <DueDate />
-                          </FieldWrapper>
+                          <DueDate />
                         </Col>
                         <Col span={10} offset={1}>
-                          <FieldWrapper>
-                            <DueTime />
-                          </FieldWrapper>
+                          <DueTime />
                         </Col>
                       </Row>
                     </Item>
 
                     <Item>        
-                      <FieldWrapper>
-                        <Assignees />
-                      </FieldWrapper>
+                      <Assignees />
                     </Item>
                   </Col>
                 </Row>

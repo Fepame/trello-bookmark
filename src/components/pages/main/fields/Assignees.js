@@ -1,62 +1,61 @@
 import React from 'react'
 import { Avatar } from 'antd'
 import { Query } from 'react-apollo'
-import { GET_ASSIGNEES } from '../../../../services/queries'
+import gql from 'graphql-tag'
+import { GET_MEMBERS } from '../../../../services/queries'
 
 const noBoardMessage = "Select board to set assignees"
 
-const Assignees = ({ setCardField, card }) => {
-  if(!card || !card.boardId) return noBoardMessage
-  return <Query query={GET_ASSIGNEES} variables={{
-    boardId: card.boardId
-  }}>
-    {({ data: { assignees }, client }) => {
-      if(!assignees || !assignees.length) return noBoardMessage
-      return assignees.map(member => {
-        const sharedProps = {
-          key: member.id,
-          size: 64,
-          alt: member.fullName,
-          onClick: () => {
-            const assignees = card.assignees.includes(member.id)
-              ? card.assignees.filter(assigneeId => member.id !== assigneeId)
-              : [...card.assignees, member.id]
-
-            setCardField({
-              variables: {
-                fieldName: "assignees",
-                fieldValue: assignees,
-                __typename: "Card"
+export default () => (
+  <Query query={gql`{ card { boardId assignees }}`}>
+    {({ data: {card: { boardId, assignees }} }) => {
+      if(!boardId) return noBoardMessage
+      return (
+        <Query query={GET_MEMBERS} variables={{ boardId }}>
+          {({ data: { members }, client }) => {
+            if(!members || !members.length) return noBoardMessage
+            return members.map(member => {
+              const sharedProps = {
+                key: member.id,
+                size: 64,
+                alt: member.fullName,
+                onClick: () => client.writeData({
+                  data: {
+                    card: {
+                      assignees: assignees.includes(member.id)
+                        ? assignees.filter(assigneeId => member.id !== assigneeId)
+                        : [...assignees, member.id],
+                      __typename: "Card"
+                    }
+                  }
+                }),
+                style: {
+                  margin: 1,
+                  backgroundColor: '#1890ff',
+                  cursor: 'pointer',
+                  filter: assignees
+                    .some(id => member.id === id)
+                    ? 'none'
+                    : 'grayscale(100%) contrast(50%) brightness(130%)'
+                }
+              }
+              
+              if(member.details.avatarUrl) {
+                return <Avatar 
+                  src={`${member.details.avatarUrl}/170.png`} 
+                  {...sharedProps}
+                />
+              } else {
+                return <Avatar
+                  {...sharedProps}
+                >
+                  {member.details.initials}
+                </Avatar>
               }
             })
-          },
-          style: {
-            margin: 1,
-            backgroundColor: '#1890ff',
-            filter: card.assignees
-              .some(id => member.id === id)
-              ? 'none'
-              : 'grayscale(100%) contrast(50%) brightness(130%)'
-            ,
-            cursor: 'pointer'
-          }
-        }
-        
-        if(member.details.avatarUrl) {
-          return <Avatar 
-            src={`${member.details.avatarUrl}/170.png`} 
-            {...sharedProps}
-          />
-        } else {
-          return <Avatar
-            {...sharedProps}
-          >
-            {member.details.initials}
-          </Avatar>
-        }
-      })
-    }}
+          }}
+        </Query>
+      )}
+    }
   </Query>
-}
-
-export default Assignees
+)

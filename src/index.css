@@ -23,6 +23,10 @@ body {
   margin-bottom: 0;
 }
 
+.App .ant-spin-nested-loading {
+  width: 100%;
+}
+
 .cascader-popup .ant-cascader-menu-item.ant-cascader-menu-item-active {
   font-weight: normal !important;
 }

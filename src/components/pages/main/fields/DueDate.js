@@ -1,23 +1,29 @@
 import React from 'react'
 import moment from 'moment'
 import { DatePicker } from 'antd'
+import { Query } from 'react-apollo'
+import gql from 'graphql-tag'
 
 const dateFormat = "DD.MM.YYYY"
 
-const DueDate = ({ setCardField, card }) => (
-  <DatePicker 
-    format={dateFormat}
-    placeholder="Select date"
-    style={{width: '100%'}}
-    value={card.dueDate ? moment(card.dueDate, dateFormat) : null}
-    onChange={(_, dateString) => setCardField({
-      variables: {
-        fieldName: "dueDate",
-        fieldValue: dateString,
-        __typename: "Card"
-      }
-    })}
-  />
+export default () => (
+  <Query query={gql`{ card { dueDate }}`}>
+    {({ data: {card: { dueDate }}, client }) => (
+      <DatePicker 
+        format={dateFormat}
+        placeholder="Select date"
+        style={{width: '100%'}}
+        value={dueDate ? moment(dueDate, dateFormat) : null}
+        onChange={(_, dateString) => client.writeData({
+          data: {
+            card: {
+              dueDate: dateString,
+              __typename: "Card"
+            }
+          }
+        })}
+      />
+    )}
+  </Query>
 )
 
-export default DueDate
