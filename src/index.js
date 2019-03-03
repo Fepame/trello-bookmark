@@ -22,7 +22,7 @@ const restLink = new RestLink({
     const combiner = uri.includes("?") ? "&" : "?"
 
     fetch(
-      `${uri}${combiner}key=${process.env.REACT_APP_TRELLO_API_KEY}&token=${process.env.REACT_APP_TRELLO_TOKEN}`,
+      `${uri}${combiner}key=${process.env.REACT_APP_TRELLO_API_KEY}&token=${localStorage.getItem("token")}`,
       options
     ).then(
       r => resolve(r)

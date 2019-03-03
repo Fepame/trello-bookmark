@@ -11,6 +11,7 @@ import {
 import { Query } from 'react-apollo'
 // import { Link as RouterLink } from 'react-router-dom'
 import { GET_SETTINGS } from '../../../services/queries'
+import { closeTab } from '../../../services/utils'
 
 import Location from './fields/Location'
 import Position from './fields/Position'
@@ -103,7 +104,10 @@ const Main = () => (
                     </RouterLink> */}
                   </Col>
                   <Col span={12} style={{textAlign: 'right'}}>
-                    <Button style={{marginRight: 10}}>Cancel</Button>
+                    <Button
+                      style={{marginRight: 10}}
+                      onClick={() => closeTab()}
+                    >Cancel</Button>
                     <Submit />
                   </Col>
                 </Row>
