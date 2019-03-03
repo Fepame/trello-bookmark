@@ -13,7 +13,7 @@ import defaults from './services/defaults'
 import MainPage from './components/pages/main'
 import SettingsPage from './components/pages/settings'
 import NoMatchPage from './components/pages/no_match'
-import { generateBlob } from './services/utils';
+import { generateBlob } from './services/utils'
 import './index.css'
 
 const restLink = new RestLink({
@@ -58,11 +58,11 @@ const client = new ApolloClient({
   cache,
   link: restLink,
   resolvers
-});
+})
 
 cache.writeData({
   data: defaults,
-});
+})
 
 const App = () => {
   const { window: { location: { href, hash }}} = window

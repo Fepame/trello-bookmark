@@ -1,3 +1,10 @@
+import moment from 'moment'
+import qs from 'qs'
+
+export const closeTab = () => window
+  .location
+  .protocol === 'chrome-extension:' && window.close()
+
 export const getTabInfo = cb => window
   .location
   .protocol === 'chrome-extension:'
@@ -11,6 +18,19 @@ export const getTabInfo = cb => window
       },
       tabs => !tabs[0].url.includes("chrome:") && cb(tabs[0])
     )
+
+export const resolveSubmitParams = card => qs.stringify({
+  name: card.title,
+  desc: card.description,
+  pos: card.position,
+  due: card.dueDate && moment(
+    `${card.dueDate} ${card.dueTime}`,
+    "DD.MM.YYYY HH:mm"
+  ).toISOString(),
+  idLabels: card.labels.join(','),
+  idMembers: card.assignees.join(','),
+  idList: card.listId
+})
 
 export const hexColor = {
   black: "#355263",
@@ -26,7 +46,7 @@ export const hexColor = {
 }
 
 export const getImageSrc = (e, callback) => {
-  const items = e.clipboardData.items;
+  const {clipboardData: { items }} = e;
 
   [...items].map(item => {
     if (item.kind === 'file') {
@@ -45,19 +65,18 @@ export const getImageSrc = (e, callback) => {
 }
 
 export const generateBlob = imageData => {
-  var imageDataElements = imageData.split(',')
-    , mimeType = imageDataElements[0].split(':')[1].split(';')[0]
-    , imageB64Data = imageDataElements[1]
-    , byteString = atob(imageB64Data)
-    , length = byteString.length
-    , ab = new ArrayBuffer(length)
-    , ua = new Uint8Array(ab)
-    , i
-    ;
+  var imageDataElements = imageData.split(','),
+    mimeType = imageDataElements[0].split(':')[1].split(';')[0],
+    imageB64Data = imageDataElements[1],
+    byteString = atob(imageB64Data),
+    length = byteString.length,
+    ab = new ArrayBuffer(length),
+    ua = new Uint8Array(ab),
+    i
 
   for (i = 0; i < length; i++) {
-      ua[i] = byteString.charCodeAt(i);
+      ua[i] = byteString.charCodeAt(i)
   }
 
-  return new Blob([ab], { type: mimeType });
+  return new Blob([ab], { type: mimeType })
 }

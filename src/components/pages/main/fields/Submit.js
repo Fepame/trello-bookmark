@@ -1,15 +1,36 @@
 import React from 'react'
-import moment from 'moment'
-import qs from 'qs'
 import { Query, Mutation } from 'react-apollo'
 import { SUBMIT_CARD, SUBMIT_CARD_ATTACHMENT } from '../../../../services/mutations'
 import { GET_CARD } from '../../../../services/queries'
+import { resolveSubmitParams, closeTab } from '../../../../services/utils'
 import { Button } from 'antd'
 
 const Submit = ()  => (
   <Query query={GET_CARD}>
     {({ data: { card }, client }) => {
       if(!card) return null
+      const updateSpinner = (type, isVisible) => client
+        .writeData({
+          data: {
+            settings: {
+              spinner: {
+                type,
+                isVisible,
+                __typename: "Spinner"
+              },
+              __typename: "Settings"
+            }
+          }
+        })
+
+      const onSubmitSuccess = () => {
+        updateSpinner("check-circle", true)
+        window.setTimeout(() => {
+          updateSpinner("loading", false)
+          closeTab()
+        }, 300)
+      }
+
       return (
         <Mutation mutation={SUBMIT_CARD}>
           {submitCard => <Mutation mutation={SUBMIT_CARD_ATTACHMENT}>
@@ -17,44 +38,9 @@ const Submit = ()  => (
               type="primary"
               disabled={!card.listId || !card.title}
               onClick={() => {
-                const params = qs.stringify({
-                  name: card.title,
-                  desc: card.description,
-                  pos: card.position,
-                  due: card.dueDate && moment(
-                    `${card.dueDate} ${card.dueTime}`,
-                    "DD.MM.YYYY HH:mm"
-                  ).toISOString(),
-                  idLabels: card.labels.join(','),
-                  idMembers: card.assignees.join(','),
-                  idList: card.listId
-                })
-
-                const updateSpinner = (type, isVisible) => client
-                  .writeData({
-                    data: {
-                      settings: {
-                        spinner: {
-                          type,
-                          isVisible,
-                          __typename: "Spinner"
-                        },
-                        __typename: "Settings"
-                      }
-                    }
-                  })
-
-
-                const onSubmitSuccess = () => {
-                  updateSpinner("check-circle", true)
-
-                  window.setTimeout(() => updateSpinner("loading", false), 300)
-                }
-
+                updateSpinner("loading", true)
                 submitCard({
-                  variables: {
-                    params
-                  }
+                  variables: { params: resolveSubmitParams(card) }
                 }).then(response => {
                   const { data: { submitCard: { id }}} = response
                   const submit = data => submitCardAttachment({
@@ -81,8 +67,8 @@ const Submit = ()  => (
                   } else {
                     onSubmitSuccess()
                   }
-                })
-              }}
+                })}
+              }
             >
               Save
             </Button>}

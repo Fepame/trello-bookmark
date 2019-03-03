@@ -1,4 +1,4 @@
-import { GET_CARD, GET_SETTINGS } from './queries';
+import { GET_SETTINGS } from './queries'
 
 const resolvers = {
   Mutation: {
