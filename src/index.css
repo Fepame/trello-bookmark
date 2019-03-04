@@ -15,11 +15,6 @@ body {
   height: 500px;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
-}
-
 .App .ant-form {
   padding-bottom: 20px;
 }
@@ -28,6 +23,14 @@ code {
   margin-bottom: 0;
 }
 
-.ant-select-dropdown-menu-item-group-title {
-  overflow: hidden;
+.App .ant-spin-nested-loading {
+  width: 100%;
+}
+
+.cascader-popup .ant-cascader-menu-item.ant-cascader-menu-item-active {
+  font-weight: normal !important;
+}
+
+.cascader-popup .ant-cascader-menu-item .ant-cascader-menu-item-expand-icon {
+  right: 5px;
 }
