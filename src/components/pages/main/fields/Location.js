@@ -2,6 +2,7 @@ import React from 'react'
 import { Cascader, Select } from 'antd'
 import { Query } from 'react-apollo'
 import { GET_BOARDS, GET_TEAMS } from '../../../../services/queries'
+import gql from 'graphql-tag'
 
 const LocationStub = <Select
   placeholder="Select card location"
@@ -51,17 +52,26 @@ export default () => (
               allowClear={false}
               showSearch={{ filter }}
               onChange={path => {
-                const [listId] = path.slice(-1)
-                const [boardId] = path.slice(-2)
+                const [, boardId, listId] = path
+                const { card } = client
+                  .readQuery({ query: gql`{ card { boardId listId } }`})
+
+                let cardObj = {
+                  listId,
+                  __typename: "Card"
+                }
+
+                if(boardId !== card.boardId) {
+                  cardObj = {...cardObj, ...{
+                    boardId,
+                    labels: [],
+                    assignees: []
+                  }}
+                }
+
                 client.writeData({
                   data: {
-                    card: {
-                      listId,
-                      boardId,
-                      labels: [],
-                      assignees: [],
-                      __typename: "Card"
-                    }
+                    card: cardObj
                   }
                 })
               }}
