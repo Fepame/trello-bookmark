@@ -1,6 +1,6 @@
 {
   "name": "trello-bookmark",
-  "version": "2.1.0",
+  "version": "2.2.4",
   "private": true,
   "dependencies": {
     "@craco/craco": "^3.5.0",
@@ -25,10 +25,10 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
-    "zip": "node generate-zip.js",
-    "update:patch": "npm --no-git-tag-version version patch && node update-manifest.js",
-    "update:minor": "npm --no-git-tag-version version minor && node update-manifest.js",
-    "update:major": "npm --no-git-tag-version version major && node update-manifest.js",
+    "deploy:patch": "npm --no-git-tag-version version patch && npm run deploy",
+    "deploy:minor": "npm --no-git-tag-version version minor && npm run deploy",
+    "deploy:major": "npm --no-git-tag-version version major && npm run deploy",
+    "deploy": "node update-manifest.js && npm run build && node deploy.js",
     "test": "craco test"
   },
   "eslintConfig": {
@@ -41,6 +41,8 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "chrome-webstore-upload": "^0.2.2",
+    "dotenv": "^6.2.0",
     "zip-folder": "^1.0.0"
   }
 }
