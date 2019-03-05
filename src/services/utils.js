@@ -1,6 +1,14 @@
 import moment from 'moment'
 import qs from 'qs'
 
+export const getLastLocation = () => {
+  const lastLocation = localStorage.getItem("lastLocation")
+  return lastLocation
+    && lastLocation
+      .split('/')
+      .map(pathPart => pathPart === 'null' ? null : pathPart)
+}
+
 export const closeTab = () => window
   .location
   .protocol === 'chrome-extension:' && window.close()

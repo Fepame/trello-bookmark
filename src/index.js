@@ -13,7 +13,7 @@ import defaults from './services/defaults'
 import MainPage from './components/pages/main'
 import SettingsPage from './components/pages/settings'
 import NoMatchPage from './components/pages/no_match'
-import { generateBlob, getTabInfo } from './services/utils'
+import { generateBlob, getTabInfo, getLastLocation } from './services/utils'
 import './index.css'
 
 const restLink = new RestLink({
@@ -69,6 +69,21 @@ getTabInfo(({title, url}) => client.writeData({
     }
   }
 }))
+
+const lastLocation = getLastLocation()
+if(lastLocation !== null) {
+  const [ teamId, boardId, listId ] = lastLocation
+  client.writeData({ 
+    data: {
+      card: {
+        teamId,
+        boardId,
+        listId,
+        __typename: "Card"
+      }
+    }
+  })
+}
 
 const App = () => {
   const { window: { location: { href, hash }}} = window

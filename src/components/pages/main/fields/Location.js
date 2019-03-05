@@ -9,15 +9,6 @@ const LocationStub = <Select
   style={{ width: '100%' }}
 />
 
-const getLastLocation = () => {
-  const lastLocation = localStorage.getItem("lastLocation")
-  return lastLocation
-    ? lastLocation
-      .split('/')
-      .map(pathPart => pathPart === 'null' ? null : pathPart)
-    : []
-}
-
 const filter = (inputValue, path) => path
   .some(option => 
     option
@@ -50,40 +41,44 @@ export default () => (
               }))
           }))
 
-          return <Cascader
-              autoFocus
-              defaultValue={getLastLocation()}
-              options={options}
-              style={{width: '100%'}}
-              fieldNames={{ label: 'name', value: 'id' }}
-              expandTrigger="hover"
-              placeholder="Select card location"
-              popupClassName="cascader-popup"
-              allowClear={false}
-              showSearch={{ filter }}
-              onChange={path => {
-                const [ teamId, boardId, listId ] = path
-                const { card } = client
-                  .readQuery({ query: gql`{ card { boardId listId } }`})
+          return (
+            <Query query={gql`{ card { teamId boardId listId }}`}>
+              {({ data: { card }, client }) => (
+                <Cascader
+                  autoFocus
+                  value={[card.teamId, card.boardId, card.listId]}
+                  options={options}
+                  style={{width: '100%'}}
+                  fieldNames={{ label: 'name', value: 'id' }}
+                  expandTrigger="hover"
+                  placeholder="Select card location"
+                  popupClassName="cascader-popup"
+                  allowClear={false}
+                  showSearch={{ filter }}
+                  onChange={path => {
+                    const [ teamId, boardId, listId ] = path
 
-                client.writeData({
-                  data: {
-                    card: boardId === card.boardId
-                      ? {
-                        listId,
-                        __typename: "Card"
-                      } : {
-                        listId,
-                        boardId,
-                        teamId,
-                        labels: [],
-                        assignees: [],
-                        __typename: "Card"
+                    client.writeData({
+                      data: {
+                        card: boardId === card.boardId
+                          ? {
+                            listId,
+                            __typename: "Card"
+                          } : {
+                            listId,
+                            boardId,
+                            teamId,
+                            labels: [],
+                            assignees: [],
+                            __typename: "Card"
+                          }
                       }
-                  }
-                })
-              }}
-            />
+                    })
+                  }}
+                />
+              )}
+            </Query>
+          )
         }}
       </Query>
     }}
