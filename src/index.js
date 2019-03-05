@@ -13,7 +13,7 @@ import defaults from './services/defaults'
 import MainPage from './components/pages/main'
 import SettingsPage from './components/pages/settings'
 import NoMatchPage from './components/pages/no_match'
-import { generateBlob } from './services/utils'
+import { generateBlob, getTabInfo } from './services/utils'
 import './index.css'
 
 const restLink = new RestLink({
@@ -45,12 +45,10 @@ const restLink = new RestLink({
   }
 })
 
-
 // persistCache({
 //   cache,
 //   storage: window.localStorage
 // })
-
 
 const cache = new InMemoryCache()
 
@@ -60,9 +58,17 @@ const client = new ApolloClient({
   resolvers
 })
 
-cache.writeData({
-  data: defaults,
-})
+client.writeData({ data: defaults })
+
+getTabInfo(({title, url}) => client.writeData({ 
+  data: {
+    card: {
+      title,
+      link: url,
+      __typename: "Card"
+    }
+  }
+}))
 
 const App = () => {
   const { window: { location: { href, hash }}} = window
