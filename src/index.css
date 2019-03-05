@@ -34,3 +34,13 @@ body {
 .cascader-popup .ant-cascader-menu-item .ant-cascader-menu-item-expand-icon {
   right: 5px;
 }
+
+.cascader-popup .ant-cascader-menu {
+  height: 310px;
+}
+
+.cascader-popup .ant-cascader-menu-item {
+  max-width: 210px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
