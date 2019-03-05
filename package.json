@@ -25,6 +25,7 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
+    "zip": "node generate-zip.js",
     "update:patch": "npm --no-git-tag-version version patch && node update-manifest.js",
     "update:minor": "npm --no-git-tag-version version minor && node update-manifest.js",
     "update:major": "npm --no-git-tag-version version major && node update-manifest.js",
@@ -38,5 +39,8 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "zip-folder": "^1.0.0"
+  }
 }
