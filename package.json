@@ -1,6 +1,6 @@
 {
   "name": "trello-bookmark",
-  "version": "2.0.4",
+  "version": "2.1.0",
   "private": true,
   "dependencies": {
     "@craco/craco": "^3.5.0",
@@ -25,8 +25,10 @@
   "scripts": {
     "start": "craco start",
     "build": "craco build",
-    "test": "craco test",
-    "eject": "react-scripts eject"
+    "update:patch": "npm --no-git-tag-version version patch && node update-manifest.js",
+    "update:minor": "npm --no-git-tag-version version minor && node update-manifest.js",
+    "update:major": "npm --no-git-tag-version version major && node update-manifest.js",
+    "test": "craco test"
   },
   "eslintConfig": {
     "extends": "react-app"
