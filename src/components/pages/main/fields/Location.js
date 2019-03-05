@@ -9,6 +9,15 @@ const LocationStub = <Select
   style={{ width: '100%' }}
 />
 
+const getLastLocation = () => {
+  const lastLocation = localStorage.getItem("lastLocation")
+  return lastLocation
+    ? lastLocation
+      .split('/')
+      .map(pathPart => pathPart === 'null' ? null : pathPart)
+    : []
+}
+
 const filter = (inputValue, path) => path
   .some(option => 
     option
@@ -43,6 +52,7 @@ export default () => (
 
           return <Cascader
               autoFocus
+              defaultValue={getLastLocation()}
               options={options}
               style={{width: '100%'}}
               fieldNames={{ label: 'name', value: 'id' }}
@@ -52,26 +62,24 @@ export default () => (
               allowClear={false}
               showSearch={{ filter }}
               onChange={path => {
-                const [, boardId, listId] = path
+                const [ teamId, boardId, listId ] = path
                 const { card } = client
                   .readQuery({ query: gql`{ card { boardId listId } }`})
 
-                let cardObj = {
-                  listId,
-                  __typename: "Card"
-                }
-
-                if(boardId !== card.boardId) {
-                  cardObj = {...cardObj, ...{
-                    boardId,
-                    labels: [],
-                    assignees: []
-                  }}
-                }
-
                 client.writeData({
                   data: {
-                    card: cardObj
+                    card: boardId === card.boardId
+                      ? {
+                        listId,
+                        __typename: "Card"
+                      } : {
+                        listId,
+                        boardId,
+                        teamId,
+                        labels: [],
+                        assignees: [],
+                        __typename: "Card"
+                      }
                   }
                 })
               }}

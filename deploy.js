@@ -23,6 +23,10 @@ zipFolder(
           console.log("Uploaded successfully")
           webStore.publish('default', token).then(res => {
             console.log(res)
+            fs.unlink('./chrome.zip', err => {
+              if(err) return console.log(err)
+              console.log('ZIP file deleted')
+            })
           }).catch( e => console.log(e) )
         })
       })

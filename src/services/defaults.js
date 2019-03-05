@@ -14,6 +14,7 @@ export default {
     title: '',
     description: '',
     boardId: '',
+    teamId: null,
     cover: '',
     listId: '',
     dueDate: '',

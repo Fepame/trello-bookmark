@@ -85,6 +85,7 @@ export const GET_CARD = gql`
       boardId
       listId
       dueDate
+      teamId
       dueTime
       cover
       assignees

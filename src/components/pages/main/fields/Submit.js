@@ -85,6 +85,11 @@ export default () => (
         })
 
       const onSubmitSuccess = () => {
+        const { teamId, boardId, listId } = card
+        localStorage.setItem(
+          "lastLocation",
+          `${teamId}/${boardId}/${listId}`
+        )
         updateSpinner("check-circle", true)
         window.setTimeout(() => {
           updateSpinner("loading", false)
