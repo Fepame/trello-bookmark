@@ -19,6 +19,39 @@ const filter = (inputValue, path) => path
     ) > -1
   )
 
+const Location = ({card, options, client}) => <Cascader
+  autoFocus
+  value={[card.teamId, card.boardId, card.listId]}
+  options={options}
+  style={{width: '100%'}}
+  fieldNames={{ label: 'name', value: 'id' }}
+  expandTrigger="hover"
+  placeholder="Select card location"
+  popupClassName="cascader-popup"
+  allowClear={false}
+  showSearch={{ filter }}
+  onChange={path => {
+    const [ teamId, boardId, listId ] = path
+
+    client.writeData({
+      data: {
+        card: boardId === card.boardId
+          ? {
+            listId,
+            __typename: "Card"
+          } : {
+            listId,
+            boardId,
+            teamId,
+            labels: [],
+            assignees: [],
+            __typename: "Card"
+          }
+      }
+    })
+  }}
+/>
+
 export default () => (
   <Query query={GET_TEAMS}>
     {({data: { teams }}) => {
@@ -43,40 +76,61 @@ export default () => (
 
           return (
             <Query query={gql`{ card { teamId boardId listId }}`}>
-              {({ data: { card }, client }) => (
-                <Cascader
-                  autoFocus
-                  value={[card.teamId, card.boardId, card.listId]}
-                  options={options}
-                  style={{width: '100%'}}
-                  fieldNames={{ label: 'name', value: 'id' }}
-                  expandTrigger="hover"
-                  placeholder="Select card location"
-                  popupClassName="cascader-popup"
-                  allowClear={false}
-                  showSearch={{ filter }}
-                  onChange={path => {
-                    const [ teamId, boardId, listId ] = path
+              {({ data: { card }, client }) => {
 
-                    client.writeData({
-                      data: {
-                        card: boardId === card.boardId
-                          ? {
-                            listId,
-                            __typename: "Card"
-                          } : {
-                            listId,
-                            boardId,
-                            teamId,
-                            labels: [],
-                            assignees: [],
-                            __typename: "Card"
-                          }
+                const validateLastLocation = card => {
+                  const { teamId, boardId, listId } = card
+                  const isTeamValid = options
+                    .some(team => team.id === teamId)
+
+                  if(!isTeamValid) return false
+
+                  const isBoardValid = options
+                    .find(team => team.id === teamId)
+                    .children
+                    .some(board => board.id === boardId)
+  
+                  if(!isBoardValid) return false
+
+                  const isListValid = options
+                    .find(team => team.id === teamId)
+                    .children
+                    .find(board => board.id === boardId)
+                    .children
+                    .some(list => list.id === listId)
+
+                  if(!isListValid) return false
+                  return true
+                }
+
+                if(validateLastLocation(card)) {
+                  return <Location
+                    card={card}
+                    options={options}
+                    client={client}
+                  />
+                } else {
+                  const newCardData = {
+                    teamId: null,
+                    boardId: '',
+                    listId: ''
+                  }
+                  client.writeData({
+                    data: {
+                      card: {
+                        ...newCardData,
+                        __typename: "Card"
                       }
-                    })
-                  }}
-                />
-              )}
+                    }
+                  })
+                  localStorage.removeItem("lastLocation")
+                  return <Location
+                    card={newCardData}
+                    options={options}
+                    client={client}
+                  />
+                }  
+              }}
             </Query>
           )
         }}
