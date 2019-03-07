@@ -1,5 +1,5 @@
-const { version } = require('../package.json')
-const manifest = require('../public/manifest.json')
+const { version } = require('./package.json')
+const manifest = require('./public/manifest.json')
 const fs = require('fs')
 
 fs.writeFile(
@@ -18,6 +18,6 @@ fs.writeFile(
     if (err) {
       console.error(err)
     } else {
-      console.log('Manifest version taken from package.json')
+      console.log('Version updated');
     }
 })

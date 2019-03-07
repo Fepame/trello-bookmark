@@ -1,7 +1,7 @@
 require('dotenv').config()
 const zipFolder = require('zip-folder')
 const fs = require('fs')
-const manifest = require('../public/manifest.json')
+const manifest = require('./public/manifest.json')
 
 const webStore = require('chrome-webstore-upload')({
   extensionId: 'ephoopolmejjnjkbbdcfgoohokhnekca',
@@ -11,7 +11,7 @@ const webStore = require('chrome-webstore-upload')({
 })
 
 zipFolder(
-  '../build/',
+  './build/',
   './chrome.zip',
   err => {
     if(err) {
@@ -30,6 +30,24 @@ zipFolder(
             })
           }).catch( e => console.log(e) )
         })
+
+        fs.writeFile(
+          './public/manifest.json',
+          JSON.stringify(
+            {
+              ...manifest,
+              icons: [{
+                "src": "icon128.png",
+                "sizes": "128x128",
+                "type": "image/png"
+              }]
+            },
+            null,
+            4
+          ), err => {
+            if(err) return console.log(err)
+          }
+        )
       })
     }
   }

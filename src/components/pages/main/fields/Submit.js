@@ -27,7 +27,6 @@ const Submit = ({
         }
       })
 
-      // TODO: refactor with async/series
       if(card.link && card.cover) {
         submit({
           url: card.link,
