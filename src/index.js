@@ -6,14 +6,15 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import { ApolloClient } from 'apollo-client'
 // import { persistCache } from 'apollo-cache-persist'
 import { InMemoryCache } from 'apollo-cache-inmemory'
-import { ApolloProvider } from 'react-apollo'
+import { ApolloProvider, Query } from 'react-apollo'
 import { RestLink } from 'apollo-link-rest'
+import { GET_BOARDS, GET_TEAMS } from './services/queries'
 import resolvers from './services/resolvers'
 import defaults from './services/defaults'
 import MainPage from './components/pages/main'
 import SettingsPage from './components/pages/settings'
 import NoMatchPage from './components/pages/no_match'
-import { generateBlob, getTabInfo, getLastLocation } from './services/utils'
+import { generateBlob, getTabInfo, getLastLocation, isChromeExtension, normalizeLocationTree } from './services/utils'
 import './index.css'
 
 const restLink = new RestLink({
@@ -100,24 +101,41 @@ const App = () => {
     return null
   }
 
+  const getToken = () => {
+    window.open(
+      `https://trello.com/1/authorize?expiration=never&callback_method=fragment&name=Trello%20Bookmark&scope=read,write,account&response_type=token&key=${process.env.REACT_APP_TRELLO_API_KEY}&redirect_uri=${encodeURIComponent(href)}`,
+      '_blank'
+    )
+    if(isChromeExtension) window.close()
+  }
+
   return (
     <BrowserRouter>
       <ApolloProvider client={client}>
         <div className="App">
           {token 
             ? (
-              <Switch>
-                <Route path="/" component={MainPage} />
-                <Route path="/settings" exact component={SettingsPage} />
-                <Route component={NoMatchPage} />
-              </Switch>
-            )
-            : window.open(
-              `https://trello.com/1/authorize?expiration=never&callback_method=fragment&name=Trello%20Bookmark&scope=read,write,account&response_type=token&key=${process.env.REACT_APP_TRELLO_API_KEY}&redirect_uri=${encodeURIComponent(href)}`,
-              '_blank'
-            )
+              <Query query={GET_TEAMS}>
+                {({data: { teams }}) => {
+                  if(!teams) return 'Loading...'
+                  return <Query query={GET_BOARDS}>
+                    {({ data: { boards }, client }) => {
+                      if(!boards) return 'Loading...'
+                      const locationTree = normalizeLocationTree({ boards, teams })
+
+                      return (
+                        <Switch>
+                          <Route path="/" exact render={(props) => <MainPage {...props} locationTree={locationTree} />} />
+                          <Route path="/settings" exact render={(props) => <SettingsPage {...props} locationTree={locationTree} />} />
+                          <Route component={NoMatchPage} />
+                        </Switch>
+                      )
+                    }}
+                  </Query>
+                }}
+              </Query> 
+            ) : getToken()
           }
-          
         </div>
       </ApolloProvider>
     </BrowserRouter>

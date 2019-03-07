@@ -1,6 +1,10 @@
 import moment from 'moment'
 import qs from 'qs'
 
+export const isChromeExtension = window
+  .location
+  .protocol === 'chrome-extension:'
+
 export const getLastLocation = () => {
   const lastLocation = localStorage.getItem("lastLocation")
   return lastLocation
@@ -9,14 +13,25 @@ export const getLastLocation = () => {
       .map(pathPart => pathPart === 'null' ? null : pathPart)
 }
 
-export const closeTab = () => window
-  .location
-  .protocol === 'chrome-extension:' && window.close()
+export const normalizeLocationTree = ({ teams, boards }) => [{
+  id: null,
+  displayName: "Private"
+}, ...teams].map(team => ({
+  ...team,
+  name: team.displayName,
+  children: boards
+    .filter(board => board.idOrganization === team.id)
+    .map(board => ({
+      ...board,
+      children: board.lists
+    }))
+}))
 
-export const getTabInfo = cb => window
-  .location
-  .protocol === 'chrome-extension:'
-  && window
+
+
+export const closeTab = () => isChromeExtension && window.close()
+
+export const getTabInfo = cb => isChromeExtension && window
     .chrome
     .tabs
     .query(

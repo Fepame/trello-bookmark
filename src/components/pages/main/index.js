@@ -9,7 +9,7 @@ import {
   Button
 } from 'antd'
 import { Query } from 'react-apollo'
-// import { Link as RouterLink } from 'react-router-dom'
+import { Link as RouterLink } from 'react-router-dom'
 import { GET_SETTINGS } from '../../../services/queries'
 import { closeTab } from '../../../services/utils'
 
@@ -27,7 +27,7 @@ import Assignees from './fields/Assignees'
 
 const { Item } = Form
 
-const Main = () => (
+const Main = ({ locationTree }) => (
   <Query query={GET_SETTINGS}>
     {({ data: { settings }, client }) => {
       if(!settings) return null
@@ -47,7 +47,7 @@ const Main = () => (
               <Divider>Card location</Divider>
               <Row>
                 <Col span={17}>
-                  <Location />
+                  <Location locationTree={locationTree} />
                 </Col>
                 <Col span={6} offset={1}>
                   <Position />
@@ -99,9 +99,9 @@ const Main = () => (
 
                 <Row type="flex" justify="space-around">
                   <Col span={12}>
-                    {/* <RouterLink to="/settings">
+                    <RouterLink to="/settings">
                       <Icon type="setting" />
-                    </RouterLink> */}
+                    </RouterLink>
                   </Col>
                   <Col span={12} style={{textAlign: 'right'}}>
                     <Button
