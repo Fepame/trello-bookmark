@@ -10,6 +10,7 @@ import { ApolloProvider } from 'react-apollo'
 import { RestLink } from 'apollo-link-rest'
 import resolvers from './services/resolvers'
 import defaults from './services/defaults'
+import { getCardParams } from './services/site-actions/index'
 import MainPage from './components/pages/main'
 import SettingsPage from './components/pages/settings'
 import NoMatchPage from './components/pages/no_match'
@@ -60,15 +61,12 @@ const client = new ApolloClient({
 
 client.writeData({ data: defaults })
 
-getTabInfo(({title, url}) => client.writeData({ 
-  data: {
-    card: {
-      title,
-      link: url,
-      __typename: "Card"
-    }
-  }
-}))
+getTabInfo(({title, url}) => {
+  getCardParams({title, url}).then(card => {
+    console.log(card)
+    client.writeData(card)
+  })
+})
 
 const lastLocation = getLastLocation()
 if(lastLocation !== null) {

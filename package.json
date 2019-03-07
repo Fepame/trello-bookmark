@@ -24,12 +24,14 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "craco build",
+    "build": "npm run icons2object && craco build && npm run icons2array",
     "deploy:patch": "npm --no-git-tag-version version patch && npm run deploy",
     "deploy:minor": "npm --no-git-tag-version version minor && npm run deploy",
     "deploy:major": "npm --no-git-tag-version version major && npm run deploy",
-    "deploy": "node update-manifest.js && npm run build && node deploy.js",
-    "test": "craco test"
+    "deploy": "npm run build && node deploy.js",
+    "test": "craco test",
+    "icons2array": "node ./scripts/icons-to-array.js",
+    "icons2object": "node ./scripts/icons-to-object.js"
   },
   "eslintConfig": {
     "extends": "react-app"
