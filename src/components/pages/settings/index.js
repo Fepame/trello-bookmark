@@ -1,60 +1,53 @@
 import React from 'react'
-import { Row, Col, Icon, Divider, Input, Cascader } from 'antd'
+import { Row, Col, Icon, Divider } from 'antd'
 import { Link } from 'react-router-dom'
+import LocationDefault from './LocationDefault'
+import { getDefaultLocations } from '../../../services/utils'
 
-const filter = (inputValue, path) => path
-  .some(option => 
-    option
-    .name
-    .toLowerCase()
-    .indexOf(
-      inputValue.toLowerCase()
-    ) > -1
+const normalizePath = path => {
+  if(path) {
+    const [teamId, boardId, listId] = path.split('/')
+    return teamId === "null" ? [null, boardId, listId] : [teamId, boardId, listId]
+  } else {
+    return []
+  }
+}
+
+const Settings = ({ locationTree }) => {
+  const defaultsData = getDefaultLocations()
+  console.log(defaultsData)
+  Object.keys(defaultsData).map(
+    (site, i) => console.log(defaultsData[site])
   )
 
-const Settings = ({ locationTree }) => (
-  <Row type="flex" justify="space-around">
-    <Col span={22} offset={1}>
-      <Divider>Default locations</Divider>
-      <Row style={{ marginBottom: 20 }}>
-        <Col span={8}>
-          <Input
-            placeholder="Url contains"
-            style={{ width: '100%' }}
-          />
-        </Col>
-        <Col offset={1} span={13}>
-          <Cascader
-            autoFocus
-            options={locationTree}
-            style={{width: '100%'}}
-            fieldNames={{ label: 'name', value: 'id' }}
-            expandTrigger="hover"
-            placeholder="Select card location"
-            popupClassName="cascader-popup"
-            allowClear={false}
-            showSearch={{ filter }}
-            onChange={path => {
-              const [ teamId, boardId, listId ] = path
-              console.log(teamId, boardId, listId)
+  return (
+    <Row type="flex" justify="space-around">
+      <Col span={22} offset={1}>
+        <Divider>Default locations</Divider>
+        {
+          Object.keys(defaultsData)
+            .filter(site => site !== 'lastLocation')
+            .map(
+              (site, i) => <LocationDefault
+                locationTree={locationTree}
+                key={i}
+                site={site}
+                path={normalizePath(defaultsData[site])}
+              />
+            )
+        }
+        <Link to="/">
+          <Icon
+            type="arrow-left"
+            style={{ 
+              fontSize: 19,
+              verticalAlign: '-webkit-baseline-middle'
             }}
           />
-        </Col>
-        <Col span={1} offset={1}>
-          <Icon type="plus-circle" />
-        </Col>
-      </Row>
-      <Link to="/">
-        <Icon
-          type="arrow-left"
-          style={{ 
-            fontSize: 19,
-            verticalAlign: '-webkit-baseline-middle'
-          }}
-        />
-      </Link>
-    </Col>
-  </Row>
-)
+        </Link>
+      </Col>
+    </Row>
+  )
+}
 
 export default Settings

@@ -5,6 +5,26 @@ export const isChromeExtension = window
   .location
   .protocol === 'chrome-extension:'
 
+export const getDefaultLocations = () => {
+  const defaultLocation = localStorage.getItem("defaultLocation")
+  if(defaultLocation) {
+    return JSON.parse(defaultLocation)
+  } else {
+    const initDefaults = {
+      'lastLocation': '',
+      'New tab': ''
+    }
+    localStorage.setItem("defaultLocation", JSON.stringify(initDefaults))
+    return initDefaults
+  }
+}
+
+export const setDefaultLocations = (site, path) => {
+  const defaultLocation = getDefaultLocations()
+  defaultLocation[site] = path
+  localStorage.setItem("defaultLocation", JSON.stringify(defaultLocation))
+}
+
 export const getLastLocation = () => {
   const lastLocation = localStorage.getItem("lastLocation")
   return lastLocation
