@@ -2,6 +2,7 @@ import React from 'react'
 import { Cascader } from 'antd'
 import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
+import { getDefaultLocations, normalizePath } from '../../../../services/utils'
 
 // const LocationStub = <Select
 //   placeholder="Select card location"
@@ -18,9 +19,33 @@ const filter = (inputValue, path) => path
     ) > -1
   )
 
-const Location = ({card, options, client}) => <Cascader
+const checkDefaultLocation = url => {
+  const defaults = getDefaultLocations()
+  const hostname = url || window.location.hostname
+
+  const foundSite = Object.keys(defaults)
+    .find(site => hostname.includes(site))
+
+  if (foundSite) {
+    return normalizePath(defaults[foundSite])
+  } else {
+    return []
+  }
+}
+
+const Location = ({card, options, client}) => {
+
+  const defaultValue = (() => {
+    const a = checkDefaultLocation(card.link)
+    console.log(a)
+    return a
+  })()
+
+  return (
+  <Cascader
   autoFocus
-  value={[card.teamId, card.boardId, card.listId]}
+  defaultValue={defaultValue}
+  // value={[card.teamId, card.boardId, card.listId]}
   options={options}
   style={{width: '100%'}}
   fieldNames={{ label: 'name', value: 'id' }}
@@ -49,10 +74,10 @@ const Location = ({card, options, client}) => <Cascader
       }
     })
   }}
-/>
+/>)}
 
 export default ({ locationTree }) => (
-  <Query query={gql`{ card { teamId boardId listId }}`}>
+  <Query query={gql`{ card { teamId boardId listId link }}`}>
     {({ data: { card }, client }) => {
 
       const validateLastLocation = card => {
@@ -89,6 +114,7 @@ export default ({ locationTree }) => (
       } else {
         const newCardData = {
           teamId: null,
+          link: card.link,
           boardId: '',
           listId: ''
         }

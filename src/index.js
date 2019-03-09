@@ -125,6 +125,7 @@ const App = () => {
 
                       return (
                         <Switch>
+                          <Route path="/index.html" exact render={(props) => <MainPage {...props} locationTree={locationTree} />} />
                           <Route path="/" exact render={(props) => <MainPage {...props} locationTree={locationTree} />} />
                           <Route path="/settings" exact render={(props) => <SettingsPage {...props} locationTree={locationTree} />} />
                           <Route component={NoMatchPage} />

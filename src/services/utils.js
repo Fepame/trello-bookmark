@@ -12,7 +12,8 @@ export const getDefaultLocations = () => {
   } else {
     const initDefaults = {
       'lastLocation': '',
-      'New tab': ''
+      'New tab': '',
+      'pikabu.ru': ''
     }
     localStorage.setItem("defaultLocation", JSON.stringify(initDefaults))
     return initDefaults
@@ -31,6 +32,15 @@ export const getLastLocation = () => {
     && lastLocation
       .split('/')
       .map(pathPart => pathPart === 'null' ? null : pathPart)
+}
+
+export const normalizePath = path => {
+  if(path) {
+    const [teamId, boardId, listId] = path.split('/')
+    return teamId === "null" ? [null, boardId, listId] : [teamId, boardId, listId]
+  } else {
+    return []
+  }
 }
 
 export const normalizeLocationTree = ({ teams, boards }) => [{

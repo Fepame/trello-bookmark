@@ -4,11 +4,11 @@
   "private": true,
   "dependencies": {
     "@craco/craco": "^3.5.0",
-    "antd": "^3.13.6",
+    "antd": "^3.15.0",
     "apollo-cache-inmemory": "^1.5.1",
     "apollo-cache-persist": "^0.1.1",
     "apollo-client": "^2.5.1",
-    "apollo-link": "^1.2.8",
+    "apollo-link": "^1.2.9",
     "apollo-link-rest": "^0.7.0",
     "craco-antd": "^1.10.0",
     "graphql": "^14.1.1",
@@ -16,20 +16,23 @@
     "graphql-tag": "^2.10.1",
     "moment": "^2.24.0",
     "qs": "^6.6.0",
-    "react": "^16.8.3",
-    "react-apollo": "^2.5.1",
-    "react-dom": "^16.8.3",
+    "react": "^16.8.4",
+    "react-apollo": "^2.5.2",
+    "react-dom": "^16.8.4",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "^2.1.5"
+    "react-scripts": "^2.1.8"
   },
   "scripts": {
     "start": "craco start",
-    "build": "craco build",
-    "deploy:patch": "npm --no-git-tag-version version patch && npm run deploy",
-    "deploy:minor": "npm --no-git-tag-version version minor && npm run deploy",
-    "deploy:major": "npm --no-git-tag-version version major && npm run deploy",
-    "deploy": "node update-manifest.js && npm run build && node deploy.js",
-    "test": "craco test"
+    "build": "npm run icons2object && craco build && npm run icons2array",
+    "upload:patch": "npm --no-git-tag-version version patch && npm run upload",
+    "upload:minor": "npm --no-git-tag-version version minor && npm run upload",
+    "upload:major": "npm --no-git-tag-version version major && npm run upload",
+    "upload": "npm run build && npm run deploy",
+    "test": "craco test",
+    "icons2array": "node ./scripts/icons-to-array.js",
+    "icons2object": "node ./scripts/icons-to-object.js",
+    "deploy": "node ./scripts/deploy.js"
   },
   "eslintConfig": {
     "extends": "react-app"
