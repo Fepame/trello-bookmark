@@ -2,8 +2,10 @@ import React, { useEffect } from 'react'
 import { Query, Mutation } from 'react-apollo'
 import { SUBMIT_CARD, SUBMIT_CARD_ATTACHMENT } from '../../../../services/mutations'
 import { GET_CARD } from '../../../../services/queries'
-import { resolveSubmitParams, closeTab } from '../../../../services/utils'
 import { Button } from 'antd'
+import { resolveSubmitParams } from '../../../../services/utils'
+import { setLocation } from '../../../../services/ls'
+import { closeTab } from '../../../../services/browser'
 
 const Submit = ({
   card,
@@ -86,10 +88,7 @@ export default () => (
 
       const onSubmitSuccess = () => {
         const { teamId, boardId, listId } = card
-        localStorage.setItem(
-          "lastLocation",
-          `${teamId}/${boardId}/${listId}`
-        )
+        setLocation("lastLocation", `${teamId}/${boardId}/${listId}`)
         updateSpinner("check-circle", true)
         window.setTimeout(() => {
           updateSpinner("loading", false)

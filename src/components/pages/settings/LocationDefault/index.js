@@ -1,7 +1,6 @@
 import React from 'react'
 import { Row, Col, Input, Cascader, Icon } from 'antd'
-import { setDefaultLocations } from '../../../../services/utils'
-
+import { setLocation } from '../../../../services/ls'
 
 const filter = (inputValue, path) => path
   .some(option => 
@@ -13,19 +12,30 @@ const filter = (inputValue, path) => path
     ) > -1
   )
 
+const getSiteName = site => {
+  if(site === 'lastLocation') {
+    return 'Last saved location:'
+  } else if (site === 'newTab') {
+    return 'New tab:'
+  } else {
+    return site
+  }
+}
+
 export default ({ locationTree, site, path }) => (
   <Row style={{ marginBottom: 20 }}>
     <Col span={8}>
       <Input
-        disabled={site === 'New tab'}
+        disabled={site === 'newTab' || site === 'lastLocation'}
         placeholder="Url contains"
         style={{ width: '100%' }}
-        value={site}
+        value={getSiteName(site)}
       />
     </Col>
     <Col offset={1} span={13}>
       <Cascader
         autoFocus
+        disabled={site === 'lastLocation'}
         options={locationTree}
         defaultValue={path || []}
         style={{width: '100%'}}
@@ -37,7 +47,7 @@ export default ({ locationTree, site, path }) => (
         showSearch={{ filter }}
         onChange={path => {
           const [ teamId, boardId, listId] = path
-          setDefaultLocations(site, `${teamId}/${boardId}/${listId}`)
+          setLocation(site, `${teamId}/${boardId}/${listId}`)
         }}
       />
     </Col>

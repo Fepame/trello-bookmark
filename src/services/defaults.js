@@ -1,4 +1,8 @@
-export default {
+import { getTabInfo } from '../services/browser'
+import { getLocations } from '../services/ls'
+import { pathStrToArray } from '../services/utils'
+
+const defaultData = {
   settings: {
     __typename: "Settings",
     spinner: {
@@ -23,3 +27,51 @@ export default {
     assignees: []
   }
 }
+
+const getFoundPath = (url, locations) => {
+  const foundSite = Object.keys(locations)
+    .find(site => url.includes(site))
+
+  if (url === 'chrome://newtab/') {
+    return pathStrToArray(locations.newTab)
+  } else if (foundSite) {
+    return pathStrToArray(locations[foundSite])
+  } else if (locations.lastLocation) {
+    return pathStrToArray(locations.lastLocation)
+  } else {
+    return []
+  }
+}
+
+const updateCardWithPath = (path, cardDefaults) => {
+  const [teamId, boardId, listId] = path
+  return {
+    ...cardDefaults,
+    teamId,
+    boardId,
+    listId
+  }
+}
+
+export default {
+  init: client => {
+    getTabInfo(({title, url}) => {
+      const locations = getLocations()
+      const foundPath = getFoundPath(url, locations)
+      let defaults = {
+        ...defaultData,
+        card: {
+          ...defaultData.card,
+          title,
+          link: url
+        }
+      }
+
+      if(foundPath.length) {
+        defaults.card = updateCardWithPath(foundPath, defaults.card)
+      }
+
+      client.writeData({ data: defaults })
+    })
+  }
+} 

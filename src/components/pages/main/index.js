@@ -11,7 +11,7 @@ import {
 import { Query } from 'react-apollo'
 import { Link as RouterLink } from 'react-router-dom'
 import { GET_SETTINGS } from '../../../services/queries'
-import { closeTab } from '../../../services/utils'
+import { closeTab } from '../../../services/browser'
 
 import Location from './fields/Location'
 import Position from './fields/Position'

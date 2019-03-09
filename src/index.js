@@ -14,7 +14,8 @@ import defaults from './services/defaults'
 import MainPage from './components/pages/main'
 import SettingsPage from './components/pages/settings'
 import NoMatchPage from './components/pages/no_match'
-import { generateBlob, getTabInfo, getLastLocation, isChromeExtension, normalizeLocationTree } from './services/utils'
+import { closeTab } from './services/browser'
+import { generateBlob, normalizeLocationTree } from './services/utils'
 import './index.css'
 
 const restLink = new RestLink({
@@ -59,32 +60,7 @@ const client = new ApolloClient({
   resolvers
 })
 
-client.writeData({ data: defaults })
-
-getTabInfo(({title, url}) => client.writeData({ 
-  data: {
-    card: {
-      title,
-      link: url,
-      __typename: "Card"
-    }
-  }
-}))
-
-const lastLocation = getLastLocation()
-if(lastLocation !== null) {
-  const [ teamId, boardId, listId ] = lastLocation
-  client.writeData({ 
-    data: {
-      card: {
-        teamId,
-        boardId,
-        listId,
-        __typename: "Card"
-      }
-    }
-  })
-}
+defaults.init(client)
 
 const App = () => {
   const { window: { location: { href, hash }}} = window
@@ -106,7 +82,7 @@ const App = () => {
       `https://trello.com/1/authorize?expiration=never&callback_method=fragment&name=Trello%20Bookmark&scope=read,write,account&response_type=token&key=${process.env.REACT_APP_TRELLO_API_KEY}&redirect_uri=${encodeURIComponent(href)}`,
       '_blank'
     )
-    if(isChromeExtension) window.close()
+    closeTab()
   }
 
   return (

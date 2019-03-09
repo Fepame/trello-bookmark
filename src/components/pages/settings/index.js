@@ -2,24 +2,23 @@ import React from 'react'
 import { Row, Col, Icon, Divider } from 'antd'
 import { Link } from 'react-router-dom'
 import LocationDefault from './LocationDefault'
-import { getDefaultLocations, normalizePath } from '../../../services/utils'
+import { pathStrToArray } from '../../../services/utils'
+import { getLocations } from '../../../services/ls'
 
-
-const defaultsData = getDefaultLocations()
+const locations = getLocations()
 
 const Settings = ({ locationTree }) => (
   <Row type="flex" justify="space-around">
     <Col span={22} offset={1}>
       <Divider>Default locations</Divider>
       {
-        Object.keys(defaultsData)
-          .filter(site => site !== 'lastLocation')
+        Object.keys(locations)
           .map(
             (site, i) => <LocationDefault
-              locationTree={locationTree}
               key={i}
               site={site}
-              path={normalizePath(defaultsData[site])}
+              locationTree={locationTree}
+              path={pathStrToArray(locations[site])}
             />
           )
       }

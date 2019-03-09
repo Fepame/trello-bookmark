@@ -1,40 +1,32 @@
 import moment from 'moment'
 import qs from 'qs'
 
-export const isChromeExtension = window
-  .location
-  .protocol === 'chrome-extension:'
+export const validateLastLocation = (card, locationTree) => {
+  const { teamId, boardId, listId } = card
+  const isTeamValid = locationTree
+    .some(team => team.id === teamId)
 
-export const getDefaultLocations = () => {
-  const defaultLocation = localStorage.getItem("defaultLocation")
-  if(defaultLocation) {
-    return JSON.parse(defaultLocation)
-  } else {
-    const initDefaults = {
-      'lastLocation': '',
-      'New tab': '',
-      'pikabu.ru': ''
-    }
-    localStorage.setItem("defaultLocation", JSON.stringify(initDefaults))
-    return initDefaults
-  }
+  if(!isTeamValid) return false
+
+  const isBoardValid = locationTree
+    .find(team => team.id === teamId)
+    .children
+    .some(board => board.id === boardId)
+
+  if(!isBoardValid) return false
+
+  const isListValid = locationTree
+    .find(team => team.id === teamId)
+    .children
+    .find(board => board.id === boardId)
+    .children
+    .some(list => list.id === listId)
+
+  if(!isListValid) return false
+  return true
 }
 
-export const setDefaultLocations = (site, path) => {
-  const defaultLocation = getDefaultLocations()
-  defaultLocation[site] = path
-  localStorage.setItem("defaultLocation", JSON.stringify(defaultLocation))
-}
-
-export const getLastLocation = () => {
-  const lastLocation = localStorage.getItem("lastLocation")
-  return lastLocation
-    && lastLocation
-      .split('/')
-      .map(pathPart => pathPart === 'null' ? null : pathPart)
-}
-
-export const normalizePath = path => {
+export const pathStrToArray = path => {
   if(path) {
     const [teamId, boardId, listId] = path.split('/')
     return teamId === "null" ? [null, boardId, listId] : [teamId, boardId, listId]
@@ -59,18 +51,6 @@ export const normalizeLocationTree = ({ teams, boards }) => [{
 
 
 
-export const closeTab = () => isChromeExtension && window.close()
-
-export const getTabInfo = cb => isChromeExtension && window
-    .chrome
-    .tabs
-    .query(
-      {
-        active: true,
-        currentWindow: true
-      },
-      tabs => !tabs[0].url.includes("chrome:") && cb(tabs[0])
-    )
 
 export const resolveSubmitParams = card => qs.stringify({
   name: card.title,
