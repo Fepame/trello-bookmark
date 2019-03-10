@@ -26,12 +26,26 @@ export const validateLastLocation = (card, locationTree) => {
   return true
 }
 
+export const objectWithoutKey = (object, key) => {
+  const {[key]: deletedKey, ...otherKeys} = object
+  return otherKeys
+}
+
 export const pathStrToArray = path => {
   if(path) {
     const [teamId, boardId, listId] = path.split('/')
     return teamId === "null" ? [null, boardId, listId] : [teamId, boardId, listId]
   } else {
     return []
+  }
+}
+
+export const pathArrayToStr = path => {
+  if(path.length && path.length === 3) {
+    const [ teamId, boardId, listId ] = path
+    return `${teamId}/${boardId}/${listId}`
+  } else {
+    return ''
   }
 }
 

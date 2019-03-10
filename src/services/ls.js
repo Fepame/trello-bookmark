@@ -1,3 +1,5 @@
+import { objectWithoutKey } from './utils'
+
 export const getLocations = () => {
   const locations = localStorage.getItem("locations")
   if(locations) {
@@ -17,4 +19,12 @@ export const setLocation = (site, path) => {
   const locations = getLocations()
   locations[site] = path
   localStorage.setItem("locations", JSON.stringify(locations))
+}
+
+export const removeLocation = site => {
+  const locations = getLocations()
+  if(locations[site]) {
+    const newLocations = objectWithoutKey(locations, site)
+    localStorage.setItem("locations", JSON.stringify(newLocations))
+  }
 }

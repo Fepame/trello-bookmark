@@ -1,6 +1,5 @@
 import React from 'react'
 import { Row, Col, Input, Cascader, Icon } from 'antd'
-import { setLocation } from '../../../../services/ls'
 
 const filter = (inputValue, path) => path
   .some(option => 
@@ -22,7 +21,14 @@ const getSiteName = site => {
   }
 }
 
-export default ({ locationTree, site, path }) => (
+export default ({
+  locationTree,
+  site,
+  path,
+  updateLocation,
+  addNewLocation,
+  isLastRow
+}) => (
   <Row style={{ marginBottom: 20 }}>
     <Col span={8}>
       <Input
@@ -30,6 +36,7 @@ export default ({ locationTree, site, path }) => (
         placeholder="Url contains"
         style={{ width: '100%' }}
         value={getSiteName(site)}
+        onChange={e => updateLocation(e.target.value, path, site)}
       />
     </Col>
     <Col offset={1} span={13}>
@@ -37,7 +44,7 @@ export default ({ locationTree, site, path }) => (
         autoFocus
         disabled={site === 'lastLocation'}
         options={locationTree}
-        defaultValue={path || []}
+        value={path}
         style={{width: '100%'}}
         fieldNames={{ label: 'name', value: 'id' }}
         expandTrigger="hover"
@@ -45,14 +52,17 @@ export default ({ locationTree, site, path }) => (
         popupClassName="cascader-popup"
         allowClear={false}
         showSearch={{ filter }}
-        onChange={path => {
-          const [ teamId, boardId, listId] = path
-          setLocation(site, `${teamId}/${boardId}/${listId}`)
-        }}
+        onChange={path => updateLocation(site, path)}
       />
     </Col>
     <Col span={1} offset={1}>
-      <Icon type="plus-circle" />
+      <Icon
+        style={{
+          display: isLastRow ? 'inline-block' : 'none'
+        }}
+        type="plus-circle"
+        onClick={() => addNewLocation()}
+      />
     </Col>
   </Row>
 )

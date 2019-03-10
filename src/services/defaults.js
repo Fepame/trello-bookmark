@@ -30,7 +30,7 @@ const defaultData = {
 
 const getFoundPath = (url, locations) => {
   const foundSite = Object.keys(locations)
-    .find(site => url.includes(site))
+    .find(site => site && url.includes(site))
 
   if (url === 'chrome://newtab/') {
     return pathStrToArray(locations.newTab)
