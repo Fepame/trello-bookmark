@@ -2,7 +2,6 @@ import React from 'react'
 import { Row, Col, Input, Cascader, Icon } from 'antd'
 import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
-import { pathArrayToStr, pathStrToArray } from '../../../../services/utils'
 
 const filter = (inputValue, path) => path
   .some(option => 
@@ -50,7 +49,7 @@ export default ({
               autoFocus
               disabled={site === 'lastLocation'}
               options={locationTree}
-              value={pathStrToArray(pathStr)}
+              value={pathStr}
               style={{width: '100%'}}
               fieldNames={{ label: 'name', value: 'id' }}
               expandTrigger="hover"
@@ -58,22 +57,7 @@ export default ({
               popupClassName="cascader-popup"
               allowClear={false}
               showSearch={{ filter }}
-              onChange={path => client.writeData({
-                data: {
-                  locations: locations
-                    .map(location => {
-                      if(location.site === site){
-                        const newLocation = {
-                          ...location,
-                          pathStr: pathArrayToStr(path)
-                        }
-                        return newLocation
-                      }
-
-                      return location
-                    })
-                }
-              })}
+              // onChange={path => updateLocation(site, path)}
             />
           </Col>
           <Col span={1} offset={1}>

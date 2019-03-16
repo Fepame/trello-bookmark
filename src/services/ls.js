@@ -1,18 +1,30 @@
+import { objectWithoutKey } from './utils'
+
 export const getLocations = () => {
   const locations = localStorage.getItem("locations")
   if(locations) {
     return JSON.parse(locations)
   } else {
-    const defaultLocations = [
-      {id: 0, site: 'lastLocation', pathStr: '', __typename: "Location"},
-      {id: 1, site: 'newTab', pathStr: '', __typename: "Location"},
-      {id: 2, site: 'pikabu.ru', pathStr: '', __typename: "Location"}
-    ]
+    const defaultLocations = {
+      'lastLocation': '',
+      'newTab': '',
+      'pikabu.ru': ''
+    }
     localStorage.setItem("locations", JSON.stringify(defaultLocations))
     return defaultLocations
   }
 }
 
-export const saveLocations = locations => {
+export const setLocation = (site, path) => {
+  const locations = getLocations()
+  locations[site] = path
   localStorage.setItem("locations", JSON.stringify(locations))
+}
+
+export const removeLocation = site => {
+  const locations = getLocations()
+  if(locations[site]) {
+    const newLocations = objectWithoutKey(locations, site)
+    localStorage.setItem("locations", JSON.stringify(newLocations))
+  }
 }
