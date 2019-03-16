@@ -9,8 +9,13 @@ const defaultData = {
       type: "loading",
       isVisible: false,
       __typename: "Spinner"
-    }
+    },
   },
+  locations: [
+    {id: 0, site: 'lastLocation', pathStr: '', __typename: "Location"},
+    {id: 1, site: 'newTab', pathStr: '', __typename: "Location"},
+    {id: 2, site: 'pikabu.ru', pathStr: '', __typename: "Location"}
+  ],
   card: {
     __typename: "Card",
     position: "top",
