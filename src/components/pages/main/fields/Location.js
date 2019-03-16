@@ -3,7 +3,7 @@ import { Cascader } from 'antd'
 import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
 import { validateLastLocation } from '../../../../services/utils'
-import { setLocation } from '../../../../services/ls'
+// import { saveLocations } from '../../../../services/ls'
 
 // const LocationStub = <Select
 //   placeholder="Select card location"
@@ -73,15 +73,26 @@ export default ({ locationTree }) => (
           boardId: '',
           listId: ''
         }
+        {/* let locations = client.readQuery({ query: gql`
+          { locations { site id pathStr }}
+        `})
+
+        locations[0] = [
+          {id: 0, site: 'lastLocation', pathStr: '', __typename: "Location"}
+        ]
+
+        saveLocations(locations) */}
+
         client.writeData({
           data: {
             card: {
               ...newCardData,
               __typename: "Card"
-            }
+            },
+            
           }
         })
-        setLocation("lastLocation", "")
+        {/* setLocation("lastLocation", "") */}
         return <Location
           card={newCardData}
           options={locationTree}

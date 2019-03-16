@@ -4,7 +4,7 @@ import { SUBMIT_CARD, SUBMIT_CARD_ATTACHMENT } from '../../../../services/mutati
 import { GET_CARD } from '../../../../services/queries'
 import { Button } from 'antd'
 import { resolveSubmitParams } from '../../../../services/utils'
-import { setLocation } from '../../../../services/ls'
+// import { setLocation } from '../../../../services/ls'
 import { closeTab } from '../../../../services/browser'
 
 const Submit = ({
@@ -88,7 +88,7 @@ export default () => (
 
       const onSubmitSuccess = () => {
         const { teamId, boardId, listId } = card
-        setLocation("lastLocation", `${teamId}/${boardId}/${listId}`)
+        {/* setLocation("lastLocation", `${teamId}/${boardId}/${listId}`) */}
         updateSpinner("check-circle", true)
         window.setTimeout(() => {
           updateSpinner("loading", false)

@@ -4,7 +4,7 @@ import qs from 'qs'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 // import { ApolloLink } from 'apollo-link'
 import { ApolloClient } from 'apollo-client'
-// import { persistCache } from 'apollo-cache-persist'
+import { persistCache } from 'apollo-cache-persist'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { ApolloProvider, Query } from 'react-apollo'
 import { RestLink } from 'apollo-link-rest'
@@ -47,12 +47,12 @@ const restLink = new RestLink({
   }
 })
 
-// persistCache({
-//   cache,
-//   storage: window.localStorage
-// })
-
 const cache = new InMemoryCache()
+
+persistCache({
+  cache,
+  storage: window.localStorage
+})
 
 const client = new ApolloClient({
   cache,

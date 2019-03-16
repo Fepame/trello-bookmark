@@ -11,11 +11,6 @@ const defaultData = {
       __typename: "Spinner"
     },
   },
-  locations: [
-    {id: 0, site: 'lastLocation', pathStr: '', __typename: "Location"},
-    {id: 1, site: 'newTab', pathStr: '', __typename: "Location"},
-    {id: 2, site: 'pikabu.ru', pathStr: '', __typename: "Location"}
-  ],
   card: {
     __typename: "Card",
     position: "top",
@@ -34,17 +29,19 @@ const defaultData = {
 }
 
 const getFoundPath = (url, locations) => {
-  const foundSite = Object.keys(locations)
-    .find(site => site && url.includes(site))
+  const foundSite = locations
+    .find(({ site }) => site && url.includes(site))
 
   if (url === 'chrome://newtab/') {
-    return pathStrToArray(locations.newTab)
+    return pathStrToArray(
+      locations.find(({site}) => site === 'newTab').pathStr
+    )
   } else if (foundSite) {
-    return pathStrToArray(locations[foundSite])
-  } else if (locations.lastLocation) {
-    return pathStrToArray(locations.lastLocation)
+    return pathStrToArray(foundSite.pathStr)
   } else {
-    return []
+    return pathStrToArray(
+      locations.find(({site}) => site === "lastLocation").pathStr
+    )
   }
 }
 
@@ -65,6 +62,7 @@ export default {
       const foundPath = getFoundPath(url, locations)
       let defaults = {
         ...defaultData,
+        locations,
         card: {
           ...defaultData.card,
           title,
