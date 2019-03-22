@@ -2,9 +2,10 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import qs from 'qs'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import oneline from 'oneline'
 // import { ApolloLink } from 'apollo-link'
 import { ApolloClient } from 'apollo-client'
-// import { persistCache } from 'apollo-cache-persist'
+import { persistCache } from 'apollo-cache-persist'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { ApolloProvider, Query } from 'react-apollo'
 import { RestLink } from 'apollo-link-rest'
@@ -41,16 +42,11 @@ const restLink = new RestLink({
           "cover.jpg"
         )
       }
-
+      
       return {body: formData}
     }
   }
 })
-
-// persistCache({
-//   cache,
-//   storage: window.localStorage
-// })
 
 const cache = new InMemoryCache()
 
@@ -60,7 +56,14 @@ const client = new ApolloClient({
   resolvers
 })
 
-defaults.init(client)
+persistCache({
+  cache,
+  debounce: 0,
+  storage: window.localStorage
+}).then(() => {
+  defaults.init(client)
+})
+
 
 const App = () => {
   const { window: { location: { href, hash }}} = window
@@ -79,7 +82,15 @@ const App = () => {
 
   const getToken = () => {
     window.open(
-      `https://trello.com/1/authorize?expiration=never&callback_method=fragment&name=Trello%20Bookmark&scope=read,write,account&response_type=token&key=${process.env.REACT_APP_TRELLO_API_KEY}&redirect_uri=${encodeURIComponent(href)}`,
+      oneline`
+        https://trello.com/1/authorize
+          ?expiration=never
+          &callback_method=fragment
+          &name=Trello%20Bookmark
+          &scope=read,write,account&response_type=token
+          &key=${process.env.REACT_APP_TRELLO_API_KEY}
+          &redirect_uri=${encodeURIComponent(href)}
+      `,
       '_blank'
     )
     closeTab()

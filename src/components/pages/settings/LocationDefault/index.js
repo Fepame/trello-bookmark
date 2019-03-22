@@ -2,6 +2,7 @@ import React from 'react'
 import { Row, Col, Input, Cascader, Icon } from 'antd'
 import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
+import { pathStrToArray } from '../../../../services/utils'
 
 const filter = (inputValue, path) => path
   .some(option => 
@@ -49,7 +50,7 @@ export default ({
               autoFocus
               disabled={site === 'lastLocation'}
               options={locationTree}
-              value={pathStr}
+              value={pathStrToArray(pathStr)}
               style={{width: '100%'}}
               fieldNames={{ label: 'name', value: 'id' }}
               expandTrigger="hover"

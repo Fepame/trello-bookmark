@@ -1,6 +1,7 @@
-import { getTabInfo } from '../services/browser'
+import { isChromeExtension, getTabInfo } from '../services/browser'
 import { getLocations } from '../services/ls'
 import { pathStrToArray } from '../services/utils'
+import gql from 'graphql-tag'
 
 const defaultData = {
   settings: {
@@ -14,7 +15,7 @@ const defaultData = {
   locations: [
     {id: 0, site: 'lastLocation', pathStr: '', __typename: "Location"},
     {id: 1, site: 'newTab', pathStr: '', __typename: "Location"},
-    {id: 2, site: 'pikabu.ru', pathStr: '', __typename: "Location"}
+    {id: 2, site: 'localhost', pathStr: 'null/5c383fd63116310f3c27c1a7/5c383fe4aff38b2ff18d3397', __typename: "Location"}
   ],
   card: {
     __typename: "Card",
@@ -34,49 +35,79 @@ const defaultData = {
 }
 
 const getFoundPath = (url, locations) => {
-  const foundSite = Object.keys(locations)
-    .find(site => site && url.includes(site))
+  const foundSite = locations
+    .find(({ site }) => site && url.includes(site))
+  const [ newTab ] = locations
+    .filter(location => location.site === 'newTab')
+  const [ lastLocation ] = locations
+    .filter(location => location.site === 'lastLocation')
 
   if (url === 'chrome://newtab/') {
-    return pathStrToArray(locations.newTab)
+    return pathStrToArray(newTab.pathStr)
   } else if (foundSite) {
-    return pathStrToArray(locations[foundSite])
-  } else if (locations.lastLocation) {
-    return pathStrToArray(locations.lastLocation)
+    return pathStrToArray(foundSite.pathStr)
+  } else if (lastLocation) {
+    return pathStrToArray(lastLocation.pathStr)
   } else {
     return []
   }
 }
 
-const updateCardWithPath = (path, cardDefaults) => {
-  const [teamId, boardId, listId] = path
-  return {
-    ...cardDefaults,
-    teamId,
-    boardId,
-    listId
+const updateCard = (client, card) => {
+  const { locations } = client.readQuery({
+    query: gql`{
+      locations {
+        id
+        site
+        pathStr
+      }
+    }`
+  })
+  const foundedPath = getFoundPath(card.link, locations)
+  if(foundedPath.length) {
+    const [teamId, boardId, listId] = foundedPath
+    client.writeData({ 
+      data: {
+        card: {
+          ...card,
+          teamId,
+          boardId,
+          listId,
+          __typename: "Card",
+        }
+      }
+    })
+  } else {
+    client.writeData({ 
+      data: {
+        card: {
+          ...card,
+          __typename: "Card",
+        }
+      }
+    })
   }
 }
 
 export default {
   init: client => {
-    getTabInfo(({title, url}) => {
-      const locations = getLocations()
-      const foundPath = getFoundPath(url, locations)
-      let defaults = {
-        ...defaultData,
-        card: {
-          ...defaultData.card,
-          title,
-          link: url
+    const storedData = localStorage.getItem("apollo-cache-persist")
+    
+    if(!storedData) {
+      client.writeData({ data: defaultData })
+    }
+    
+    if(isChromeExtension){
+      getTabInfo(tabInfo => {
+        if(!tabInfo.link !== 'chrome://newtab') {
+          updateCard(client, tabInfo)
         }
-      }
-
-      if(foundPath.length) {
-        defaults.card = updateCardWithPath(foundPath, defaults.card)
-      }
-
-      client.writeData({ data: defaults })
-    })
+      })
+    } else {
+      updateCard(client, {
+        title: document.title,
+        link: window.location.href
+      })
+    }
   }
 } 
