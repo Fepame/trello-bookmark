@@ -1,9 +1,8 @@
 import { isChromeExtension, getTabInfo } from '../services/browser'
-import { getLocations } from '../services/ls'
 import { pathStrToArray } from '../services/utils'
-import gql from 'graphql-tag'
+import { GET_LOCATIONS } from '../services/queries'
 
-const defaultData = {
+export const defaultData = {
   settings: {
     __typename: "Settings",
     spinner: {
@@ -14,8 +13,7 @@ const defaultData = {
   },
   locations: [
     {id: 0, site: 'lastLocation', pathStr: '', __typename: "Location"},
-    {id: 1, site: 'newTab', pathStr: '', __typename: "Location"},
-    {id: 2, site: 'localhost', pathStr: 'null/5c383fd63116310f3c27c1a7/5c383fe4aff38b2ff18d3397', __typename: "Location"}
+    {id: 1, site: 'newTab', pathStr: '', __typename: "Location"}
   ],
   card: {
     __typename: "Card",
@@ -42,7 +40,7 @@ const getFoundPath = (url, locations) => {
   const [ lastLocation ] = locations
     .filter(location => location.site === 'lastLocation')
 
-  if (url === 'chrome://newtab/') {
+  if (url === '') {
     return pathStrToArray(newTab.pathStr)
   } else if (foundSite) {
     return pathStrToArray(foundSite.pathStr)
@@ -54,14 +52,8 @@ const getFoundPath = (url, locations) => {
 }
 
 const updateCard = (client, card) => {
-  const { locations } = client.readQuery({
-    query: gql`{
-      locations {
-        id
-        site
-        pathStr
-      }
-    }`
+  const { locations } = client.readQuery({ 
+    query: GET_LOCATIONS
   })
   const foundedPath = getFoundPath(card.link, locations)
   if(foundedPath.length) {
@@ -99,7 +91,9 @@ export default {
     
     if(isChromeExtension){
       getTabInfo(tabInfo => {
-        if(!tabInfo.link !== 'chrome://newtab') {
+        if(tabInfo.link === 'chrome://newtab/') {
+          updateCard(client, { title: "", link: "" })
+        } else {      
           updateCard(client, tabInfo)
         }
       })

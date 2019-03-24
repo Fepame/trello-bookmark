@@ -74,6 +74,16 @@ export const GET_SETTINGS = gql`
   }
 `
 
+export const GET_LOCATIONS = gql`
+  {
+    locations {
+      id
+      site
+      pathStr
+    }
+  }
+`
+
 export const GET_CARD = gql`
   {
     card {

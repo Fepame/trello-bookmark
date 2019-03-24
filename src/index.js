@@ -2,7 +2,6 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import qs from 'qs'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
-import oneline from 'oneline'
 // import { ApolloLink } from 'apollo-link'
 import { ApolloClient } from 'apollo-client'
 import { persistCache } from 'apollo-cache-persist'
@@ -81,18 +80,16 @@ const App = () => {
   }
 
   const getToken = () => {
-    window.open(
-      oneline`
-        https://trello.com/1/authorize
-          ?expiration=never
-          &callback_method=fragment
-          &name=Trello%20Bookmark
-          &scope=read,write,account&response_type=token
-          &key=${process.env.REACT_APP_TRELLO_API_KEY}
-          &redirect_uri=${encodeURIComponent(href)}
-      `,
-      '_blank'
-    )
+    const params = qs.stringify({
+      expiration: 'never',
+      callback_method: 'fragment',
+      name: 'Trello Bookmark',
+      scope: ['read', 'write', 'account'],
+      response_type: 'token',
+      key: process.env.REACT_APP_TRELLO_API_KEY,
+      redirect_uri: href
+    }, { arrayFormat: 'comma' })
+    window.open(`https://trello.com/1/authorize?${params}`, '_blank')
     closeTab()
   }
 

@@ -1,10 +1,13 @@
 import React, { useEffect } from 'react'
 import { Query, Mutation } from 'react-apollo'
 import { SUBMIT_CARD, SUBMIT_CARD_ATTACHMENT } from '../../../../services/mutations'
-import { GET_CARD } from '../../../../services/queries'
+import { GET_CARD, GET_LOCATIONS } from '../../../../services/queries'
 import { Button } from 'antd'
-import { resolveSubmitParams } from '../../../../services/utils'
-import { setLocation } from '../../../../services/ls'
+import { 
+  resolveSubmitParams,
+  pathArrayToStr
+} from '../../../../services/utils'
+import { defaultData } from '../../../../services/defaults'
 import { closeTab } from '../../../../services/browser'
 
 const Submit = ({
@@ -18,6 +21,29 @@ const Submit = ({
   const onSubmitFired = () => {
     if(!card.listId || !card.title) return
     updateSpinner("loading", true)
+    
+    const { locations } = client.readQuery({ 
+      query: GET_LOCATIONS
+    })
+
+    client.writeData({
+      data: {
+        locations: locations.map(location => {
+          if(location.site === 'lastLocation'){
+            return {
+              ...location,
+              pathStr: pathArrayToStr([
+                card.teamId,
+                card.boardId,
+                card.listId
+              ])
+            }
+          }
+          return location
+        })
+      }
+    })
+
     submitCard({
       variables: { params: resolveSubmitParams(card) }
     }).then(response => {
@@ -87,11 +113,12 @@ export default () => (
         })
 
       const onSubmitSuccess = () => {
-        const { teamId, boardId, listId } = card
-        setLocation("lastLocation", `${teamId}/${boardId}/${listId}`)
         updateSpinner("check-circle", true)
         window.setTimeout(() => {
           updateSpinner("loading", false)
+          client.writeData({
+            data: { card: defaultData.card }
+          })
           closeTab()
         }, 300)
       }

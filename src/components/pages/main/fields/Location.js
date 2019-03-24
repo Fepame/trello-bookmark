@@ -3,7 +3,6 @@ import { Cascader } from 'antd'
 import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
 import { validateLastLocation } from '../../../../services/utils'
-import { setLocation } from '../../../../services/ls'
 
 // const LocationStub = <Select
 //   placeholder="Select card location"
@@ -73,6 +72,7 @@ export default ({ locationTree }) => (
           boardId: '',
           listId: ''
         }
+        
         client.writeData({
           data: {
             card: {
@@ -81,7 +81,6 @@ export default ({ locationTree }) => (
             }
           }
         })
-        setLocation("lastLocation", "")
         return <Location
           card={newCardData}
           options={locationTree}
