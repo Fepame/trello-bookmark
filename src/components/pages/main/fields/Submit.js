@@ -116,8 +116,15 @@ export default () => (
         updateSpinner("check-circle", true)
         window.setTimeout(() => {
           updateSpinner("loading", false)
+          
+          const { locations } = client.readQuery({ 
+            query: GET_LOCATIONS
+          })
           client.writeData({
-            data: { card: defaultData.card }
+            data: {
+              ...defaultData,
+              locations
+            }
           })
           closeTab()
         }, 300)

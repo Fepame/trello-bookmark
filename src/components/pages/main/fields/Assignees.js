@@ -11,7 +11,7 @@ export default () => (
     {({ data: {card: { boardId, assignees }} }) => {
       if(!boardId) return noBoardMessage
       return (
-        <Query query={GET_MEMBERS} variables={{ boardId }}>
+        <Query query={GET_MEMBERS} variables={{ boardId }} fetchPolicy="cache-and-network">
           {({ data: { members }, client }) => {
             if(!members || !members.length) return noBoardMessage
             return members.map(member => {

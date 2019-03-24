@@ -12,7 +12,7 @@ export default () => (
   <Query query={gql`{ card { boardId labels }}`}>
     {({ data: { card: { boardId, labels } }}) => {
       if(!boardId) return noBoardMessage
-      return <Query query={GET_LABELS} variables={{ boardId }}>
+      return <Query query={GET_LABELS} variables={{ boardId }} fetchPolicy="cache-and-network">
         {({ data: { boardLabels }, client }) => {
           if(!boardLabels) return noBoardMessage
           return <Select

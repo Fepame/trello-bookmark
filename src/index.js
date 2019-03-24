@@ -99,10 +99,10 @@ const App = () => {
         <div className="App">
           {token 
             ? (
-              <Query query={GET_TEAMS}>
+              <Query query={GET_TEAMS} fetchPolicy="cache-and-network">
                 {({data: { teams }}) => {
                   if(!teams) return 'Loading...'
-                  return <Query query={GET_BOARDS}>
+                  return <Query query={GET_BOARDS} fetchPolicy="cache-and-network">
                     {({ data: { boards }, client }) => {
                       if(!boards) return 'Loading...'
                       const locationTree = normalizeLocationTree({ boards, teams })
