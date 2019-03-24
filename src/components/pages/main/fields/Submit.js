@@ -94,8 +94,8 @@ const Submit = ({
   )
 }
 
-export default () => (
-  <Query query={GET_CARD}>
+export default ({persistor}) => (
+  <Query query={GET_CARD} fetchPolicy="cache-only">
     {({ data: { card }, client }) => {
       if(!card) return null
       const updateSpinner = (type, isVisible) => client
@@ -120,13 +120,17 @@ export default () => (
           const { locations } = client.readQuery({ 
             query: GET_LOCATIONS
           })
-          client.writeData({
-            data: {
-              ...defaultData,
-              locations
-            }
-          })
-          closeTab()
+          client.clearStore().then(() => {
+            client.writeData({
+              data: {
+                ...defaultData,
+                locations
+              }
+            })
+            persistor.persist().then(() => {
+              closeTab()
+            })
+          }) 
         }, 300)
       }
 

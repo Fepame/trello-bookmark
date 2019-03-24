@@ -4,7 +4,7 @@ import qs from 'qs'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 // import { ApolloLink } from 'apollo-link'
 import { ApolloClient } from 'apollo-client'
-import { persistCache } from 'apollo-cache-persist'
+import { CachePersistor } from 'apollo-cache-persist'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { ApolloProvider, Query } from 'react-apollo'
 import { RestLink } from 'apollo-link-rest'
@@ -55,14 +55,15 @@ const client = new ApolloClient({
   resolvers
 })
 
-persistCache({
+const persistor = new CachePersistor({
   cache,
+  debug: true,
   debounce: 0,
+  trigger: false,
   storage: window.localStorage
-}).then(() => {
-  defaults.init(client)
 })
 
+persistor.restore().then(() => defaults.init(client))
 
 const App = () => {
   const { window: { location: { href, hash }}} = window
@@ -109,9 +110,9 @@ const App = () => {
 
                       return (
                         <Switch>
-                          <Route path="/index.html" exact render={(props) => <MainPage {...props} locationTree={locationTree} />} />
-                          <Route path="/" exact render={(props) => <MainPage {...props} locationTree={locationTree} />} />
-                          <Route path="/settings" exact render={(props) => <SettingsPage {...props} locationTree={locationTree} />} />
+                          <Route path="/index.html" exact render={(props) => <MainPage {...props} locationTree={locationTree} persistor={persistor} />} />
+                          <Route path="/" exact render={(props) => <MainPage {...props} locationTree={locationTree} persistor={persistor} />} />
+                          <Route path="/settings" exact render={(props) => <SettingsPage {...props} locationTree={locationTree} persistor={persistor} />} />
                           <Route component={NoMatchPage} />
                         </Switch>
                       )

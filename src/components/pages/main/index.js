@@ -27,7 +27,7 @@ import Assignees from './fields/Assignees'
 
 const { Item } = Form
 
-const Main = ({ locationTree }) => (
+const Main = ({ locationTree, persistor }) => (
   <Query query={GET_SETTINGS}>
     {({ data: { settings }, client }) => {
       if(!settings) return null
@@ -53,7 +53,7 @@ const Main = ({ locationTree }) => (
                   <Position />
                 </Col>
               </Row>
-              
+
               <Divider>Card details</Divider>
               <Form layout="vertical">
                 <Row>
@@ -90,7 +90,7 @@ const Main = ({ locationTree }) => (
                       </Row>
                     </Item>
 
-                    <Item>        
+                    <Item>
                       <Assignees />
                     </Item>
                   </Col>
@@ -108,7 +108,7 @@ const Main = ({ locationTree }) => (
                       style={{marginRight: 10}}
                       onClick={() => closeTab()}
                     >Cancel</Button>
-                    <Submit />
+                    <Submit persistor={persistor} />
                   </Col>
                 </Row>
               </Form>
