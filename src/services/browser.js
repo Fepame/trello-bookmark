@@ -1,5 +1,5 @@
 export const closeTab = () => isChromeExtension
-  ? window.close() : window.location.reload()
+  ? window.close() : window.location.reload(true)
 
 export const isChromeExtension = window
   .location

@@ -57,7 +57,6 @@ const client = new ApolloClient({
 
 const persistor = new CachePersistor({
   cache,
-  debug: true,
   debounce: 0,
   trigger: false,
   storage: window.localStorage

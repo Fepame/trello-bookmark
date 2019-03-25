@@ -80,6 +80,21 @@ export default ({
         <Icon
           style={{
             marginTop: 10,
+            display: (site !== 'newTab' && site !== 'lastLocation')
+              ? 'inline-block' : 'none'
+          }}
+          type="minus-circle"
+          onClick={() => client.writeData({
+            data: {
+              locations: locations.filter(location => location.id !== id)
+            }
+          })}
+        />
+      </Col>
+      <Col span={1}>
+        <Icon
+          style={{
+            marginTop: 10,
             display: (isLastRow && site !== 'lastLocation')
               ? 'inline-block' : 'none'
           }}
@@ -89,27 +104,12 @@ export default ({
               locations: [
                 ...locations,
                 {
-                  id: locations.length,
+                  id: id + 1,
                   site: '',
                   pathStr: '',
                   __typename: "Location"
                 }
               ]
-            }
-          })}
-        />
-      </Col>
-      <Col span={1}>
-        <Icon
-          style={{
-            marginTop: 10,
-            display: (isLastRow && site !== 'newTab' && site !== 'lastLocation')
-              ? 'inline-block' : 'none'
-          }}
-          type="minus-circle"
-          onClick={() => client.writeData({
-            data: {
-              locations: locations.filter(location => location.id !== id)
             }
           })}
         />

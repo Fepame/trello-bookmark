@@ -3,10 +3,11 @@ import { Row, Col, Icon, Divider } from 'antd'
 import { Query } from 'react-apollo'
 // import { GET_SETTINGS } from '../../../services/queries'
 import gql from 'graphql-tag'
-import { Link } from 'react-router-dom'
+import { defaultData } from '../../../services/defaults'
+import { closeTab } from '../../../services/browser'
 import LocationDefault from './LocationDefault'
 
-const Settings = ({ locationTree }) => (
+const Settings = ({ locationTree, persistor }) => (
   <Query query={gql`{ locations { id site pathStr }}`}>
     {({ data: { locations }, client }) => {
       if(!locations) return null
@@ -25,21 +26,26 @@ const Settings = ({ locationTree }) => (
                 />
               )
             }
-            <Link to="/" onClick={() => {
-              client.writeData({
-                data: {
-                  locations: locations.filter(location => location.site)
-                }
-              })
-            }}>
-              <Icon
-                type="arrow-left"
-                style={{ 
-                  fontSize: 19,
-                  verticalAlign: '-webkit-baseline-middle'
-                }}
-              />
-            </Link>
+            <Icon
+              type="arrow-left"
+              style={{ 
+                fontSize: 19,
+                verticalAlign: '-webkit-baseline-middle'
+              }}
+              onClick={() => {
+                client.clearStore().then(() => {
+                  client.writeData({
+                    data: {
+                      ...defaultData,
+                      locations: locations.filter(location => location.site)
+                    }
+                  })
+                  persistor.persist().then(() => {
+                    closeTab()
+                  })
+                })
+              }}
+            />
           </Col>
         </Row>
       )
