@@ -13,7 +13,7 @@ const Settings = ({ locationTree, persistor }) => (
       if(!locations) return null
       return (
         <Row type="flex" justify="space-around">
-          <Col span={23} offset={1}>
+          <Col span={22} offset={1}>
             <Divider>Default locations</Divider>
             {
               locations.map((location, i) => <LocationDefault

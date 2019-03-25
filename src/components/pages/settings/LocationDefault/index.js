@@ -60,7 +60,7 @@ export default ({
           })}
         />
       </Col>
-      <Col offset={1} span={14}>
+      <Col offset={1} span={15}>
         <Cascader
           autoFocus
           disabled={site === 'lastLocation'}
@@ -76,7 +76,7 @@ export default ({
           onChange={path => updateLocation({ pathArr: path })}
         />
       </Col>
-      <Col span={1} offset={1}>
+      <Col span={1} style={{ textAlign: 'right '}}>
         <Icon
           style={{
             marginTop: 10,
@@ -91,7 +91,7 @@ export default ({
           })}
         />
       </Col>
-      <Col span={1}>
+      <Col span={1} style={{ textAlign: 'right '}}>
         <Icon
           style={{
             marginTop: 10,
