@@ -10,7 +10,7 @@ const webStore = require('chrome-webstore-upload')({
 })
 
 zipFolder(
-  '../build/',
+  './build',
   './chrome.zip',
   err => {
     if(err) {
