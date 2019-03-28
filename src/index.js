@@ -90,7 +90,7 @@ const App = () => {
       redirect_uri: href
     }, { arrayFormat: 'comma' })
     window.open(`https://trello.com/1/authorize?${params}`, '_blank')
-    closeTab()
+    window.close()
   }
 
   return (

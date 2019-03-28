@@ -1,5 +1,5 @@
 import React from 'react'
-import { Row, Col, Icon, Divider } from 'antd'
+import { Row, Col, Icon, Divider, Popconfirm, Button } from 'antd'
 import { Query } from 'react-apollo'
 // import { GET_SETTINGS } from '../../../services/queries'
 import gql from 'graphql-tag'
@@ -26,26 +26,43 @@ const Settings = ({ locationTree, persistor }) => (
                 />
               )
             }
-            <Icon
-              type="arrow-left"
-              style={{ 
-                fontSize: 19,
-                verticalAlign: '-webkit-baseline-middle'
-              }}
-              onClick={() => {
-                client.clearStore().then(() => {
-                  client.writeData({
-                    data: {
-                      ...defaultData,
-                      locations: locations.filter(location => location.site)
-                    }
-                  })
-                  persistor.persist().then(() => {
+            <Divider />
+            <Row type="flex">
+              <Col span={12}>
+                <Popconfirm
+                  title="Are you sure? Your personal settings will be deleted."
+                  onConfirm={() => {
+                    window.localStorage.clear()
                     closeTab()
-                  })
-                })
-              }}
-            />
+                  }}
+                  okText="Yes"
+                  cancelText="No"
+                  placement="topLeft"
+                >
+                  <a href="#">Logout</a>
+                </Popconfirm>
+              </Col>
+              <Col span={12} style={{ textAlign: 'right' }}>
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    client.clearStore().then(() => {
+                      client.writeData({
+                        data: {
+                          ...defaultData,
+                          locations: locations.filter(location => location.site)
+                        }
+                      })
+                      persistor.persist().then(() => {
+                        closeTab()
+                      })
+                    })
+                  }}
+                >
+                  Save
+                </Button>
+              </Col>
+            </Row>
           </Col>
         </Row>
       )

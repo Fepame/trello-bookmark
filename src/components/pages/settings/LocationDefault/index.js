@@ -1,5 +1,5 @@
 import React from 'react'
-import { Row, Col, Input, Cascader, Icon } from 'antd'
+import { Row, Col, Input, Cascader, Icon, Tooltip } from 'antd'
 import { pathStrToArray, pathArrayToStr } from '../../../../services/utils'
 
 const filter = (inputValue, path) => path
@@ -49,6 +49,30 @@ export default ({
   }
   return (
     <Row style={{ marginBottom: 20 }}>
+      <Col span={1}>
+        {
+          site === '' 
+          && <Tooltip
+            title="Use current site"
+            placement="right"
+          >
+            <Icon
+              type="link"
+              style={{
+                marginTop: 10,
+                display: (
+                  site !== 'newTab' 
+                  && site !== 'lastLocation'
+                  && site === ''
+                ) ? 'inline-block' : 'none'
+              }}
+              onClick={() => updateLocation({
+                site: window.location.hostname
+              })}
+            />
+          </Tooltip>
+        }
+      </Col>
       <Col span={6}>
         <Input
           disabled={site === 'newTab' || site === 'lastLocation'}
@@ -60,7 +84,7 @@ export default ({
           })}
         />
       </Col>
-      <Col offset={1} span={15}>
+      <Col offset={1} span={14}>
         <Cascader
           autoFocus
           disabled={site === 'lastLocation'}
