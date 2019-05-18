@@ -1,5 +1,5 @@
 import React from 'react'
-import { Row, Col, Icon, Divider, Popconfirm, Button } from 'antd'
+import { Row, Col, Divider, Popconfirm, Button } from 'antd'
 import { Query } from 'react-apollo'
 // import { GET_SETTINGS } from '../../../services/queries'
 import gql from 'graphql-tag'
@@ -39,7 +39,7 @@ const Settings = ({ locationTree, persistor }) => (
                   cancelText="No"
                   placement="topLeft"
                 >
-                  <a href="#">Logout</a>
+                  <Button type="link">Logout</Button>
                 </Popconfirm>
               </Col>
               <Col span={12} style={{ textAlign: 'right' }}>

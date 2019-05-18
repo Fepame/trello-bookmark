@@ -14,7 +14,6 @@ import defaults from './services/defaults'
 import MainPage from './components/pages/main'
 import SettingsPage from './components/pages/settings'
 import NoMatchPage from './components/pages/no_match'
-import { closeTab } from './services/browser'
 import { generateBlob, normalizeLocationTree } from './services/utils'
 import './index.css'
 
