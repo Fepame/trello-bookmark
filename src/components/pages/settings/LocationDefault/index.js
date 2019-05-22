@@ -1,6 +1,7 @@
 import React from 'react'
 import { Row, Col, Input, Cascader, Icon, Tooltip } from 'antd'
-import { pathStrToArray, pathArrayToStr } from '../../../../services/utils'
+import { pathStrToArray, pathArrayToStr, getHostname } from '../../../../services/utils'
+import { getTabInfo } from '../../../../services/browser'
 
 const filter = (inputValue, path) => path
   .some(option => 
@@ -66,9 +67,11 @@ export default ({
                   && site === ''
                 ) ? 'inline-block' : 'none'
               }}
-              onClick={() => updateLocation({
-                site: window.location.hostname
-              })}
+              onClick={() => getTabInfo(
+                tabInfo => updateLocation({
+                  site: getHostname(tabInfo.link)
+                }))
+              }
             />
           </Tooltip>
         }

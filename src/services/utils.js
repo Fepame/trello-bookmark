@@ -127,3 +127,9 @@ export const generateBlob = imageData => {
 
   return new Blob([ab], { type: mimeType })
 }
+
+export const getHostname = url => {
+  const a = document.createElement('a')
+  a.href = url
+  return a.hostname
+}

@@ -4,7 +4,7 @@ import { Query } from 'react-apollo'
 // import { GET_SETTINGS } from '../../../services/queries'
 import gql from 'graphql-tag'
 import { defaultData } from '../../../services/defaults'
-import { closeTab } from '../../../services/browser'
+import { closeTab, isChromeExtension } from '../../../services/browser'
 import LocationDefault from './LocationDefault'
 
 const Settings = ({ locationTree, persistor }) => (
@@ -12,7 +12,7 @@ const Settings = ({ locationTree, persistor }) => (
     {({ data: { locations }, client }) => {
       if(!locations) return null
       return (
-        <Row type="flex" justify="space-around">
+        <Row type="flex">
           <Col span={22} offset={1}>
             <Divider>Default locations</Divider>
             {
@@ -54,7 +54,7 @@ const Settings = ({ locationTree, persistor }) => (
                         }
                       })
                       persistor.persist().then(() => {
-                        closeTab()
+                        isChromeExtension ? closeTab() : window.location.pathname = ''
                       })
                     })
                   }}

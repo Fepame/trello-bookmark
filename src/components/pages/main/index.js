@@ -32,7 +32,7 @@ const Main = ({ locationTree, persistor }) => (
     {({ data: { settings }, client }) => {
       if(!settings) return null
       return (
-        <Row type="flex" justify="space-around">
+        <Row type="flex">
           <Spin
             spinning={settings.spinner.isVisible}
             indicator={
