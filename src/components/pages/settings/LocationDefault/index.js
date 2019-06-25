@@ -1,7 +1,7 @@
 import React from 'react'
 import { Row, Col, Input, Cascader, Icon, Tooltip } from 'antd'
 import { pathStrToArray, pathArrayToStr, getHostname } from '../../../../services/utils'
-import { getTabInfo } from '../../../../services/browser'
+import { isChromeExtension, getTabInfo } from '../../../../services/browser'
 
 const filter = (inputValue, path) => path
   .some(option => 
@@ -67,7 +67,7 @@ export default ({
                   && site === ''
                 ) ? 'inline-block' : 'none'
               }}
-              onClick={() => getTabInfo(
+              onClick={() => isChromeExtension && getTabInfo(
                 tabInfo => updateLocation({
                   site: getHostname(tabInfo.link)
                 }))

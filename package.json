@@ -3,25 +3,25 @@
   "version": "2.3.3",
   "private": true,
   "dependencies": {
-    "@craco/craco": "^5.1.0",
-    "antd": "^3.18.1",
-    "apollo-cache-inmemory": "^1.5.1",
-    "apollo-cache-instorage": "^0.2.4",
-    "apollo-cache-persist": "^0.1.1",
-    "apollo-client": "^2.5.1",
-    "apollo-link": "^1.2.11",
-    "apollo-link-rest": "^0.7.3",
-    "craco-antd": "^1.10.0",
-    "graphql": "^14.3.0",
-    "graphql-anywhere": "^4.2.1",
-    "graphql-tag": "^2.10.1",
-    "moment": "^2.24.0",
-    "qs": "^6.7.0",
-    "react": "^16.8.6",
-    "react-apollo": "^2.5.5",
-    "react-dom": "^16.8.6",
-    "react-router-dom": "^5.0.0",
-    "react-scripts": "^3.0.1"
+    "@craco/craco": "5.2.3",
+    "antd": "3.19.8",
+    "apollo-cache-inmemory": "1.6.2",
+    "apollo-cache-instorage": "0.2.4",
+    "apollo-cache-persist": "0.1.1",
+    "apollo-client": "2.6.3",
+    "apollo-link": "1.2.12",
+    "apollo-link-rest": "0.7.3",
+    "craco-antd": "1.11.0",
+    "graphql": "14.3.1",
+    "graphql-anywhere": "4.2.4",
+    "graphql-tag": "2.10.1",
+    "moment": "2.24.0",
+    "qs": "6.7.0",
+    "react": "16.8.6",
+    "react-apollo": "2.5.8",
+    "react-dom": "16.8.6",
+    "react-router-dom": "5.0.1",
+    "react-scripts": "3.0.1"
   },
   "scripts": {
     "start": "craco start",
@@ -45,8 +45,8 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "chrome-webstore-upload": "^0.2.2",
-    "dotenv": "^8.0.0",
-    "zip-folder": "^1.0.0"
+    "chrome-webstore-upload": "0.2.2",
+    "dotenv": "8.0.0",
+    "zip-folder": "1.0.0"
   }
 }
