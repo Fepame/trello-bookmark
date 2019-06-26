@@ -1,5 +1,5 @@
 import { isChromeExtension, getTabInfo } from '../services/browser'
-import { pathStrToArray } from '../services/utils'
+import { pathStrToArray, getDefaultPoster } from '../services/utils'
 import { GET_LOCATIONS } from '../services/queries'
 
 export const defaultData = {
@@ -91,6 +91,9 @@ export default {
     
     if(isChromeExtension){
       getTabInfo(tabInfo => {
+
+        tabInfo.cover = getDefaultPoster(tabInfo.link)
+
         if(tabInfo.link === 'chrome://newtab/') {
           updateCard(client, { title: "", link: "" })
         } else {      

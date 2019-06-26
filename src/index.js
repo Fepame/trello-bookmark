@@ -34,13 +34,17 @@ const restLink = new RestLink({
       const formData = new FormData()
       if(url) formData.append("url", url)
       if(cover) {
-        formData.append(
-          "file",
-          generateBlob(cover),
-          "cover.jpg"
-        )
+        try {
+          const blob = generateBlob(cover)
+          formData.append(
+            "file",
+            blob,
+            "cover.jpg"
+          )
+        } catch(e) {
+          formData.append("url", cover)
+        }
       }
-      
       return {body: formData}
     }
   }

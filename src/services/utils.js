@@ -133,3 +133,24 @@ export const getHostname = url => {
   a.href = url
   return a.hostname
 }
+
+export const getDefaultPoster = url => {
+  const siteRules = {
+    'youtube.com': () => {
+      const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/
+      const match = url.match(regExp)
+      if (match && match[2].length === 11) {
+        return `https://img.youtube.com/vi/${match[2]}/maxresdefault.jpg`
+      } else {
+        return ''
+      }
+    }
+  }
+
+  const foundSite = Object.keys(siteRules).find(site => getHostname(url).includes(site))
+
+  if(foundSite) {
+    return siteRules[foundSite]()
+  }
+  return ''
+}

@@ -48,30 +48,25 @@ const Submit = ({
       variables: { params: resolveSubmitParams(card) }
     }).then(response => {
       const { data: { submitCard: { id }}} = response
-      const submit = data => submitCardAttachment({
-        variables: {
-          data: data,
-          cardId: id
-        }
-      })
 
-      if(card.link && card.cover) {
-        submit({
-          url: card.link,
-        }).then(() => submit({
-          cover: card.cover
-        })).then(() => onSubmitSuccess())
-      } else if (card.link) {
-        submit({
-          url: card.link
-        }).then(() => onSubmitSuccess())
-      } else if (card.cover) {
-        submit({
-          cover: card.cover
-        }).then(() => onSubmitSuccess())
-      } else {
-        onSubmitSuccess()
+      const submitAll = async attachments => {
+        for (let task of attachments.map(
+          attachment => submitCardAttachment({
+            variables: {
+              data: attachment,
+              cardId: id
+            }
+          })
+        )) 
+        await task
       }
+    
+      let attachmentList = []
+      card.cover && attachmentList.push({ cover: card.cover })
+      card.link && attachmentList.push({ url: card.link })
+
+      submitAll(attachmentList).then(onSubmitSuccess())
+      
     })
   }
 
