@@ -137,7 +137,7 @@ export const getHostname = url => {
 export const getDefaultPoster = url => {
   const siteRules = {
     'youtube.com': () => {
-      const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/
+      const regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/ // eslint-disable-line
       const match = url.match(regExp)
       if (match && match[2].length === 11) {
         return `https://img.youtube.com/vi/${match[2]}/maxresdefault.jpg`
