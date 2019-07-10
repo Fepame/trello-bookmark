@@ -1,6 +1,6 @@
 {
   "name": "trello-bookmark",
-  "version": "2.4.1",
+  "version": "2.4.2",
   "private": true,
   "dependencies": {
     "@craco/craco": "5.2.3",
