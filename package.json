@@ -3,8 +3,8 @@
   "version": "2.4.2",
   "private": false,
   "dependencies": {
-    "@craco/craco": "5.2.3",
-    "antd": "3.20.0",
+    "@craco/craco": "5.2.4",
+    "antd": "3.20.7",
     "apollo-cache-inmemory": "1.6.2",
     "apollo-cache-instorage": "0.2.4",
     "apollo-cache-persist": "0.1.1",
